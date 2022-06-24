@@ -1,13 +1,13 @@
 %option noyywrap
 
 %{
-#include<stdio.h>
-#include<stdlib.h>
-#include<cstring>
+#include<iostream>
+#include<bits/stdc++.h>
 #include "SymbolTable.cpp"
 
 int line_count=1;
 int num_of_error = 0;
+string ml_str="";
 SymbolTable st(7);
 
 char convert_char(char* ch)
@@ -60,7 +60,7 @@ EMPTY \'\'
 SP_CHAR [ntf\\'rabv0]
 CHARACTER_LITERAL (\'[^\\]\')|(\'\\{SP_CHAR}\')
 
-STRING \".*(\\(\r)?\n.*)*[^\\\r\n]\"
+STRING \".*(\\(\r)?\n.*)*\"
 COMMENT (\/\/.*(\\(\r)?\n.*)*)|(\/\*([^\*]|\*[^\/])*\*\/)
 
 DPOINT_ERROR {NUMBER}\.{NUMBER}(\.{NUMBER}?)+
@@ -68,7 +68,7 @@ ILL_FORM_NUM {DIGIT}*(\.{DIGIT}*)*[Ee][+-]?{DIGIT}*(\.{DIGIT}*)+
 INVALID {NUMBER}({LETTER}+{NUMBER}?)+
 MULTICHAR (\'[^\\].+\')|(\'\\{SP_CHAR}.+\')
 UNFINISHED_CHAR (\'[^\\])|(\'\\{SP_CHAR})
-UNFINISHED_STRING \".*(\\(\r)?\n.*)*[^\\\r\n]*
+UNFINISHED_STRING \"[^\"]*
 UNFINISHED_COMMENT \/\*([^\*]|\*[^\/])*
 UNRECOGNIZED .
 
@@ -264,12 +264,29 @@ UNRECOGNIZED .
 		}
 
 {STRING}	{
-			fprintf(tokenout,"<STRING, %s>", yytext);
-			fprintf(logout,"Line no %d: String: '%s' found\n\n",line_count, yytext);
+			for(int i = 0; i<strlen(yytext); i++)
+			{
+				if(yytext[i]=='\n')
+				{
+					line_count++;
+					
+				}else{
+					ml_str.push_back(yytext[i]);
+				}
+			}
+			fprintf(tokenout,"<STRING, %s>", ml_str.c_str());
+			fprintf(logout,"Line no %d: String: '%s' found\n\n",line_count, ml_str.c_str());
 		}
 
 {COMMENT}	{
 			fprintf(logout,"Line no %d: comment found\n\n",line_count);
+			for(int i = 0; i<strlen(yytext); i++)
+			{
+				if(yytext[i]=='\n')
+				{
+					line_count++;
+				}
+			}
 		}
 
 {NEWLINE} {line_count++;}
@@ -290,7 +307,7 @@ UNRECOGNIZED .
 		}
 
 {UNFINISHED_STRING}	{
-			fprintf(logout,"Error! Line no: %d ; Type: Unfinished String %s.\n\n",line_count, yytext);
+			fprintf(logout,"Error! Line no: %d ; Type: Unfinished String %s\n\n",line_count, yytext);
 			num_of_error++;
 		}
 
@@ -335,7 +352,7 @@ int main(int argc,char *argv[]){
 	yyin= fin;
 	yylex();
 	st.print_all(logout);
-	fprintf(logout,"Total lines: %d\nTotal errors: %d\n",line_count,num_of_error);
+	fprintf(logout,"Total lines: %d\nTotal errors: %d\n",line_count-1,num_of_error);
 	fclose(yyin);
 	fclose(tokenout);
 	fclose(logout);

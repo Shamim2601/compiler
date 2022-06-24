@@ -1,0 +1,8 @@
+[^\\\r\n]
+
+UNFINISHED_STRING \".*(\\(\r)?\n.*)*[^\\\r\n]*
+
+
+multiline string comment
+string size krte hobe
+line count

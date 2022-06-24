@@ -1,0 +1,24 @@
+Line no 1: TOKEN <INT> Lexeme int found
+
+Line no 1: TOKEN <ID> Lexeme main found
+
+Scopetable #1
+5 -->> < main : ID >
+
+Line no 1: TOKEN <LPAREN> Lexeme ( found
+
+Line no 1: TOKEN <RPAREN> Lexeme ) found
+
+Line no 2: TOKEN <LCURL> Lexeme { found
+
+Line no 3: comment found
+
+Line no 4: TOKEN <DO> Lexeme do found
+
+Line no 5: TOKEN <RCURL> Lexeme } found
+
+Scopetable #1
+5 -->> < main : ID >
+
+Total lines: 5
+Total errors: 0
