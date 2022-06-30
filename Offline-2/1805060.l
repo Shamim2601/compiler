@@ -60,21 +60,48 @@ EMPTY \'\'
 SP_CHAR [ntf\\'rabv0]
 CHARACTER_LITERAL (\'[^\\]\')|(\'\\{SP_CHAR}\')
 
-STRING \".*(\\(\r)?\n.*)*\"
-COMMENT (\/\/.*(\\(\r)?\n.*)*)|(\/\*([^\*]|\*[^\/])*\*\/)
+STRING \"([^\"\n]|(\\[\n])|(\"))*\"
+SL_COMMENT \/\/.*(\\(\r)?\n.*)*
+ML_COMMENT ("/*")([^*]|\*[^\/])*("*/")
+COMMENT {SL_COMMENT}|{ML_COMMENT}
 
 DPOINT_ERROR {NUMBER}\.{NUMBER}(\.{NUMBER}?)+
 ILL_FORM_NUM {DIGIT}*(\.{DIGIT}*)*[Ee][+-]?{DIGIT}*(\.{DIGIT}*)+
 INVALID {NUMBER}({LETTER}+{NUMBER}?)+
 MULTICHAR (\'[^\\].+\')|(\'\\{SP_CHAR}.+\')
 UNFINISHED_CHAR (\'[^\\])|(\'\\{SP_CHAR})
-UNFINISHED_STRING \"[^\"]*
-UNFINISHED_COMMENT \/\*([^\*]|\*[^\/])*
+UNFINISHED_STRING \"([^\"\n]|(\\[\n]))*
+UNFINISHED_COMMENT ("/*")([^*]|\*[^\/])*
 UNRECOGNIZED .
 
 %%
 
 {WHITESPACE} {}
+
+{NEWLINE} {line_count++;}
+
+{COMMENT}	{
+			fprintf(logout,"Line no %d: comment found\n\n",line_count);
+			for(int i = 0; i<strlen(yytext); i++)
+			{
+				if(yytext[i]=='\n')
+				{
+					line_count++;
+				}
+			}
+		}
+
+{UNFINISHED_COMMENT}	{
+			fprintf(logout,"Error! Line no: %d ; Type: Unfinished Comment.\n\n",line_count);
+			num_of_error++;
+			for(int i = 0; i<strlen(yytext); i++)
+			{
+				if(yytext[i]=='\n')
+				{
+					line_count++;
+				}
+			}
+		}
 
 "if"	{
 			fprintf(tokenout,"<IF>");
@@ -266,30 +293,24 @@ UNRECOGNIZED .
 {STRING}	{
 			for(int i = 0; i<strlen(yytext); i++)
 			{
-				if(yytext[i]=='\n')
+				char ch = yytext[i];
+				if(yytext[i]=='"'){}
+				else if(yytext[i]=='\n')
 				{
 					line_count++;
-					
-				}else{
+					ml_str.push_back(yytext[i]);
+				}
+				else if(ch=='\t'|| ch=='\r'||ch=='\f'||ch=='\v')
+				{
+					ml_str.push_back(ch);
+				}
+				else{
 					ml_str.push_back(yytext[i]);
 				}
 			}
-			fprintf(tokenout,"<STRING, %s>", ml_str.c_str());
-			fprintf(logout,"Line no %d: String: '%s' found\n\n",line_count, ml_str.c_str());
+			fprintf(tokenout,"<STRING, %s >", ml_str.c_str());
+			fprintf(logout,"Line no %d: String: \"%s\" found\n\n",line_count, ml_str.c_str());
 		}
-
-{COMMENT}	{
-			fprintf(logout,"Line no %d: comment found\n\n",line_count);
-			for(int i = 0; i<strlen(yytext); i++)
-			{
-				if(yytext[i]=='\n')
-				{
-					line_count++;
-				}
-			}
-		}
-
-{NEWLINE} {line_count++;}
 
 {INVALID}	{
 			fprintf(logout,"Error! Line no: %d ; Type: Invalid prefix of identifier or invalid suffix of number %s.\n\n",line_count, yytext);
@@ -311,10 +332,6 @@ UNRECOGNIZED .
 			num_of_error++;
 		}
 
-{UNFINISHED_COMMENT}	{
-			fprintf(logout,"Error! Line no: %d ; Type: Unfinished Comment.\n\n",line_count);
-			num_of_error++;
-		}
 
 {DPOINT_ERROR}	{
 			fprintf(logout,"Error! Line no: %d ; Type: Multiple decimal points in %s.\n\n",line_count, yytext);
@@ -352,7 +369,7 @@ int main(int argc,char *argv[]){
 	yyin= fin;
 	yylex();
 	st.print_all(logout);
-	fprintf(logout,"Total lines: %d\nTotal errors: %d\n",line_count-1,num_of_error);
+	fprintf(logout,"Total lines: %d\nTotal errors: %d\n",line_count,num_of_error);
 	fclose(yyin);
 	fclose(tokenout);
 	fclose(logout);

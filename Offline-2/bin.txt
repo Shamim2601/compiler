@@ -3,6 +3,7 @@
 UNFINISHED_STRING \".*(\\(\r)?\n.*)*[^\\\r\n]*
 
 
+SINGLE LINE CMMENT OK
 multiline string comment
 string size krte hobe
 line count

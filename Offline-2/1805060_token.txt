@@ -1,1 +1,2 @@
-<INT><ID,main><LPAREN,(><RPAREN,)><LCURL,{><DO><RCURL,}>
+<ID,x><ASSIGNOP,=><STRING, jaksjdl\
+kjlk    fjlk >

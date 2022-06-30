@@ -1,5 +1,2 @@
-int main()
-{
-    //i\ 
-    do
-}
+x = "jaksjdl\
+kjlk    fjlk"
