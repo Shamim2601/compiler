@@ -1,46 +1,76 @@
 %{
-#include<iostream>
-#include<cstdlib>
-#include<cstring>
-#include<cmath>
-#include "symbol.h"
-#define YYSTYPE SymbolInfo*
+#include<bits/stdc++.h>
+#include "SymbolTable.cpp"
 
 using namespace std;
 
-int yyparse(void);
-int yylex(void);
+
+
 extern FILE *yyin;
 
-SymbolTable *table;
+SymbolTable s_table(30);
+FILE *log_file, *error_file, *inp_file;
 
+int line_count = 1;
+int num_of_error = 0;
+
+string type;
+
+int yyparse(void);
+int yylex(void);
 
 void yyerror(char *s)
 {
 	//write your code
+	fprintf(error_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	fprintf(log_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	num_of_error++;
 }
 
 
 %}
 
-%token IF ELSE FOR WHILE
+%union {
+	SymbolInfo* s_info;
+	vector<SymbolInfo*>* siList;
+}
 
-%left 
-%right
+%token IF ELSE FOR DO WHILE CONTINUE INT FLOAT DOUBLE CHAR  DEFAULT RETURN VOID  
+%token LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD  INCOP DECOP ASSIGNOP NOT  
+%token PRINTLN COMMA SEMICOLON
 
-%nonassoc 
+%token<s_info> ID CONST_INT CONST_FLOAT CONST_CHAR
+%token<s_info> ADDOP MULOP RELOP LOGICOP
+%type<s_info> type_specifier 
+
+%type<siList> start program unit var_declaration func_declaration func_definition
+%type<siList> parameter_list compound_statement statements declaration_list statement
+%type<siList> expression_statement expression logic_expression variable rel_expression
+%type<siList> simple_expression term unary_expression factor argument_list arguments
+
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 
 %%
 
+/*
 start : program
 	{
 		//write your code in this block in all the similar blocks below
+		fprintf(log_file, "Line: %d    :start : program\n\n",line_count);
 	}
 	;
 
 program : program unit 
+		{
+			fprintf(log_file, "Line: %d    :program : program unit\n\n",line_count);
+			
+		}
 	| unit
+		{
+
+		}
 	;
 	
 unit : var_declaration
@@ -67,21 +97,47 @@ parameter_list  : parameter_list COMMA type_specifier ID
 compound_statement : LCURL statements RCURL
  		    | LCURL RCURL
  		    ;
- 		    
+*/
+
 var_declaration : type_specifier declaration_list SEMICOLON
+			{
+				$$ = new vector<SymbolInfo*>();
+				fprintf(log_file, "Line no: %d  :var_declaration : type_specifier declaration_list SEMICOLON\n\n", line_count);
+			}
  		 ;
- 		 
+
 type_specifier	: INT
+		{
+			fprintf(log_file, "line no %d : type_specifier :  INT\n\n", line_count);
+			fprintf(log_file, "%s\n\n", "int");
+			type = "INT";
+		}
  		| FLOAT
+		{
+			fprintf(log_file, "line no %d : type_specifier :  FLOAT\n\n", line_count);
+			fprintf(log_file, "%s\n\n", "int");
+			type = "FLOAT";
+		}
  		| VOID
+		{
+			fprintf(log_file, "line no %d : type_specifier :  VOID\n\n", line_count);
+			fprintf(log_file, "%s\n\n", "int");
+			type = "VOID";
+		}
  		;
- 		
+
+		
 declaration_list : declaration_list COMMA ID
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
  		  | ID
+		  {
+			fprintf(log_file, "Line no: %d  :declaration_list : ID\n\n", line_count);
+			fprintf(log_file, "%s\n\n", $1->getName().c_str());
+		  }
  		  | ID LTHIRD CONST_INT RTHIRD
  		  ;
- 		  
+
+/* 		  
 statements : statement
 	   | statements statement
 	   ;
@@ -146,39 +202,32 @@ argument_list : arguments
 arguments : arguments COMMA logic_expression
 	      | logic_expression
 	      ;
- 
+*/
 
 %%
 int main(int argc,char *argv[])
 {
-	if(argc<2)
-	{
-		cout<<"Try again with input file name"<<endl;
+	if(argc!=2){
+		printf("Please provide input file name and try again\n");
 		return 0;
 	}
-
-	if((fp=fopen(argv[1],"r"))==NULL)
-	{
-		printf("Cannot Open Input File.\n");
-		exit(1);
+	
+	FILE *fin=fopen(argv[1],"r");
+	if(fin==NULL){
+		printf("Cannot open specified file\n");
+		return 0;
 	}
-
-	fp2= fopen(argv[2],"w");
-	fclose(fp2);
-	fp3= fopen(argv[3],"w");
-	fclose(fp3);
 	
-	fp2= fopen(argv[2],"a");
-	fp3= fopen(argv[3],"a");
-	
+	log_file = fopen("log_file.txt", "w");
+	error_file = fopen("error_file.txt","w");
 
-	yyin=fp;
+	yyin= fin;
 	yyparse();
-	
 
-	fclose(fp2);
-	fclose(fp3);
-	
+	fprintf(log_file,"Total lines: %d\nTotal errors: %d\n",line_count,num_of_error);
+	fclose(yyin);
+	fclose(log_file);
+	fclose(error_file);
 	return 0;
 }
 

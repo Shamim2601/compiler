@@ -1,0 +1,1 @@
+Syntax error detected by parser at line: 1 : "syntax error"

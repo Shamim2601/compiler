@@ -1,0 +1,11 @@
+line no 1 : type_specifier :  INT
+
+int
+
+Line no: 1  :declaration_list : ID
+
+a
+
+Syntax error detected by parser at line: 1 : "syntax error"
+Total lines: 1
+Total errors: 1

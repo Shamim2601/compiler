@@ -1,11 +1,10 @@
 #pragma once
-#include <iostream>
-#include<cstring>
+#include <bits/stdc++.h>
 #include "ScopeTable.cpp"
 
 
 using namespace std;
-    
+   
 //symbol table to store list of scope tables
 class SymbolTable
 {

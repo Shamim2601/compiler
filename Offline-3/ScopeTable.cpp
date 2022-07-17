@@ -1,7 +1,4 @@
-#pragma once
-#include <iostream>
-#include<cstring>
-#include<fstream>
+#include <bits/stdc++.h>
 #include "SymbolInfo.cpp"
 
 using namespace std;
