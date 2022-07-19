@@ -9,7 +9,9 @@ using namespace std;
 extern FILE *yyin;
 
 SymbolTable s_table(30);
-FILE *log_file, *error_file, *inp_file;
+FILE *inp_file;
+ofstream log_file;
+ofstream error_file;
 
 int line_count = 1;
 int num_of_error = 0;
@@ -22,24 +24,34 @@ int yylex(void);
 void yyerror(char *s)
 {
 	//write your code
-	fprintf(error_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
-	fprintf(log_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	//fprintf(error_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	//fprintf(log_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
 	num_of_error++;
 }
 
+void add_log(int lc, string rule)
+{
+	log_file<<"Line no "<<lc<<": "<<rule<<endl<<endl;
+}
+
+void add_error(int lc, string msg)
+{
+	error_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
+	log_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
+}
 
 %}
 
 %union {
-	SymbolInfo* s_info;
+	SymbolInfo *s_info;
 	vector<SymbolInfo*>* siList;
 }
 
-%token IF ELSE FOR DO WHILE CONTINUE INT FLOAT DOUBLE CHAR  DEFAULT RETURN VOID  
+%token IF ELSE FOR DO WHILE CONTINUE DEFAULT RETURN VOID  
 %token LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD  INCOP DECOP ASSIGNOP NOT  
 %token PRINTLN COMMA SEMICOLON
 
-%token<s_info> ID CONST_INT CONST_FLOAT CONST_CHAR
+%token<s_info> ID CONST_INT CONST_FLOAT CONST_CHAR INT FLOAT DOUBLE CHAR
 %token<s_info> ADDOP MULOP RELOP LOGICOP
 %type<s_info> type_specifier 
 
@@ -97,47 +109,77 @@ parameter_list  : parameter_list COMMA type_specifier ID
 compound_statement : LCURL statements RCURL
  		    | LCURL RCURL
  		    ;
-*/
 
+*/
 var_declaration : type_specifier declaration_list SEMICOLON
 			{
 				$$ = new vector<SymbolInfo*>();
-				fprintf(log_file, "Line no: %d  :var_declaration : type_specifier declaration_list SEMICOLON\n\n", line_count);
+				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
+
+				string tpsp = $1->getName().c_str();
+				if(tpsp== "void")
+				{
+					add_error(line_count, "Variable type cannot be void");
+					num_of_error++;
+				}
+
+				log_file<<tpsp<<" ";
+		  	    for(int i = 0; i < $2->size(); i++){
+		  			$$->push_back($2->at(i));
+		  			log_file << $2->at(i)->getName().c_str();
+					if(i<$2->size()-1){log_file<<",";}
+		  		}
+				log_file<<";\n\n";
 			}
  		 ;
 
 type_specifier	: INT
 		{
-			fprintf(log_file, "line no %d : type_specifier :  INT\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : INT");
+			log_file<<"int\n\n";
 			type = "INT";
 		}
  		| FLOAT
 		{
-			fprintf(log_file, "line no %d : type_specifier :  FLOAT\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : FLOAT");
+			log_file<<"float\n\n";
 			type = "FLOAT";
 		}
  		| VOID
 		{
-			fprintf(log_file, "line no %d : type_specifier :  VOID\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : VOID");
+			log_file<<"void\n\n";
 			type = "VOID";
 		}
  		;
-
-		
+	
 declaration_list : declaration_list COMMA ID
+			{
+				add_log(line_count, "declaration_list : declaration_list COMMA ID");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if(i<$1->size()-1){log_file<<",";}
+				}
+
+				log_file<<","<<$3->getName().c_str()<<endl<<endl;
+				$$->push_back($3);
+			}
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
  		  | ID
 		  {
-			fprintf(log_file, "Line no: %d  :declaration_list : ID\n\n", line_count);
-			fprintf(log_file, "%s\n\n", $1->getName().c_str());
+			add_log(line_count, "declaration_list : ID");
+			log_file<<$1->getName().c_str()<<"\n\n";
+			$$ = new vector<SymbolInfo*>();
+			$$->push_back($1);
 		  }
  		  | ID LTHIRD CONST_INT RTHIRD
  		  ;
+/*	
 
-/* 		  
 statements : statement
 	   | statements statement
 	   ;
@@ -218,16 +260,16 @@ int main(int argc,char *argv[])
 		return 0;
 	}
 	
-	log_file = fopen("log_file.txt", "w");
-	error_file = fopen("error_file.txt","w");
+	log_file.open("log_file.txt");
+	error_file.open("error_file.txt");
 
 	yyin= fin;
 	yyparse();
 
-	fprintf(log_file,"Total lines: %d\nTotal errors: %d\n",line_count,num_of_error);
+	log_file<<"Total lines: "<<line_count<<"\nTotal errors: "<<num_of_error<<"\n";
 	fclose(yyin);
-	fclose(log_file);
-	fclose(error_file);
+	log_file.close();
+	error_file.close();
 	return 0;
 }
 

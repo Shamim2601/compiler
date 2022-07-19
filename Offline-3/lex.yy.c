@@ -575,7 +575,7 @@ extern YYSTYPE yylval;
 extern int line_count;
 extern int num_of_error;
 extern SymbolTable s_table;
-extern FILE* log_file;
+extern ofstream log_file;
 
 char convert_char(char* ch)
 {
@@ -951,68 +951,88 @@ case 10:
 YY_RULE_SETUP
 #line 127 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("INT");
+			yylval.s_info = si;
 			return INT;
 		}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 131 "1805060.l"
+#line 135 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("CHAR");
+			yylval.s_info = si;
 			return CHAR;
 		}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 135 "1805060.l"
+#line 143 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("FLOAT");
+			yylval.s_info = si;
 			return FLOAT;
 		}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 139 "1805060.l"
+#line 151 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("DOUBLE");
+			yylval.s_info = si;
 			return DOUBLE;
 		}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 143 "1805060.l"
+#line 159 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("VOID");
+			yylval.s_info = si;
 			return VOID;
 		}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 147 "1805060.l"
+#line 167 "1805060.l"
 {
 			return RETURN;
 		}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 151 "1805060.l"
+#line 171 "1805060.l"
 {
 			return DEFAULT;
 		}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 155 "1805060.l"
+#line 175 "1805060.l"
 {
 			return  CONTINUE;
 		}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 159 "1805060.l"
+#line 179 "1805060.l"
 {
 			return PRINTLN;
 		}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 164 "1805060.l"
+#line 184 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1023,7 +1043,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 172 "1805060.l"
+#line 192 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1034,21 +1054,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 180 "1805060.l"
+#line 200 "1805060.l"
 {
 			return INCOP;
 		}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 184 "1805060.l"
+#line 204 "1805060.l"
 {
 			return DECOP;
 		}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 188 "1805060.l"
+#line 208 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1059,14 +1079,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 196 "1805060.l"
+#line 216 "1805060.l"
 {
 			return ASSIGNOP;
 		}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 200 "1805060.l"
+#line 220 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1077,70 +1097,70 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 208 "1805060.l"
+#line 228 "1805060.l"
 {
 			return NOT;
 		}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 212 "1805060.l"
+#line 232 "1805060.l"
 {
 			return LPAREN;
 		}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 216 "1805060.l"
+#line 236 "1805060.l"
 {
 			return RPAREN;
 		}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 220 "1805060.l"
+#line 240 "1805060.l"
 {
 			return LCURL;
 		}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 224 "1805060.l"
+#line 244 "1805060.l"
 {
 			return RCURL;
 		}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 228 "1805060.l"
+#line 248 "1805060.l"
 {
 			return LTHIRD;
 		}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 232 "1805060.l"
+#line 252 "1805060.l"
 {
 			return RTHIRD;
 		}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 236 "1805060.l"
+#line 256 "1805060.l"
 {
 			return COMMA;
 		}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 240 "1805060.l"
+#line 260 "1805060.l"
 {
 			return SEMICOLON;
 		}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 245 "1805060.l"
+#line 265 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Empty character.\n\n",line_count);
 			num_of_error++;*/
@@ -1148,7 +1168,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 250 "1805060.l"
+#line 270 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo(yytext, "ID");
 			yylval.s_info = si;
@@ -1157,7 +1177,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 256 "1805060.l"
+#line 276 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1169,7 +1189,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 265 "1805060.l"
+#line 285 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1181,7 +1201,7 @@ YY_RULE_SETUP
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 273 "1805060.l"
+#line 293 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo();
 			si->setName(yytext);
@@ -1192,7 +1212,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 281 "1805060.l"
+#line 301 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Invalid prefix of identifier or invalid suffix of number %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1201,7 +1221,7 @@ YY_RULE_SETUP
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 286 "1805060.l"
+#line 306 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Multiple character constant %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1210,7 +1230,7 @@ YY_RULE_SETUP
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 291 "1805060.l"
+#line 311 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Unfinished character constant %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1218,7 +1238,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 296 "1805060.l"
+#line 316 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Multiple decimal points in %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1226,7 +1246,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 301 "1805060.l"
+#line 321 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Ill formed number  %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1234,7 +1254,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 306 "1805060.l"
+#line 326 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Unrecognized character %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1242,10 +1262,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 311 "1805060.l"
+#line 331 "1805060.l"
 ECHO;
 	YY_BREAK
-#line 1249 "lex.yy.c"
+#line 1269 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2250,5 +2270,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 311 "1805060.l"
+#line 331 "1805060.l"
 

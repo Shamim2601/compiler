@@ -1,11 +1,22 @@
-line no 1 : type_specifier :  INT
+Line no 1: type_specifier : INT
 
 int
 
-Line no: 1  :declaration_list : ID
+Line no 1: declaration_list : ID
 
-a
+x
 
-Syntax error detected by parser at line: 1 : "syntax error"
+Line no 1: declaration_list : declaration_list COMMA ID
+
+x,y
+
+Line no 1: declaration_list : declaration_list COMMA ID
+
+x,y,z
+
+Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
+
+int x,y,z;
+
 Total lines: 1
 Total errors: 1

@@ -79,7 +79,9 @@ using namespace std;
 extern FILE *yyin;
 
 SymbolTable s_table(30);
-FILE *log_file, *error_file, *inp_file;
+FILE *inp_file;
+ofstream log_file;
+ofstream error_file;
 
 int line_count = 1;
 int num_of_error = 0;
@@ -92,14 +94,24 @@ int yylex(void);
 void yyerror(char *s)
 {
 	//write your code
-	fprintf(error_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
-	fprintf(log_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	//fprintf(error_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
+	//fprintf(log_file, "Syntax error detected by parser at line: %d : \"%s\"\n", line_count, s);
 	num_of_error++;
 }
 
+void add_log(int lc, string rule)
+{
+	log_file<<"Line no "<<lc<<": "<<rule<<endl<<endl;
+}
+
+void add_error(int lc, string msg)
+{
+	error_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
+	log_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
+}
 
 
-#line 103 "y.tab.c"
+#line 115 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -149,30 +161,30 @@ extern int yydebug;
     DO = 261,                      /* DO  */
     WHILE = 262,                   /* WHILE  */
     CONTINUE = 263,                /* CONTINUE  */
-    INT = 264,                     /* INT  */
-    FLOAT = 265,                   /* FLOAT  */
-    DOUBLE = 266,                  /* DOUBLE  */
-    CHAR = 267,                    /* CHAR  */
-    DEFAULT = 268,                 /* DEFAULT  */
-    RETURN = 269,                  /* RETURN  */
-    VOID = 270,                    /* VOID  */
-    LPAREN = 271,                  /* LPAREN  */
-    RPAREN = 272,                  /* RPAREN  */
-    LCURL = 273,                   /* LCURL  */
-    RCURL = 274,                   /* RCURL  */
-    LTHIRD = 275,                  /* LTHIRD  */
-    RTHIRD = 276,                  /* RTHIRD  */
-    INCOP = 277,                   /* INCOP  */
-    DECOP = 278,                   /* DECOP  */
-    ASSIGNOP = 279,                /* ASSIGNOP  */
-    NOT = 280,                     /* NOT  */
-    PRINTLN = 281,                 /* PRINTLN  */
-    COMMA = 282,                   /* COMMA  */
-    SEMICOLON = 283,               /* SEMICOLON  */
-    ID = 284,                      /* ID  */
-    CONST_INT = 285,               /* CONST_INT  */
-    CONST_FLOAT = 286,             /* CONST_FLOAT  */
-    CONST_CHAR = 287,              /* CONST_CHAR  */
+    DEFAULT = 264,                 /* DEFAULT  */
+    RETURN = 265,                  /* RETURN  */
+    VOID = 266,                    /* VOID  */
+    LPAREN = 267,                  /* LPAREN  */
+    RPAREN = 268,                  /* RPAREN  */
+    LCURL = 269,                   /* LCURL  */
+    RCURL = 270,                   /* RCURL  */
+    LTHIRD = 271,                  /* LTHIRD  */
+    RTHIRD = 272,                  /* RTHIRD  */
+    INCOP = 273,                   /* INCOP  */
+    DECOP = 274,                   /* DECOP  */
+    ASSIGNOP = 275,                /* ASSIGNOP  */
+    NOT = 276,                     /* NOT  */
+    PRINTLN = 277,                 /* PRINTLN  */
+    COMMA = 278,                   /* COMMA  */
+    SEMICOLON = 279,               /* SEMICOLON  */
+    ID = 280,                      /* ID  */
+    CONST_INT = 281,               /* CONST_INT  */
+    CONST_FLOAT = 282,             /* CONST_FLOAT  */
+    CONST_CHAR = 283,              /* CONST_CHAR  */
+    INT = 284,                     /* INT  */
+    FLOAT = 285,                   /* FLOAT  */
+    DOUBLE = 286,                  /* DOUBLE  */
+    CHAR = 287,                    /* CHAR  */
     ADDOP = 288,                   /* ADDOP  */
     MULOP = 289,                   /* MULOP  */
     RELOP = 290,                   /* RELOP  */
@@ -192,30 +204,30 @@ extern int yydebug;
 #define DO 261
 #define WHILE 262
 #define CONTINUE 263
-#define INT 264
-#define FLOAT 265
-#define DOUBLE 266
-#define CHAR 267
-#define DEFAULT 268
-#define RETURN 269
-#define VOID 270
-#define LPAREN 271
-#define RPAREN 272
-#define LCURL 273
-#define RCURL 274
-#define LTHIRD 275
-#define RTHIRD 276
-#define INCOP 277
-#define DECOP 278
-#define ASSIGNOP 279
-#define NOT 280
-#define PRINTLN 281
-#define COMMA 282
-#define SEMICOLON 283
-#define ID 284
-#define CONST_INT 285
-#define CONST_FLOAT 286
-#define CONST_CHAR 287
+#define DEFAULT 264
+#define RETURN 265
+#define VOID 266
+#define LPAREN 267
+#define RPAREN 268
+#define LCURL 269
+#define RCURL 270
+#define LTHIRD 271
+#define RTHIRD 272
+#define INCOP 273
+#define DECOP 274
+#define ASSIGNOP 275
+#define NOT 276
+#define PRINTLN 277
+#define COMMA 278
+#define SEMICOLON 279
+#define ID 280
+#define CONST_INT 281
+#define CONST_FLOAT 282
+#define CONST_CHAR 283
+#define INT 284
+#define FLOAT 285
+#define DOUBLE 286
+#define CHAR 287
 #define ADDOP 288
 #define MULOP 289
 #define RELOP 290
@@ -226,12 +238,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "1805060.y"
+#line 45 "1805060.y"
 
-	SymbolInfo* s_info;
+	SymbolInfo *s_info;
 	vector<SymbolInfo*>* siList;
 
-#line 235 "y.tab.c"
+#line 247 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -260,30 +272,30 @@ enum yysymbol_kind_t
   YYSYMBOL_DO = 6,                         /* DO  */
   YYSYMBOL_WHILE = 7,                      /* WHILE  */
   YYSYMBOL_CONTINUE = 8,                   /* CONTINUE  */
-  YYSYMBOL_INT = 9,                        /* INT  */
-  YYSYMBOL_FLOAT = 10,                     /* FLOAT  */
-  YYSYMBOL_DOUBLE = 11,                    /* DOUBLE  */
-  YYSYMBOL_CHAR = 12,                      /* CHAR  */
-  YYSYMBOL_DEFAULT = 13,                   /* DEFAULT  */
-  YYSYMBOL_RETURN = 14,                    /* RETURN  */
-  YYSYMBOL_VOID = 15,                      /* VOID  */
-  YYSYMBOL_LPAREN = 16,                    /* LPAREN  */
-  YYSYMBOL_RPAREN = 17,                    /* RPAREN  */
-  YYSYMBOL_LCURL = 18,                     /* LCURL  */
-  YYSYMBOL_RCURL = 19,                     /* RCURL  */
-  YYSYMBOL_LTHIRD = 20,                    /* LTHIRD  */
-  YYSYMBOL_RTHIRD = 21,                    /* RTHIRD  */
-  YYSYMBOL_INCOP = 22,                     /* INCOP  */
-  YYSYMBOL_DECOP = 23,                     /* DECOP  */
-  YYSYMBOL_ASSIGNOP = 24,                  /* ASSIGNOP  */
-  YYSYMBOL_NOT = 25,                       /* NOT  */
-  YYSYMBOL_PRINTLN = 26,                   /* PRINTLN  */
-  YYSYMBOL_COMMA = 27,                     /* COMMA  */
-  YYSYMBOL_SEMICOLON = 28,                 /* SEMICOLON  */
-  YYSYMBOL_ID = 29,                        /* ID  */
-  YYSYMBOL_CONST_INT = 30,                 /* CONST_INT  */
-  YYSYMBOL_CONST_FLOAT = 31,               /* CONST_FLOAT  */
-  YYSYMBOL_CONST_CHAR = 32,                /* CONST_CHAR  */
+  YYSYMBOL_DEFAULT = 9,                    /* DEFAULT  */
+  YYSYMBOL_RETURN = 10,                    /* RETURN  */
+  YYSYMBOL_VOID = 11,                      /* VOID  */
+  YYSYMBOL_LPAREN = 12,                    /* LPAREN  */
+  YYSYMBOL_RPAREN = 13,                    /* RPAREN  */
+  YYSYMBOL_LCURL = 14,                     /* LCURL  */
+  YYSYMBOL_RCURL = 15,                     /* RCURL  */
+  YYSYMBOL_LTHIRD = 16,                    /* LTHIRD  */
+  YYSYMBOL_RTHIRD = 17,                    /* RTHIRD  */
+  YYSYMBOL_INCOP = 18,                     /* INCOP  */
+  YYSYMBOL_DECOP = 19,                     /* DECOP  */
+  YYSYMBOL_ASSIGNOP = 20,                  /* ASSIGNOP  */
+  YYSYMBOL_NOT = 21,                       /* NOT  */
+  YYSYMBOL_PRINTLN = 22,                   /* PRINTLN  */
+  YYSYMBOL_COMMA = 23,                     /* COMMA  */
+  YYSYMBOL_SEMICOLON = 24,                 /* SEMICOLON  */
+  YYSYMBOL_ID = 25,                        /* ID  */
+  YYSYMBOL_CONST_INT = 26,                 /* CONST_INT  */
+  YYSYMBOL_CONST_FLOAT = 27,               /* CONST_FLOAT  */
+  YYSYMBOL_CONST_CHAR = 28,                /* CONST_CHAR  */
+  YYSYMBOL_INT = 29,                       /* INT  */
+  YYSYMBOL_FLOAT = 30,                     /* FLOAT  */
+  YYSYMBOL_DOUBLE = 31,                    /* DOUBLE  */
+  YYSYMBOL_CHAR = 32,                      /* CHAR  */
   YYSYMBOL_ADDOP = 33,                     /* ADDOP  */
   YYSYMBOL_MULOP = 34,                     /* MULOP  */
   YYSYMBOL_RELOP = 35,                     /* RELOP  */
@@ -620,7 +632,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   14
+#define YYLAST   19
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  38
@@ -682,7 +694,7 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   102,   102,   109,   115,   121,   130,   131,   132,   137
+       0,   114,   114,   136,   142,   148,   156,   171,   172,   179
 };
 #endif
 
@@ -699,10 +711,10 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "IF", "ELSE", "FOR",
-  "DO", "WHILE", "CONTINUE", "INT", "FLOAT", "DOUBLE", "CHAR", "DEFAULT",
-  "RETURN", "VOID", "LPAREN", "RPAREN", "LCURL", "RCURL", "LTHIRD",
-  "RTHIRD", "INCOP", "DECOP", "ASSIGNOP", "NOT", "PRINTLN", "COMMA",
-  "SEMICOLON", "ID", "CONST_INT", "CONST_FLOAT", "CONST_CHAR", "ADDOP",
+  "DO", "WHILE", "CONTINUE", "DEFAULT", "RETURN", "VOID", "LPAREN",
+  "RPAREN", "LCURL", "RCURL", "LTHIRD", "RTHIRD", "INCOP", "DECOP",
+  "ASSIGNOP", "NOT", "PRINTLN", "COMMA", "SEMICOLON", "ID", "CONST_INT",
+  "CONST_FLOAT", "CONST_CHAR", "INT", "FLOAT", "DOUBLE", "CHAR", "ADDOP",
   "MULOP", "RELOP", "LOGICOP", "LOWER_THAN_ELSE", "$accept",
   "var_declaration", "type_specifier", "declaration_list", YY_NULLPTR
 };
@@ -714,7 +726,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-26)
+#define YYPACT_NINF (-23)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -728,8 +740,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -9,   -26,   -26,   -26,     4,   -24,   -26,   -13,   -25,   -22,
-     -20,   -26,   -11,    -8,   -26,   -19,    -7,   -26
+     -11,   -23,   -23,   -23,     3,   -21,   -23,   -10,   -22,   -19,
+     -20,   -23,    -9,    -7,   -23,   -16,    -6,   -23
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -737,14 +749,14 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     3,     4,     5,     0,     0,     1,     8,     0,     0,
+       0,     5,     3,     4,     0,     0,     1,     8,     0,     0,
        0,     2,     0,     6,     9,     0,     0,     7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -26,   -26,   -26,   -26
+     -23,   -23,   -23,   -23
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -758,22 +770,22 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,    10,    11,     6,     7,     3,     9,    12,    13,
-      14,    16,    15,     0,    17
+       1,    10,    11,     6,     7,    13,     9,    12,    14,    15,
+      16,    17,     0,     0,     0,     0,     0,     0,     2,     3
 };
 
 static const yytype_int8 yycheck[] =
 {
-       9,    10,    27,    28,     0,    29,    15,    20,    30,    29,
-      21,    30,    20,    -1,    21
+      11,    23,    24,     0,    25,    25,    16,    26,    17,    16,
+      26,    17,    -1,    -1,    -1,    -1,    -1,    -1,    29,    30
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     9,    10,    15,    39,    40,     0,    29,    41,    20,
-      27,    28,    30,    29,    21,    20,    30,    21
+       0,    11,    29,    30,    39,    40,     0,    25,    41,    16,
+      23,    24,    26,    25,    17,    16,    26,    17
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -1249,55 +1261,91 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* var_declaration: type_specifier declaration_list SEMICOLON  */
-#line 103 "1805060.y"
+#line 115 "1805060.y"
                         {
 				(yyval.siList) = new vector<SymbolInfo*>();
-				fprintf(log_file, "Line no: %d  :var_declaration : type_specifier declaration_list SEMICOLON\n\n", line_count);
+				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
+
+				string tpsp = (yyvsp[-2].s_info)->getName().c_str();
+				if(tpsp== "void")
+				{
+					add_error(line_count, "Variable type cannot be void");
+					num_of_error++;
+				}
+
+				log_file<<tpsp<<" ";
+		  	    for(int i = 0; i < (yyvsp[-1].siList)->size(); i++){
+		  			(yyval.siList)->push_back((yyvsp[-1].siList)->at(i));
+		  			log_file << (yyvsp[-1].siList)->at(i)->getName().c_str();
+					if(i<(yyvsp[-1].siList)->size()-1){log_file<<",";}
+		  		}
+				log_file<<";\n\n";
 			}
-#line 1258 "y.tab.c"
+#line 1285 "y.tab.c"
     break;
 
   case 3: /* type_specifier: INT  */
-#line 110 "1805060.y"
+#line 137 "1805060.y"
                 {
-			fprintf(log_file, "line no %d : type_specifier :  INT\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : INT");
+			log_file<<"int\n\n";
 			type = "INT";
 		}
-#line 1268 "y.tab.c"
+#line 1295 "y.tab.c"
     break;
 
   case 4: /* type_specifier: FLOAT  */
-#line 116 "1805060.y"
+#line 143 "1805060.y"
                 {
-			fprintf(log_file, "line no %d : type_specifier :  FLOAT\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : FLOAT");
+			log_file<<"float\n\n";
 			type = "FLOAT";
 		}
-#line 1278 "y.tab.c"
+#line 1305 "y.tab.c"
     break;
 
   case 5: /* type_specifier: VOID  */
-#line 122 "1805060.y"
+#line 149 "1805060.y"
                 {
-			fprintf(log_file, "line no %d : type_specifier :  VOID\n\n", line_count);
-			fprintf(log_file, "%s\n\n", "int");
+			add_log(line_count, "type_specifier : VOID");
+			log_file<<"void\n\n";
 			type = "VOID";
 		}
-#line 1288 "y.tab.c"
+#line 1315 "y.tab.c"
+    break;
+
+  case 6: /* declaration_list: declaration_list COMMA ID  */
+#line 157 "1805060.y"
+                        {
+				add_log(line_count, "declaration_list : declaration_list COMMA ID");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-2].siList)->at(i));
+					log_file<<(yyvsp[-2].siList)->at(i)->getName().c_str();
+					if(i<(yyvsp[-2].siList)->size()-1){log_file<<",";}
+				}
+
+				log_file<<","<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1334 "y.tab.c"
     break;
 
   case 8: /* declaration_list: ID  */
-#line 133 "1805060.y"
+#line 173 "1805060.y"
                   {
-			fprintf(log_file, "Line no: %d  :declaration_list : ID\n\n", line_count);
-			fprintf(log_file, "%s\n\n", (yyvsp[0].s_info)->getName().c_str());
+			add_log(line_count, "declaration_list : ID");
+			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
+			(yyval.siList) = new vector<SymbolInfo*>();
+			(yyval.siList)->push_back((yyvsp[0].s_info));
 		  }
-#line 1297 "y.tab.c"
+#line 1345 "y.tab.c"
     break;
 
 
-#line 1301 "y.tab.c"
+#line 1349 "y.tab.c"
 
       default: break;
     }
@@ -1490,7 +1538,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 207 "1805060.y"
+#line 249 "1805060.y"
 
 int main(int argc,char *argv[])
 {
@@ -1505,16 +1553,16 @@ int main(int argc,char *argv[])
 		return 0;
 	}
 	
-	log_file = fopen("log_file.txt", "w");
-	error_file = fopen("error_file.txt","w");
+	log_file.open("log_file.txt");
+	error_file.open("error_file.txt");
 
 	yyin= fin;
 	yyparse();
 
-	fprintf(log_file,"Total lines: %d\nTotal errors: %d\n",line_count,num_of_error);
+	log_file<<"Total lines: "<<line_count<<"\nTotal errors: "<<num_of_error<<"\n";
 	fclose(yyin);
-	fclose(log_file);
-	fclose(error_file);
+	log_file.close();
+	error_file.close();
 	return 0;
 }
 

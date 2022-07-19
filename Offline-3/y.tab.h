@@ -60,30 +60,30 @@ extern int yydebug;
     DO = 261,                      /* DO  */
     WHILE = 262,                   /* WHILE  */
     CONTINUE = 263,                /* CONTINUE  */
-    INT = 264,                     /* INT  */
-    FLOAT = 265,                   /* FLOAT  */
-    DOUBLE = 266,                  /* DOUBLE  */
-    CHAR = 267,                    /* CHAR  */
-    DEFAULT = 268,                 /* DEFAULT  */
-    RETURN = 269,                  /* RETURN  */
-    VOID = 270,                    /* VOID  */
-    LPAREN = 271,                  /* LPAREN  */
-    RPAREN = 272,                  /* RPAREN  */
-    LCURL = 273,                   /* LCURL  */
-    RCURL = 274,                   /* RCURL  */
-    LTHIRD = 275,                  /* LTHIRD  */
-    RTHIRD = 276,                  /* RTHIRD  */
-    INCOP = 277,                   /* INCOP  */
-    DECOP = 278,                   /* DECOP  */
-    ASSIGNOP = 279,                /* ASSIGNOP  */
-    NOT = 280,                     /* NOT  */
-    PRINTLN = 281,                 /* PRINTLN  */
-    COMMA = 282,                   /* COMMA  */
-    SEMICOLON = 283,               /* SEMICOLON  */
-    ID = 284,                      /* ID  */
-    CONST_INT = 285,               /* CONST_INT  */
-    CONST_FLOAT = 286,             /* CONST_FLOAT  */
-    CONST_CHAR = 287,              /* CONST_CHAR  */
+    DEFAULT = 264,                 /* DEFAULT  */
+    RETURN = 265,                  /* RETURN  */
+    VOID = 266,                    /* VOID  */
+    LPAREN = 267,                  /* LPAREN  */
+    RPAREN = 268,                  /* RPAREN  */
+    LCURL = 269,                   /* LCURL  */
+    RCURL = 270,                   /* RCURL  */
+    LTHIRD = 271,                  /* LTHIRD  */
+    RTHIRD = 272,                  /* RTHIRD  */
+    INCOP = 273,                   /* INCOP  */
+    DECOP = 274,                   /* DECOP  */
+    ASSIGNOP = 275,                /* ASSIGNOP  */
+    NOT = 276,                     /* NOT  */
+    PRINTLN = 277,                 /* PRINTLN  */
+    COMMA = 278,                   /* COMMA  */
+    SEMICOLON = 279,               /* SEMICOLON  */
+    ID = 280,                      /* ID  */
+    CONST_INT = 281,               /* CONST_INT  */
+    CONST_FLOAT = 282,             /* CONST_FLOAT  */
+    CONST_CHAR = 283,              /* CONST_CHAR  */
+    INT = 284,                     /* INT  */
+    FLOAT = 285,                   /* FLOAT  */
+    DOUBLE = 286,                  /* DOUBLE  */
+    CHAR = 287,                    /* CHAR  */
     ADDOP = 288,                   /* ADDOP  */
     MULOP = 289,                   /* MULOP  */
     RELOP = 290,                   /* RELOP  */
@@ -103,30 +103,30 @@ extern int yydebug;
 #define DO 261
 #define WHILE 262
 #define CONTINUE 263
-#define INT 264
-#define FLOAT 265
-#define DOUBLE 266
-#define CHAR 267
-#define DEFAULT 268
-#define RETURN 269
-#define VOID 270
-#define LPAREN 271
-#define RPAREN 272
-#define LCURL 273
-#define RCURL 274
-#define LTHIRD 275
-#define RTHIRD 276
-#define INCOP 277
-#define DECOP 278
-#define ASSIGNOP 279
-#define NOT 280
-#define PRINTLN 281
-#define COMMA 282
-#define SEMICOLON 283
-#define ID 284
-#define CONST_INT 285
-#define CONST_FLOAT 286
-#define CONST_CHAR 287
+#define DEFAULT 264
+#define RETURN 265
+#define VOID 266
+#define LPAREN 267
+#define RPAREN 268
+#define LCURL 269
+#define RCURL 270
+#define LTHIRD 271
+#define RTHIRD 272
+#define INCOP 273
+#define DECOP 274
+#define ASSIGNOP 275
+#define NOT 276
+#define PRINTLN 277
+#define COMMA 278
+#define SEMICOLON 279
+#define ID 280
+#define CONST_INT 281
+#define CONST_FLOAT 282
+#define CONST_CHAR 283
+#define INT 284
+#define FLOAT 285
+#define DOUBLE 286
+#define CHAR 287
 #define ADDOP 288
 #define MULOP 289
 #define RELOP 290
@@ -137,9 +137,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "1805060.y"
+#line 45 "1805060.y"
 
-	SymbolInfo* s_info;
+	SymbolInfo *s_info;
 	vector<SymbolInfo*>* siList;
 
 #line 146 "y.tab.h"

@@ -13,7 +13,7 @@ extern YYSTYPE yylval;
 extern int line_count;
 extern int num_of_error;
 extern SymbolTable s_table;
-extern FILE* log_file;
+extern ofstream log_file;
 
 char convert_char(char* ch)
 {
@@ -125,22 +125,42 @@ UNRECOGNIZED .
 		}
 
 "int"	{
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("INT");
+			yylval.s_info = si;
 			return INT;
 		}
 
 "char"	{
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("CHAR");
+			yylval.s_info = si;
 			return CHAR;
 		}
 
 "float"	{
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("FLOAT");
+			yylval.s_info = si;
 			return FLOAT;
 		}
 
 "double"	{
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("DOUBLE");
+			yylval.s_info = si;
 			return DOUBLE;
 		}
 
 "void"	{
+			SymbolInfo* si = new SymbolInfo();
+			si->setName(yytext);
+			si->setType("VOID");
+			yylval.s_info = si;
 			return VOID;
 		}
 
