@@ -713,13 +713,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    68,    68,    75,   104,   123,   138,   152,   171,   175,
-     198,   199,   203,   204,   205,   206,   210,   211,   214,   237,
-     242,   247,   255,   270,   271,   279,   282,   283,   286,   287,
-     288,   289,   290,   291,   292,   293,   294,   297,   298,   301,
-     302,   305,   306,   309,   310,   313,   314,   317,   318,   321,
-     322,   325,   326,   327,   330,   331,   332,   333,   334,   335,
-     336,   339,   340,   343,   344
+       0,    68,    68,    75,   105,   124,   139,   154,   173,   178,
+     201,   203,   207,   209,   211,   213,   217,   219,   222,   245,
+     251,   257,   265,   281,   283,   292,   295,   297,   300,   302,
+     304,   306,   308,   310,   312,   314,   316,   319,   321,   324,
+     326,   329,   331,   334,   336,   339,   341,   344,   346,   349,
+     351,   354,   356,   358,   361,   363,   365,   367,   369,   371,
+     373,   376,   377,   380,   382
 };
 #endif
 
@@ -1409,7 +1409,7 @@ yyreduce:
     break;
 
   case 4: /* program: unit  */
-#line 105 "1805060.y"
+#line 106 "1805060.y"
                 {
 			add_log(line_count, "program : unit");
 
@@ -1430,7 +1430,7 @@ yyreduce:
     break;
 
   case 5: /* unit: var_declaration  */
-#line 124 "1805060.y"
+#line 125 "1805060.y"
                 {
 			add_log(line_count, "unit : var_declaration");
 
@@ -1448,7 +1448,7 @@ yyreduce:
     break;
 
   case 6: /* unit: func_declaration  */
-#line 139 "1805060.y"
+#line 140 "1805060.y"
                 {
 			add_log(line_count, "unit : func_declaration");
 
@@ -1466,7 +1466,7 @@ yyreduce:
     break;
 
   case 7: /* unit: func_definition  */
-#line 153 "1805060.y"
+#line 155 "1805060.y"
                 {
 			add_log(line_count, "program : unit");
 
@@ -1487,7 +1487,7 @@ yyreduce:
     break;
 
   case 8: /* func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON  */
-#line 172 "1805060.y"
+#line 174 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
 			}
@@ -1495,7 +1495,7 @@ yyreduce:
     break;
 
   case 9: /* func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON  */
-#line 176 "1805060.y"
+#line 179 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON");
 
@@ -1520,7 +1520,7 @@ yyreduce:
     break;
 
   case 18: /* var_declaration: type_specifier declaration_list SEMICOLON  */
-#line 215 "1805060.y"
+#line 223 "1805060.y"
                         {
 				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
 
@@ -1545,7 +1545,7 @@ yyreduce:
     break;
 
   case 19: /* type_specifier: INT  */
-#line 238 "1805060.y"
+#line 246 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : INT");
 			log_file<<"int\n\n";
@@ -1554,7 +1554,7 @@ yyreduce:
     break;
 
   case 20: /* type_specifier: FLOAT  */
-#line 243 "1805060.y"
+#line 252 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : FLOAT");
 			log_file<<"float\n\n";
@@ -1563,7 +1563,7 @@ yyreduce:
     break;
 
   case 21: /* type_specifier: VOID  */
-#line 248 "1805060.y"
+#line 258 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : VOID");
 			log_file<<"void\n\n";
@@ -1572,7 +1572,7 @@ yyreduce:
     break;
 
   case 22: /* declaration_list: declaration_list COMMA ID  */
-#line 256 "1805060.y"
+#line 266 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 
@@ -1591,7 +1591,7 @@ yyreduce:
     break;
 
   case 24: /* declaration_list: ID  */
-#line 272 "1805060.y"
+#line 284 "1805060.y"
                   {
 			add_log(line_count, "declaration_list : ID");
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
@@ -1796,7 +1796,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 348 "1805060.y"
+#line 386 "1805060.y"
 
 int main(int argc,char *argv[])
 {

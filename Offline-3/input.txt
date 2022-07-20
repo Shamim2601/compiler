@@ -1,2 +1,3 @@
-int x();
-int a;
+int x,y,z; float a;
+
+void foo();

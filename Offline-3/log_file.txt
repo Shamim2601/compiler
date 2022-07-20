@@ -2,42 +2,73 @@ Line no 1: type_specifier : INT
 
 int
 
-Line no 1: func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON
+Line no 1: declaration_list : ID
 
-int x();
+x
 
-Line no 1: unit : func_declaration
+Line no 1: declaration_list : declaration_list COMMA ID
 
-int x();
+x,y
+
+Line no 1: declaration_list : declaration_list COMMA ID
+
+x,y,z
+
+Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
+
+int x,y,z;
+
+Line no 1: unit : var_declaration
+
+int x,y,z;
 
 Line no 1: program : unit
 
-int x();
+int x,y,z;
 
 
-Line no 2: type_specifier : INT
+Line no 1: type_specifier : FLOAT
 
-int
+float
 
-Line no 2: declaration_list : ID
+Line no 1: declaration_list : ID
 
 a
 
-Line no 2: var_declaration : type_specifier declaration_list SEMICOLON
+Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
 
-int a;
+float a;
 
-Line no 2: unit : var_declaration
+Line no 1: unit : var_declaration
 
-int a;
+float a;
 
-Line no 2: program : program unit
+Line no 1: program : program unit
 
-int x();
-int a;
+int x,y,z;
+float a;
 
 
-Line no 2: start : program
+Line no 3: type_specifier : VOID
 
-Total lines: 2
+void
+
+Line no 3: func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON
+
+void foo();
+
+Line no 3: unit : func_declaration
+
+void foo();
+
+Line no 3: program : program unit
+
+int x,y,z;
+float a;
+void foo();
+
+
+Line no 3: start : program
+
+Total lines: 3
 Total errors: 0
