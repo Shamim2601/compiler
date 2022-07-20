@@ -2,11 +2,36 @@ Line no 1: type_specifier : INT
 
 int
 
-Line no 1: declaration_list : ID LTHIRD CONST_INT RTHIRD
+Line no 1: type_specifier : FLOAT
 
-x[5]
+float
 
-Error at line 1: syntax error
+Line no 1: parameter_list : type_specifier ID
+
+float v
+
+Line no 1: type_specifier : INT
+
+int
+
+Line no 1: parameter_list : parameter_list COMMA type_specifier
+
+float v,int u
+
+Line no 1: func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
+
+int x(float v,int u);
+
+Line no 1: unit : func_declaration
+
+int x(float v,int u);
+
+Line no 1: program : unit
+
+int x(float v,int u);
+
+
+Line no 1: start : program
 
 Total lines: 1
-Total errors: 1
+Total errors: 0

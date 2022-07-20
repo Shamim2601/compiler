@@ -713,13 +713,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    68,    68,    75,   105,   124,   139,   154,   173,   178,
-     201,   203,   207,   209,   211,   213,   217,   219,   222,   245,
-     251,   257,   265,   281,   300,   309,   323,   325,   328,   330,
-     332,   334,   336,   338,   340,   342,   344,   347,   349,   352,
-     354,   357,   359,   362,   364,   367,   369,   372,   374,   377,
-     379,   382,   384,   386,   389,   391,   393,   395,   397,   399,
-     401,   404,   405,   408,   410
+       0,    68,    68,    75,   105,   124,   139,   154,   173,   206,
+     229,   231,   235,   253,   270,   280,   291,   293,   296,   319,
+     325,   331,   339,   355,   374,   383,   397,   399,   402,   404,
+     406,   408,   410,   412,   414,   416,   418,   421,   423,   426,
+     428,   431,   433,   436,   438,   441,   443,   446,   448,   451,
+     453,   456,   458,   460,   463,   465,   467,   469,   471,   473,
+     475,   478,   479,   482,   484
 };
 #endif
 
@@ -1490,12 +1490,40 @@ yyreduce:
 #line 174 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				string fName = (yyvsp[-4].s_info)->getName().c_str();
+				if(s_table.look_up(fName)!=NULL)
+				{
+					add_log(line_count, "Multiple declaration of "+fName);
+					add_error(line_count, "Multiple declaration of "+fName);
+					num_of_error++;
+				}
+
+				log_file << (yyvsp[-5].s_info)->getName().c_str() << " " << (yyvsp[-4].s_info)->getName().c_str() << (yyvsp[-3].s_info)->getName().c_str();
+				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
+				{
+					log_file<<(yyvsp[-2].siList)->at(i)->getName();
+					if((yyvsp[-2].siList)->at(i)->getName() == "int" || (yyvsp[-2].siList)->at(i)->getName() == "float")
+					{log_file << " ";}
+				}
+				log_file<<(yyvsp[-1].s_info)->getName().c_str()<< (yyvsp[0].s_info)->getName().c_str() << "\n\n";
+
+				(yyval.siList)->push_back((yyvsp[-5].s_info));
+				(yyval.siList)->push_back((yyvsp[-4].s_info));
+				(yyval.siList)->push_back((yyvsp[-3].s_info));
+				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-2].siList)->at(i));
+				}
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1495 "y.tab.c"
+#line 1523 "y.tab.c"
     break;
 
   case 9: /* func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON  */
-#line 179 "1805060.y"
+#line 207 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON");
 
@@ -1516,11 +1544,77 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1520 "y.tab.c"
+#line 1548 "y.tab.c"
+    break;
+
+  case 12: /* parameter_list: parameter_list COMMA type_specifier ID  */
+#line 236 "1805060.y"
+                        {
+				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-3].siList)->size();i++)
+				{
+					log_file<<(yyvsp[-3].siList)->at(i)->getName();
+					if((yyvsp[-3].siList)->at(i)->getName() == "int" || (yyvsp[-3].siList)->at(i)->getName() == "float")
+					{log_file << " ";}
+					(yyval.siList)->push_back((yyvsp[-3].siList)->at(i));
+				}
+				log_file<<(yyvsp[-2].s_info)->getName().c_str()<<(yyvsp[-1].s_info)->getName().c_str()<<" "<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[-2].s_info));
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1569 "y.tab.c"
+    break;
+
+  case 13: /* parameter_list: parameter_list COMMA type_specifier  */
+#line 254 "1805060.y"
+                        {
+				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
+				{
+					log_file<<(yyvsp[-2].siList)->at(i)->getName();
+					if((yyvsp[-2].siList)->at(i)->getName() == "int" || (yyvsp[-2].siList)->at(i)->getName() == "float")
+					{log_file << " ";}
+					(yyval.siList)->push_back((yyvsp[-2].siList)->at(i));
+				}
+				log_file<<(yyvsp[-1].s_info)->getName().c_str()<<" "<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1589 "y.tab.c"
+    break;
+
+  case 14: /* parameter_list: type_specifier ID  */
+#line 271 "1805060.y"
+                        {
+				add_log(line_count, "parameter_list : type_specifier ID");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				log_file<<(yyvsp[-1].s_info)->getName().c_str()<<" "<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1602 "y.tab.c"
+    break;
+
+  case 15: /* parameter_list: type_specifier  */
+#line 281 "1805060.y"
+                        {
+				add_log(line_count, "parameter_list : type_specifier");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1614 "y.tab.c"
     break;
 
   case 18: /* var_declaration: type_specifier declaration_list SEMICOLON  */
-#line 223 "1805060.y"
+#line 297 "1805060.y"
                         {
 				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
 
@@ -1541,38 +1635,38 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1545 "y.tab.c"
+#line 1639 "y.tab.c"
     break;
 
   case 19: /* type_specifier: INT  */
-#line 246 "1805060.y"
+#line 320 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : INT");
 			log_file<<"int\n\n";
 		}
-#line 1554 "y.tab.c"
+#line 1648 "y.tab.c"
     break;
 
   case 20: /* type_specifier: FLOAT  */
-#line 252 "1805060.y"
+#line 326 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : FLOAT");
 			log_file<<"float\n\n";
 		}
-#line 1563 "y.tab.c"
+#line 1657 "y.tab.c"
     break;
 
   case 21: /* type_specifier: VOID  */
-#line 258 "1805060.y"
+#line 332 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : VOID");
 			log_file<<"void\n\n";
 		}
-#line 1572 "y.tab.c"
+#line 1666 "y.tab.c"
     break;
 
   case 22: /* declaration_list: declaration_list COMMA ID  */
-#line 266 "1805060.y"
+#line 340 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 
@@ -1587,11 +1681,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1591 "y.tab.c"
+#line 1685 "y.tab.c"
     break;
 
   case 23: /* declaration_list: declaration_list COMMA ID LTHIRD CONST_INT RTHIRD  */
-#line 282 "1805060.y"
+#line 356 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 
@@ -1609,11 +1703,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1613 "y.tab.c"
+#line 1707 "y.tab.c"
     break;
 
   case 24: /* declaration_list: ID  */
-#line 301 "1805060.y"
+#line 375 "1805060.y"
                   {
 			add_log(line_count, "declaration_list : ID");
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
@@ -1621,11 +1715,11 @@ yyreduce:
 			(yyval.siList) = new vector<SymbolInfo*>();
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 		  }
-#line 1625 "y.tab.c"
+#line 1719 "y.tab.c"
     break;
 
   case 25: /* declaration_list: ID LTHIRD CONST_INT RTHIRD  */
-#line 310 "1805060.y"
+#line 384 "1805060.y"
                                 {
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
 
@@ -1637,11 +1731,11 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[-1].s_info));
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 				}
-#line 1641 "y.tab.c"
+#line 1735 "y.tab.c"
     break;
 
 
-#line 1645 "y.tab.c"
+#line 1739 "y.tab.c"
 
       default: break;
     }
@@ -1834,7 +1928,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 414 "1805060.y"
+#line 488 "1805060.y"
 
 int main(int argc,char *argv[])
 {

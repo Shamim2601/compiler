@@ -173,6 +173,34 @@ unit : var_declaration
 func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 			{
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
+
+				$$ = new vector<SymbolInfo*>();
+				string fName = $2->getName().c_str();
+				if(s_table.look_up(fName)!=NULL)
+				{
+					add_log(line_count, "Multiple declaration of "+fName);
+					add_error(line_count, "Multiple declaration of "+fName);
+					num_of_error++;
+				}
+
+				log_file << $1->getName().c_str() << " " << $2->getName().c_str() << $3->getName().c_str();
+				for(int i=0; i<$4->size();i++)
+				{
+					log_file<<$4->at(i)->getName();
+					if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float")
+					{log_file << " ";}
+				}
+				log_file<<$5->getName().c_str()<< $6->getName().c_str() << "\n\n";
+
+				$$->push_back($1);
+				$$->push_back($2);
+				$$->push_back($3);
+				for(int i=0; i<$4->size();i++)
+				{
+					$$->push_back($4->at(i));
+				}
+				$$->push_back($5);
+				$$->push_back($6);
 			}
 
 		| type_specifier ID LPAREN RPAREN SEMICOLON
@@ -205,12 +233,58 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 
 
 parameter_list  : parameter_list COMMA type_specifier ID
+			{
+				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					log_file<<$1->at(i)->getName();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float")
+					{log_file << " ";}
+					$$->push_back($1->at(i));
+				}
+				log_file<<$2->getName().c_str()<<$3->getName().c_str()<<" "<<$4->getName().c_str()<<endl<<endl;
+				$$->push_back($2);
+				$$->push_back($3);
+				$$->push_back($4);
+			}
 
 		| parameter_list COMMA type_specifier
+			{
+				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					log_file<<$1->at(i)->getName();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float")
+					{log_file << " ";}
+					$$->push_back($1->at(i));
+				}
+				log_file<<$2->getName().c_str()<<" "<<$3->getName().c_str()<<endl<<endl;
+				$$->push_back($2);
+				$$->push_back($3);
+			}
 
  		| type_specifier ID
+			{
+				add_log(line_count, "parameter_list : type_specifier ID");
+
+				$$ = new vector<SymbolInfo*>();
+				log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<endl<<endl;
+				$$->push_back($1);
+				$$->push_back($2);
+			}
 
 		| type_specifier
+			{
+				add_log(line_count, "parameter_list : type_specifier");
+
+				$$ = new vector<SymbolInfo*>();
+				log_file<<$1->getName().c_str()<<endl<<endl;
+				$$->push_back($1);
+			}
  		;
 
  		

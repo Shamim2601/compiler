@@ -1,1 +1,1 @@
-int x[5],y[9.5];
+int x(float v, int u);
