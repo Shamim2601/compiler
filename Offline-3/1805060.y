@@ -279,6 +279,23 @@ declaration_list : declaration_list COMMA ID
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
+		  	{
+				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+				}
+
+				log_file<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<$5->getName().c_str()<<$6->getName().c_str()<<endl<<endl;
+				$$->push_back($2);
+				$$->push_back($3);
+				$$->push_back($4);
+				$$->push_back($5);
+				$$->push_back($6);
+			}
 
  		  | ID
 		  {
@@ -290,6 +307,17 @@ declaration_list : declaration_list COMMA ID
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD
+		  		{
+					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
+
+					$$ = new vector<SymbolInfo*>();
+				
+					log_file<<$1->getName().c_str()<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<endl<<endl;
+					$$->push_back($1);
+					$$->push_back($2);
+					$$->push_back($3);
+					$$->push_back($4);
+				}
  		  ;
 
 statements : statement

@@ -715,11 +715,11 @@ static const yytype_int16 yyrline[] =
 {
        0,    68,    68,    75,   105,   124,   139,   154,   173,   178,
      201,   203,   207,   209,   211,   213,   217,   219,   222,   245,
-     251,   257,   265,   281,   283,   292,   295,   297,   300,   302,
-     304,   306,   308,   310,   312,   314,   316,   319,   321,   324,
-     326,   329,   331,   334,   336,   339,   341,   344,   346,   349,
-     351,   354,   356,   358,   361,   363,   365,   367,   369,   371,
-     373,   376,   377,   380,   382
+     251,   257,   265,   281,   300,   309,   323,   325,   328,   330,
+     332,   334,   336,   338,   340,   342,   344,   347,   349,   352,
+     354,   357,   359,   362,   364,   367,   369,   372,   374,   377,
+     379,   382,   384,   386,   389,   391,   393,   395,   397,   399,
+     401,   404,   405,   408,   410
 };
 #endif
 
@@ -1590,8 +1590,30 @@ yyreduce:
 #line 1591 "y.tab.c"
     break;
 
+  case 23: /* declaration_list: declaration_list COMMA ID LTHIRD CONST_INT RTHIRD  */
+#line 282 "1805060.y"
+                        {
+				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-5].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-5].siList)->at(i));
+					log_file<<(yyvsp[-5].siList)->at(i)->getName().c_str();
+				}
+
+				log_file<<(yyvsp[-4].s_info)->getName().c_str()<<(yyvsp[-3].s_info)->getName().c_str()<<(yyvsp[-2].s_info)->getName().c_str()<<(yyvsp[-1].s_info)->getName().c_str()<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[-4].s_info));
+				(yyval.siList)->push_back((yyvsp[-3].s_info));
+				(yyval.siList)->push_back((yyvsp[-2].s_info));
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1613 "y.tab.c"
+    break;
+
   case 24: /* declaration_list: ID  */
-#line 284 "1805060.y"
+#line 301 "1805060.y"
                   {
 			add_log(line_count, "declaration_list : ID");
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
@@ -1599,11 +1621,27 @@ yyreduce:
 			(yyval.siList) = new vector<SymbolInfo*>();
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 		  }
-#line 1603 "y.tab.c"
+#line 1625 "y.tab.c"
+    break;
+
+  case 25: /* declaration_list: ID LTHIRD CONST_INT RTHIRD  */
+#line 310 "1805060.y"
+                                {
+					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
+
+					(yyval.siList) = new vector<SymbolInfo*>();
+				
+					log_file<<(yyvsp[-3].s_info)->getName().c_str()<<(yyvsp[-2].s_info)->getName().c_str()<<(yyvsp[-1].s_info)->getName().c_str()<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+					(yyval.siList)->push_back((yyvsp[-3].s_info));
+					(yyval.siList)->push_back((yyvsp[-2].s_info));
+					(yyval.siList)->push_back((yyvsp[-1].s_info));
+					(yyval.siList)->push_back((yyvsp[0].s_info));
+				}
+#line 1641 "y.tab.c"
     break;
 
 
-#line 1607 "y.tab.c"
+#line 1645 "y.tab.c"
 
       default: break;
     }
@@ -1796,7 +1834,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 386 "1805060.y"
+#line 414 "1805060.y"
 
 int main(int argc,char *argv[])
 {

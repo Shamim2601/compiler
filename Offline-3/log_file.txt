@@ -2,73 +2,11 @@ Line no 1: type_specifier : INT
 
 int
 
-Line no 1: declaration_list : ID
+Line no 1: declaration_list : ID LTHIRD CONST_INT RTHIRD
 
-x
+x[5]
 
-Line no 1: declaration_list : declaration_list COMMA ID
+Error at line 1: syntax error
 
-x,y
-
-Line no 1: declaration_list : declaration_list COMMA ID
-
-x,y,z
-
-Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
-
-int x,y,z;
-
-Line no 1: unit : var_declaration
-
-int x,y,z;
-
-Line no 1: program : unit
-
-int x,y,z;
-
-
-Line no 1: type_specifier : FLOAT
-
-float
-
-Line no 1: declaration_list : ID
-
-a
-
-Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
-
-float a;
-
-Line no 1: unit : var_declaration
-
-float a;
-
-Line no 1: program : program unit
-
-int x,y,z;
-float a;
-
-
-Line no 3: type_specifier : VOID
-
-void
-
-Line no 3: func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON
-
-void foo();
-
-Line no 3: unit : func_declaration
-
-void foo();
-
-Line no 3: program : program unit
-
-int x,y,z;
-float a;
-void foo();
-
-
-Line no 3: start : program
-
-Total lines: 3
-Total errors: 0
+Total lines: 1
+Total errors: 1
