@@ -2,36 +2,74 @@ Line no 1: type_specifier : INT
 
 int
 
-Line no 1: type_specifier : FLOAT
+Line no 2: variable : ID
 
-float
+a
 
-Line no 1: parameter_list : type_specifier ID
+Line no 2: factor	: variable
 
-float v
+a
 
-Line no 1: type_specifier : INT
+Line no 2: unary_expression	: factor
 
-int
+a
 
-Line no 1: parameter_list : parameter_list COMMA type_specifier
+Line no 2: term : unary_expression
 
-float v,int u
+a
 
-Line no 1: func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
+Line no 2: simple_expression : term
 
-int x(float v,int u);
+a
 
-Line no 1: unit : func_declaration
+Line no 2: rel_expression	: simple_expression
 
-int x(float v,int u);
+a
 
-Line no 1: program : unit
+Line no 2: logic_expression : rel_expression
 
-int x(float v,int u);
+a
+
+Line no 2: expression : logic_expression
+
+a
+
+Line no 2: statement : RETURN expression SEMICOLON
+
+return a;
+
+Line no 2: statements : statement
+
+return a;
 
 
-Line no 1: start : program
+Line no 3: compound_statement : LCURL statements RCURL
 
-Total lines: 1
+{return a;
+}
+
+Line no 3: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+
+int x(){
+return a;
+}
+
+
+Line no 3: program : unit
+
+int x(){
+return a;
+}
+
+
+Line no 3: program : unit
+
+int x(){
+return a;
+}
+
+
+Line no 3: start : program
+
+Total lines: 3
 Total errors: 0

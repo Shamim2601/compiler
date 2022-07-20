@@ -227,8 +227,58 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 		;
 	 
 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+			{
+					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
+
+					$$ = new vector<SymbolInfo*>();
+					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str();
+					$$->push_back($1);
+					$$->push_back($2);
+					$$->push_back($3);
+					for(int i = 0; i< $4->size(); i++)
+					{
+						log_file<<$4->at(i)->getName().c_str();
+						$$->push_back($4->at(i));
+						if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float")
+						{log_file << " ";}
+					}
+					log_file<<$5->getName().c_str();
+					$$->push_back($5);
+					for(int i = 0; i< $6->size(); i++)
+					{
+						log_file<<$6->at(i)->getName().c_str();
+						$$->push_back($6->at(i));
+
+						if($6->at(i)->getName() == "int" || $6->at(i)->getName() == "float" || $6->at(i)->getName() == "void" || $6->at(i)->getName() == "return")
+						{log_file << " ";}
+						if($6->at(i)->getName() == ";" || $6->at(i)->getName() == "{" || $6->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<endl<<endl;
+			}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
+			{
+					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
+
+					$$ = new vector<SymbolInfo*>();
+					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str();
+					$$->push_back($1);
+					$$->push_back($2);
+					$$->push_back($3);
+					$$->push_back($4);
+					for(int i = 0; i< $5->size(); i++)
+					{
+						log_file<<$5->at(i)->getName().c_str();
+						$$->push_back($5->at(i));
+
+						if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
+						{log_file << " ";}
+						if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<endl<<endl;
+			}
  		;				
 
 
@@ -289,8 +339,37 @@ parameter_list  : parameter_list COMMA type_specifier ID
 
  		
 compound_statement : LCURL statements RCURL
+				{
+					add_log(line_count, "compound_statement : LCURL statements RCURL");
+
+					$$ = new vector<SymbolInfo*>();
+					log_file<<$1->getName().c_str();
+					$$->push_back($1);
+					for(int i = 0; i< $2->size(); i++)
+					{
+						log_file<<$2->at(i)->getName().c_str();
+						$$->push_back($2->at(i));
+
+						if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
+						{log_file << " ";}
+						if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<$3->getName().c_str()<<endl<<endl;
+					$$->push_back($3);
+				}
 
  		    | LCURL RCURL
+				{
+					add_log(line_count, "compound_statement : LCURL RCURL");
+
+					$$ = new vector<SymbolInfo*>();
+					log_file<<$1->getName().c_str();
+					$$->push_back($1);
+					log_file<<$2->getName().c_str();
+					$$->push_back($2);
+					log_file<<endl<<endl;
+				}
  		    ;
 
 var_declaration : type_specifier declaration_list SEMICOLON
@@ -395,8 +474,48 @@ declaration_list : declaration_list COMMA ID
  		  ;
 
 statements : statement
+			{
+				add_log(line_count, "statements : statement");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
 
 	   | statements statement
+	   		{
+				add_log(line_count, "statements : statement");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+
+				for(int i=0; i<$2->size();i++)
+				{
+					$$->push_back($2->at(i));
+					log_file<<$2->at(i)->getName().c_str();
+					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
 	   ;
 	   
 statement : var_declaration
@@ -414,8 +533,37 @@ statement : var_declaration
 	  | WHILE LPAREN expression RPAREN statement
 
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
+	  		{
+				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
+
+				$$ = new vector<SymbolInfo*>();
+				log_file<<$1->getName().c_str()<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<$5->getName().c_str()<<endl<<endl;
+				$$->push_back($1);
+				$$->push_back($2);
+				$$->push_back($3);
+				$$->push_back($4);
+				$$->push_back($5);
+			}
 
 	  | RETURN expression SEMICOLON
+	  		{
+				add_log(line_count, "statement : RETURN expression SEMICOLON");
+
+				$$ = new vector<SymbolInfo*>();
+				log_file<<$1->getName().c_str()<<" ";
+				$$->push_back($1);
+				for(int i=0; i<$2->size();i++)
+				{
+					$$->push_back($2->at(i));
+					log_file<<$2->at(i)->getName().c_str();
+					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<$3->getName().c_str()<<endl<<endl;
+				$$->push_back($3);
+			}
 	  ;
 	  
 expression_statement 	: SEMICOLON	
@@ -423,32 +571,127 @@ expression_statement 	: SEMICOLON
 			| expression SEMICOLON 
 			;
 	  
-variable : ID 		
+variable : ID 	
+		{
+			add_log(line_count, "variable : ID");
+
+			$$ = new vector<SymbolInfo*>();
+			log_file<<$1->getName().c_str()<<endl<<endl;
+			$$->push_back($1);
+		}	
 
 	 | ID LTHIRD expression RTHIRD 
 	 ;
 	 
  expression : logic_expression	
+			{
+				add_log(line_count, "expression : logic_expression");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
 
 	   | variable ASSIGNOP logic_expression 	
 	   ;
 			
-logic_expression : rel_expression 	
+logic_expression : rel_expression 
+			{
+				add_log(line_count, "logic_expression : rel_expression");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}	
 
 		 | rel_expression LOGICOP rel_expression 	
 		 ;
 			
 rel_expression	: simple_expression 
+			{
+				add_log(line_count, "rel_expression	: simple_expression");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
 
 		| simple_expression RELOP simple_expression	
 		;
 				
 simple_expression : term 
+			{
+				add_log(line_count, "simple_expression : term");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
 
 		  | simple_expression ADDOP term 
+		  	{
+				add_log(line_count, "factor	: variable");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
+					{log_file << " ";}
+					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<$2->getName().c_str();
+				for(int i=0; i<$3->size();i++)
+				{
+					$$->push_back($3->at(i));
+					log_file<<$3->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
 		  ;
 					
 term :	unary_expression
+		{
+			add_log(line_count, "term : unary_expression");
+
+			$$ = new vector<SymbolInfo*>();
+			for(int i=0; i<$1->size();i++)
+			{
+				$$->push_back($1->at(i));
+				log_file<<$1->at(i)->getName().c_str();
+			}
+			log_file<<endl<<endl;
+		}
 
      |  term MULOP unary_expression
      ;
@@ -458,9 +701,31 @@ unary_expression : ADDOP unary_expression
 		 | NOT unary_expression 
 
 		 | factor 
+		 	{
+				add_log(line_count, "unary_expression	: factor");
+
+				$$ = new vector<SymbolInfo*>();
+				for(int i=0; i<$1->size();i++)
+				{
+					$$->push_back($1->at(i));
+					log_file<<$1->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
 		 ;
 	
-factor	: variable 
+factor	: variable
+		{
+			add_log(line_count, "factor	: variable");
+
+			$$ = new vector<SymbolInfo*>();
+			for(int i=0; i<$1->size();i++)
+			{
+				$$->push_back($1->at(i));
+				log_file<<$1->at(i)->getName().c_str();
+			}
+			log_file<<endl<<endl;
+		}
 
 	| ID LPAREN argument_list RPAREN
 

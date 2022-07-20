@@ -1,1 +1,3 @@
-int x(float v, int u);
+int x(){
+    return a;
+}

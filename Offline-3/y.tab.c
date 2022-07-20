@@ -714,12 +714,12 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,    68,    68,    75,   105,   124,   139,   154,   173,   206,
-     229,   231,   235,   253,   270,   280,   291,   293,   296,   319,
-     325,   331,   339,   355,   374,   383,   397,   399,   402,   404,
-     406,   408,   410,   412,   414,   416,   418,   421,   423,   426,
-     428,   431,   433,   436,   438,   441,   443,   446,   448,   451,
-     453,   456,   458,   460,   463,   465,   467,   469,   471,   473,
-     475,   478,   479,   482,   484
+     229,   260,   285,   303,   320,   330,   341,   362,   375,   398,
+     404,   410,   418,   434,   453,   462,   476,   493,   521,   523,
+     525,   527,   529,   531,   533,   535,   548,   569,   571,   574,
+     583,   586,   603,   606,   623,   626,   643,   646,   659,   683,
+     696,   699,   701,   703,   717,   730,   732,   734,   736,   738,
+     740,   743,   744,   747,   749
 };
 #endif
 
@@ -1547,8 +1547,68 @@ yyreduce:
 #line 1548 "y.tab.c"
     break;
 
+  case 10: /* func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement  */
+#line 230 "1805060.y"
+                        {
+					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
+
+					(yyval.siList) = new vector<SymbolInfo*>();
+					log_file<<(yyvsp[-5].s_info)->getName().c_str()<<" "<<(yyvsp[-4].s_info)->getName().c_str()<<(yyvsp[-3].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[-5].s_info));
+					(yyval.siList)->push_back((yyvsp[-4].s_info));
+					(yyval.siList)->push_back((yyvsp[-3].s_info));
+					for(int i = 0; i< (yyvsp[-2].siList)->size(); i++)
+					{
+						log_file<<(yyvsp[-2].siList)->at(i)->getName().c_str();
+						(yyval.siList)->push_back((yyvsp[-2].siList)->at(i));
+						if((yyvsp[-2].siList)->at(i)->getName() == "int" || (yyvsp[-2].siList)->at(i)->getName() == "float")
+						{log_file << " ";}
+					}
+					log_file<<(yyvsp[-1].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[-1].s_info));
+					for(int i = 0; i< (yyvsp[0].siList)->size(); i++)
+					{
+						log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+						(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+
+						if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+						{log_file << " ";}
+						if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<endl<<endl;
+			}
+#line 1582 "y.tab.c"
+    break;
+
+  case 11: /* func_definition: type_specifier ID LPAREN RPAREN compound_statement  */
+#line 261 "1805060.y"
+                        {
+					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
+
+					(yyval.siList) = new vector<SymbolInfo*>();
+					log_file<<(yyvsp[-4].s_info)->getName().c_str()<<" "<<(yyvsp[-3].s_info)->getName().c_str()<<(yyvsp[-2].s_info)->getName().c_str()<<(yyvsp[-1].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[-4].s_info));
+					(yyval.siList)->push_back((yyvsp[-3].s_info));
+					(yyval.siList)->push_back((yyvsp[-2].s_info));
+					(yyval.siList)->push_back((yyvsp[-1].s_info));
+					for(int i = 0; i< (yyvsp[0].siList)->size(); i++)
+					{
+						log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+						(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+
+						if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+						{log_file << " ";}
+						if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<endl<<endl;
+			}
+#line 1608 "y.tab.c"
+    break;
+
   case 12: /* parameter_list: parameter_list COMMA type_specifier ID  */
-#line 236 "1805060.y"
+#line 286 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
 
@@ -1565,11 +1625,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1569 "y.tab.c"
+#line 1629 "y.tab.c"
     break;
 
   case 13: /* parameter_list: parameter_list COMMA type_specifier  */
-#line 254 "1805060.y"
+#line 304 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
 
@@ -1585,11 +1645,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1589 "y.tab.c"
+#line 1649 "y.tab.c"
     break;
 
   case 14: /* parameter_list: type_specifier ID  */
-#line 271 "1805060.y"
+#line 321 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : type_specifier ID");
 
@@ -1598,11 +1658,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1602 "y.tab.c"
+#line 1662 "y.tab.c"
     break;
 
   case 15: /* parameter_list: type_specifier  */
-#line 281 "1805060.y"
+#line 331 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : type_specifier");
 
@@ -1610,11 +1670,50 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1614 "y.tab.c"
+#line 1674 "y.tab.c"
+    break;
+
+  case 16: /* compound_statement: LCURL statements RCURL  */
+#line 342 "1805060.y"
+                                {
+					add_log(line_count, "compound_statement : LCURL statements RCURL");
+
+					(yyval.siList) = new vector<SymbolInfo*>();
+					log_file<<(yyvsp[-2].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[-2].s_info));
+					for(int i = 0; i< (yyvsp[-1].siList)->size(); i++)
+					{
+						log_file<<(yyvsp[-1].siList)->at(i)->getName().c_str();
+						(yyval.siList)->push_back((yyvsp[-1].siList)->at(i));
+
+						if((yyvsp[-1].siList)->at(i)->getName() == "int" || (yyvsp[-1].siList)->at(i)->getName() == "float" || (yyvsp[-1].siList)->at(i)->getName() == "void" || (yyvsp[-1].siList)->at(i)->getName() == "return")
+						{log_file << " ";}
+						if((yyvsp[-1].siList)->at(i)->getName() == ";" || (yyvsp[-1].siList)->at(i)->getName() == "{" || (yyvsp[-1].siList)->at(i)->getName() == "}")
+						{log_file << endl;}
+					}
+					log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+					(yyval.siList)->push_back((yyvsp[0].s_info));
+				}
+#line 1698 "y.tab.c"
+    break;
+
+  case 17: /* compound_statement: LCURL RCURL  */
+#line 363 "1805060.y"
+                                {
+					add_log(line_count, "compound_statement : LCURL RCURL");
+
+					(yyval.siList) = new vector<SymbolInfo*>();
+					log_file<<(yyvsp[-1].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[-1].s_info));
+					log_file<<(yyvsp[0].s_info)->getName().c_str();
+					(yyval.siList)->push_back((yyvsp[0].s_info));
+					log_file<<endl<<endl;
+				}
+#line 1713 "y.tab.c"
     break;
 
   case 18: /* var_declaration: type_specifier declaration_list SEMICOLON  */
-#line 297 "1805060.y"
+#line 376 "1805060.y"
                         {
 				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
 
@@ -1635,38 +1734,38 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1639 "y.tab.c"
+#line 1738 "y.tab.c"
     break;
 
   case 19: /* type_specifier: INT  */
-#line 320 "1805060.y"
+#line 399 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : INT");
 			log_file<<"int\n\n";
 		}
-#line 1648 "y.tab.c"
+#line 1747 "y.tab.c"
     break;
 
   case 20: /* type_specifier: FLOAT  */
-#line 326 "1805060.y"
+#line 405 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : FLOAT");
 			log_file<<"float\n\n";
 		}
-#line 1657 "y.tab.c"
+#line 1756 "y.tab.c"
     break;
 
   case 21: /* type_specifier: VOID  */
-#line 332 "1805060.y"
+#line 411 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : VOID");
 			log_file<<"void\n\n";
 		}
-#line 1666 "y.tab.c"
+#line 1765 "y.tab.c"
     break;
 
   case 22: /* declaration_list: declaration_list COMMA ID  */
-#line 340 "1805060.y"
+#line 419 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 
@@ -1681,11 +1780,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1685 "y.tab.c"
+#line 1784 "y.tab.c"
     break;
 
   case 23: /* declaration_list: declaration_list COMMA ID LTHIRD CONST_INT RTHIRD  */
-#line 356 "1805060.y"
+#line 435 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 
@@ -1703,11 +1802,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1707 "y.tab.c"
+#line 1806 "y.tab.c"
     break;
 
   case 24: /* declaration_list: ID  */
-#line 375 "1805060.y"
+#line 454 "1805060.y"
                   {
 			add_log(line_count, "declaration_list : ID");
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
@@ -1715,11 +1814,11 @@ yyreduce:
 			(yyval.siList) = new vector<SymbolInfo*>();
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 		  }
-#line 1719 "y.tab.c"
+#line 1818 "y.tab.c"
     break;
 
   case 25: /* declaration_list: ID LTHIRD CONST_INT RTHIRD  */
-#line 384 "1805060.y"
+#line 463 "1805060.y"
                                 {
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
 
@@ -1731,11 +1830,262 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[-1].s_info));
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 				}
-#line 1735 "y.tab.c"
+#line 1834 "y.tab.c"
+    break;
+
+  case 26: /* statements: statement  */
+#line 477 "1805060.y"
+                        {
+				add_log(line_count, "statements : statement");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+					if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
+#line 1854 "y.tab.c"
+    break;
+
+  case 27: /* statements: statements statement  */
+#line 494 "1805060.y"
+                        {
+				add_log(line_count, "statements : statement");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-1].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-1].siList)->at(i));
+					log_file<<(yyvsp[-1].siList)->at(i)->getName().c_str();
+					if((yyvsp[-1].siList)->at(i)->getName() == "int" || (yyvsp[-1].siList)->at(i)->getName() == "float" || (yyvsp[-1].siList)->at(i)->getName() == "void" || (yyvsp[-1].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[-1].siList)->at(i)->getName() == ";" || (yyvsp[-1].siList)->at(i)->getName() == "{" || (yyvsp[-1].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+					if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
+#line 1884 "y.tab.c"
+    break;
+
+  case 35: /* statement: PRINTLN LPAREN ID RPAREN SEMICOLON  */
+#line 536 "1805060.y"
+                        {
+				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				log_file<<(yyvsp[-4].s_info)->getName().c_str()<<(yyvsp[-3].s_info)->getName().c_str()<<(yyvsp[-2].s_info)->getName().c_str()<<(yyvsp[-1].s_info)->getName().c_str()<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[-4].s_info));
+				(yyval.siList)->push_back((yyvsp[-3].s_info));
+				(yyval.siList)->push_back((yyvsp[-2].s_info));
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1900 "y.tab.c"
+    break;
+
+  case 36: /* statement: RETURN expression SEMICOLON  */
+#line 549 "1805060.y"
+                        {
+				add_log(line_count, "statement : RETURN expression SEMICOLON");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				log_file<<(yyvsp[-2].s_info)->getName().c_str()<<" ";
+				(yyval.siList)->push_back((yyvsp[-2].s_info));
+				for(int i=0; i<(yyvsp[-1].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-1].siList)->at(i));
+					log_file<<(yyvsp[-1].siList)->at(i)->getName().c_str();
+					if((yyvsp[-1].siList)->at(i)->getName() == "int" || (yyvsp[-1].siList)->at(i)->getName() == "float" || (yyvsp[-1].siList)->at(i)->getName() == "void" || (yyvsp[-1].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[-1].siList)->at(i)->getName() == ";" || (yyvsp[-1].siList)->at(i)->getName() == "{" || (yyvsp[-1].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+				(yyval.siList)->push_back((yyvsp[0].s_info));
+			}
+#line 1923 "y.tab.c"
+    break;
+
+  case 39: /* variable: ID  */
+#line 575 "1805060.y"
+                {
+			add_log(line_count, "variable : ID");
+
+			(yyval.siList) = new vector<SymbolInfo*>();
+			log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
+			(yyval.siList)->push_back((yyvsp[0].s_info));
+		}
+#line 1935 "y.tab.c"
+    break;
+
+  case 41: /* expression: logic_expression  */
+#line 587 "1805060.y"
+                        {
+				add_log(line_count, "expression : logic_expression");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+					if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
+#line 1955 "y.tab.c"
+    break;
+
+  case 43: /* logic_expression: rel_expression  */
+#line 607 "1805060.y"
+                        {
+				add_log(line_count, "logic_expression : rel_expression");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+					if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
+#line 1975 "y.tab.c"
+    break;
+
+  case 45: /* rel_expression: simple_expression  */
+#line 627 "1805060.y"
+                        {
+				add_log(line_count, "rel_expression	: simple_expression");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+					if((yyvsp[0].siList)->at(i)->getName() == "int" || (yyvsp[0].siList)->at(i)->getName() == "float" || (yyvsp[0].siList)->at(i)->getName() == "void" || (yyvsp[0].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[0].siList)->at(i)->getName() == ";" || (yyvsp[0].siList)->at(i)->getName() == "{" || (yyvsp[0].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<endl<<endl;
+			}
+#line 1995 "y.tab.c"
+    break;
+
+  case 47: /* simple_expression: term  */
+#line 647 "1805060.y"
+                        {
+				add_log(line_count, "simple_expression : term");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
+#line 2011 "y.tab.c"
+    break;
+
+  case 48: /* simple_expression: simple_expression ADDOP term  */
+#line 660 "1805060.y"
+                        {
+				add_log(line_count, "factor	: variable");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[-2].siList)->at(i));
+					log_file<<(yyvsp[-2].siList)->at(i)->getName().c_str();
+					if((yyvsp[-2].siList)->at(i)->getName() == "int" || (yyvsp[-2].siList)->at(i)->getName() == "float" || (yyvsp[-2].siList)->at(i)->getName() == "void" || (yyvsp[-2].siList)->at(i)->getName() == "return")
+					{log_file << " ";}
+					if((yyvsp[-2].siList)->at(i)->getName() == ";" || (yyvsp[-2].siList)->at(i)->getName() == "{" || (yyvsp[-2].siList)->at(i)->getName() == "}")
+					{log_file << endl;}
+				}
+				log_file<<(yyvsp[-1].s_info)->getName().c_str();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
+#line 2037 "y.tab.c"
+    break;
+
+  case 49: /* term: unary_expression  */
+#line 684 "1805060.y"
+                {
+			add_log(line_count, "term : unary_expression");
+
+			(yyval.siList) = new vector<SymbolInfo*>();
+			for(int i=0; i<(yyvsp[0].siList)->size();i++)
+			{
+				(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+				log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+			}
+			log_file<<endl<<endl;
+		}
+#line 2053 "y.tab.c"
+    break;
+
+  case 53: /* unary_expression: factor  */
+#line 704 "1805060.y"
+                        {
+				add_log(line_count, "unary_expression	: factor");
+
+				(yyval.siList) = new vector<SymbolInfo*>();
+				for(int i=0; i<(yyvsp[0].siList)->size();i++)
+				{
+					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+					log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+				}
+				log_file<<endl<<endl;
+			}
+#line 2069 "y.tab.c"
+    break;
+
+  case 54: /* factor: variable  */
+#line 718 "1805060.y"
+                {
+			add_log(line_count, "factor	: variable");
+
+			(yyval.siList) = new vector<SymbolInfo*>();
+			for(int i=0; i<(yyvsp[0].siList)->size();i++)
+			{
+				(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
+				log_file<<(yyvsp[0].siList)->at(i)->getName().c_str();
+			}
+			log_file<<endl<<endl;
+		}
+#line 2085 "y.tab.c"
     break;
 
 
-#line 1739 "y.tab.c"
+#line 2089 "y.tab.c"
 
       default: break;
     }
@@ -1928,7 +2278,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 488 "1805060.y"
+#line 753 "1805060.y"
 
 int main(int argc,char *argv[])
 {
