@@ -93,7 +93,7 @@ int yylex(void);
 
 void add_log(int lc, string rule)
 {
-	log_file<<"Line no "<<lc<<": "<<rule<<endl<<endl;
+	log_file<<"Line "<<lc<<": "<<rule<<endl<<endl;
 }
 
 void add_error(int lc, string msg)
@@ -717,9 +717,9 @@ static const yytype_int16 yyrline[] =
      229,   260,   285,   303,   320,   330,   341,   362,   375,   398,
      404,   410,   418,   434,   453,   462,   476,   493,   521,   523,
      525,   527,   529,   531,   533,   535,   548,   569,   571,   574,
-     583,   586,   603,   606,   623,   626,   643,   646,   659,   683,
-     696,   699,   701,   703,   717,   730,   732,   734,   736,   738,
-     740,   743,   744,   747,   749
+     583,   586,   603,   606,   623,   626,   643,   646,   659,   684,
+     697,   700,   702,   704,   718,   731,   733,   735,   737,   739,
+     741,   744,   745,   748,   750
 };
 #endif
 
@@ -1468,7 +1468,7 @@ yyreduce:
   case 7: /* unit: func_definition  */
 #line 155 "1805060.y"
                 {
-			add_log(line_count, "program : unit");
+			add_log(line_count, "unit : func_definition");
 
 			(yyval.siList) = new vector<SymbolInfo*>();
 			for(int i = 0; i< (yyvsp[0].siList)->size(); i++)
@@ -1549,7 +1549,7 @@ yyreduce:
 
   case 10: /* func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement  */
 #line 230 "1805060.y"
-                        {
+                                {
 					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 
 					(yyval.siList) = new vector<SymbolInfo*>();
@@ -1577,13 +1577,13 @@ yyreduce:
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
-			}
+				}
 #line 1582 "y.tab.c"
     break;
 
   case 11: /* func_definition: type_specifier ID LPAREN RPAREN compound_statement  */
 #line 261 "1805060.y"
-                        {
+                                {
 					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 
 					(yyval.siList) = new vector<SymbolInfo*>();
@@ -1603,7 +1603,7 @@ yyreduce:
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
-			}
+				}
 #line 1608 "y.tab.c"
     break;
 
@@ -2013,7 +2013,7 @@ yyreduce:
   case 48: /* simple_expression: simple_expression ADDOP term  */
 #line 660 "1805060.y"
                         {
-				add_log(line_count, "factor	: variable");
+				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 
 				(yyval.siList) = new vector<SymbolInfo*>();
 				for(int i=0; i<(yyvsp[-2].siList)->size();i++)
@@ -2026,6 +2026,7 @@ yyreduce:
 					{log_file << endl;}
 				}
 				log_file<<(yyvsp[-1].s_info)->getName().c_str();
+				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				for(int i=0; i<(yyvsp[0].siList)->size();i++)
 				{
 					(yyval.siList)->push_back((yyvsp[0].siList)->at(i));
@@ -2033,11 +2034,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2037 "y.tab.c"
+#line 2038 "y.tab.c"
     break;
 
   case 49: /* term: unary_expression  */
-#line 684 "1805060.y"
+#line 685 "1805060.y"
                 {
 			add_log(line_count, "term : unary_expression");
 
@@ -2049,11 +2050,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2053 "y.tab.c"
+#line 2054 "y.tab.c"
     break;
 
   case 53: /* unary_expression: factor  */
-#line 704 "1805060.y"
+#line 705 "1805060.y"
                         {
 				add_log(line_count, "unary_expression	: factor");
 
@@ -2065,11 +2066,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2069 "y.tab.c"
+#line 2070 "y.tab.c"
     break;
 
   case 54: /* factor: variable  */
-#line 718 "1805060.y"
+#line 719 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable");
 
@@ -2081,11 +2082,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2085 "y.tab.c"
+#line 2086 "y.tab.c"
     break;
 
 
-#line 2089 "y.tab.c"
+#line 2090 "y.tab.c"
 
       default: break;
     }
@@ -2278,7 +2279,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 753 "1805060.y"
+#line 754 "1805060.y"
 
 int main(int argc,char *argv[])
 {

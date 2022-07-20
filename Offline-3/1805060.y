@@ -23,7 +23,7 @@ int yylex(void);
 
 void add_log(int lc, string rule)
 {
-	log_file<<"Line no "<<lc<<": "<<rule<<endl<<endl;
+	log_file<<"Line "<<lc<<": "<<rule<<endl<<endl;
 }
 
 void add_error(int lc, string msg)
@@ -153,7 +153,7 @@ unit : var_declaration
 
      | func_definition
 	 	{
-			add_log(line_count, "program : unit");
+			add_log(line_count, "unit : func_definition");
 
 			$$ = new vector<SymbolInfo*>();
 			for(int i = 0; i< $1->size(); i++)
@@ -227,7 +227,7 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 		;
 	 
 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
-			{
+				{
 					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 
 					$$ = new vector<SymbolInfo*>();
@@ -255,10 +255,10 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
-			}
+				}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
-			{
+				{
 					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 
 					$$ = new vector<SymbolInfo*>();
@@ -278,7 +278,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
-			}
+				}
  		;				
 
 
@@ -658,7 +658,7 @@ simple_expression : term
 
 		  | simple_expression ADDOP term 
 		  	{
-				add_log(line_count, "factor	: variable");
+				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 
 				$$ = new vector<SymbolInfo*>();
 				for(int i=0; i<$1->size();i++)
@@ -671,6 +671,7 @@ simple_expression : term
 					{log_file << endl;}
 				}
 				log_file<<$2->getName().c_str();
+				$$->push_back($2);
 				for(int i=0; i<$3->size();i++)
 				{
 					$$->push_back($3->at(i));
