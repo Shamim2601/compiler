@@ -2,21 +2,42 @@ Line no 1: type_specifier : INT
 
 int
 
-Line no 1: declaration_list : ID
+Line no 1: func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON
 
-x
+int x();
 
-Line no 1: declaration_list : declaration_list COMMA ID
+Line no 1: unit : func_declaration
 
-x,y
+int x();
 
-Line no 1: declaration_list : declaration_list COMMA ID
+Line no 1: program : unit
 
-x,y,z
+int x();
 
-Line no 1: var_declaration : type_specifier declaration_list SEMICOLON
 
-int x,y,z;
+Line no 2: type_specifier : INT
 
-Total lines: 1
-Total errors: 1
+int
+
+Line no 2: declaration_list : ID
+
+a
+
+Line no 2: var_declaration : type_specifier declaration_list SEMICOLON
+
+int a;
+
+Line no 2: unit : var_declaration
+
+int a;
+
+Line no 2: program : program unit
+
+int x();
+int a;
+
+
+Line no 2: start : program
+
+Total lines: 2
+Total errors: 0

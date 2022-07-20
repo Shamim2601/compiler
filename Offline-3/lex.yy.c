@@ -916,88 +916,88 @@ case 5:
 YY_RULE_SETUP
 #line 107 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "IF");
+			yylval.s_info = si;
 			return IF;
 		}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 111 "1805060.l"
+#line 113 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "ELSE");
+			yylval.s_info = si;
 			return ELSE;
 		}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 115 "1805060.l"
+#line 119 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "FOR");
+			yylval.s_info = si;
 			return FOR;
 		}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 119 "1805060.l"
+#line 125 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "WHILE");
+			yylval.s_info = si;
 			return WHILE;
 		}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 123 "1805060.l"
+#line 131 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "DO");
+			yylval.s_info = si;
 			return DO;
 		}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 127 "1805060.l"
+#line 137 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("INT");
+			SymbolInfo* si = new SymbolInfo(yytext, "INT");
 			yylval.s_info = si;
 			return INT;
 		}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 135 "1805060.l"
+#line 143 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CHAR");
+			SymbolInfo* si = new SymbolInfo(yytext, "CHAR");
 			yylval.s_info = si;
 			return CHAR;
 		}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 143 "1805060.l"
+#line 149 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("FLOAT");
+			SymbolInfo* si = new SymbolInfo(yytext, "FLOAT");
 			yylval.s_info = si;
 			return FLOAT;
 		}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 151 "1805060.l"
+#line 155 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("DOUBLE");
+			SymbolInfo* si = new SymbolInfo(yytext, "DOUBLE");
 			yylval.s_info = si;
 			return DOUBLE;
 		}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 159 "1805060.l"
+#line 161 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("VOID");
+			SymbolInfo* si = new SymbolInfo(yytext, "VOID");
 			yylval.s_info = si;
 			return VOID;
 		}
@@ -1006,161 +1006,185 @@ case 15:
 YY_RULE_SETUP
 #line 167 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "RETURN");
+			yylval.s_info = si;
 			return RETURN;
 		}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 171 "1805060.l"
+#line 173 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "DEFAULT");
+			yylval.s_info = si;
 			return DEFAULT;
 		}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 175 "1805060.l"
+#line 179 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "CONTINUE");
+			yylval.s_info = si;
 			return  CONTINUE;
 		}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 179 "1805060.l"
+#line 185 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "PRINTLN");
+			yylval.s_info = si;
 			return PRINTLN;
 		}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 184 "1805060.l"
+#line 192 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("ADDOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "ADDOP");
 			yylval.s_info = si;
 			return ADDOP;
 		}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 192 "1805060.l"
+#line 198 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("MULOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "MULOP");
 			yylval.s_info = si;
 			return MULOP;
 		}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 200 "1805060.l"
+#line 204 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "INCOP");
+			yylval.s_info = si;
 			return INCOP;
 		}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 204 "1805060.l"
+#line 210 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "DECOP");
+			yylval.s_info = si;
 			return DECOP;
 		}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 208 "1805060.l"
+#line 216 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("RELOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "RELOP");
 			yylval.s_info = si;
 			return RELOP;
 		}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 216 "1805060.l"
+#line 222 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext, "ASSIGNOP");
+			yylval.s_info = si;
 			return ASSIGNOP;
 		}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 220 "1805060.l"
+#line 228 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("LOGICOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "LOGICOP");
 			yylval.s_info = si;
 			return LOGICOP;
 		}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 228 "1805060.l"
+#line 234 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return NOT;
 		}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 232 "1805060.l"
+#line 240 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LPAREN;
 		}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 236 "1805060.l"
+#line 246 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RPAREN;
 		}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 240 "1805060.l"
+#line 252 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LCURL;
 		}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 244 "1805060.l"
+#line 258 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RCURL;
 		}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 248 "1805060.l"
+#line 264 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LTHIRD;
 		}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 252 "1805060.l"
+#line 270 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RTHIRD;
 		}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 256 "1805060.l"
+#line 276 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return COMMA;
 		}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 260 "1805060.l"
+#line 282 "1805060.l"
 {
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return SEMICOLON;
 		}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 265 "1805060.l"
+#line 289 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Empty character.\n\n",line_count);
 			num_of_error++;*/
@@ -1168,7 +1192,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 270 "1805060.l"
+#line 294 "1805060.l"
 {
 			SymbolInfo* si = new SymbolInfo(yytext, "ID");
 			yylval.s_info = si;
@@ -1177,11 +1201,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 276 "1805060.l"
+#line 300 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_INT");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_INT");
 			yylval.s_info = si;
 			return CONST_INT;
 			
@@ -1189,11 +1211,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 285 "1805060.l"
+#line 307 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_FLOAT");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_FLOAT");
 			yylval.s_info = si;
 			return CONST_FLOAT;
 		}	
@@ -1201,18 +1221,16 @@ YY_RULE_SETUP
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 293 "1805060.l"
+#line 313 "1805060.l"
 {
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_CHAR");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_CHAR");
 			yylval.s_info = si;
 			return CONST_CHAR;
 		}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 301 "1805060.l"
+#line 319 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Invalid prefix of identifier or invalid suffix of number %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1221,7 +1239,7 @@ YY_RULE_SETUP
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 306 "1805060.l"
+#line 324 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Multiple character constant %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1230,7 +1248,7 @@ YY_RULE_SETUP
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 311 "1805060.l"
+#line 329 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Unfinished character constant %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1238,7 +1256,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 316 "1805060.l"
+#line 334 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Multiple decimal points in %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1246,7 +1264,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 321 "1805060.l"
+#line 339 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Ill formed number  %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1254,7 +1272,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 326 "1805060.l"
+#line 344 "1805060.l"
 {
 			/*fprintf(logout,"Error! Line no: %d ; Type: Unrecognized character %s.\n\n",line_count, yytext);
 			num_of_error++;*/
@@ -1262,10 +1280,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 331 "1805060.l"
+#line 349 "1805060.l"
 ECHO;
 	YY_BREAK
-#line 1269 "lex.yy.c"
+#line 1287 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2270,5 +2288,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 331 "1805060.l"
+#line 349 "1805060.l"
 

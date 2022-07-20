@@ -105,159 +105,183 @@ UNRECOGNIZED .
 		}
 
 "if"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "IF");
+			yylval.s_info = si;
 			return IF;
 		}
 		
 "else"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "ELSE");
+			yylval.s_info = si;
 			return ELSE;
 		}
 
 "for"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "FOR");
+			yylval.s_info = si;
 			return FOR;
 		}
 
 "while"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "WHILE");
+			yylval.s_info = si;
 			return WHILE;
 		}
 
 "do"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "DO");
+			yylval.s_info = si;
 			return DO;
 		}
 
 "int"	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("INT");
+			SymbolInfo* si = new SymbolInfo(yytext, "INT");
 			yylval.s_info = si;
 			return INT;
 		}
 
 "char"	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CHAR");
+			SymbolInfo* si = new SymbolInfo(yytext, "CHAR");
 			yylval.s_info = si;
 			return CHAR;
 		}
 
 "float"	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("FLOAT");
+			SymbolInfo* si = new SymbolInfo(yytext, "FLOAT");
 			yylval.s_info = si;
 			return FLOAT;
 		}
 
 "double"	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("DOUBLE");
+			SymbolInfo* si = new SymbolInfo(yytext, "DOUBLE");
 			yylval.s_info = si;
 			return DOUBLE;
 		}
 
 "void"	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("VOID");
+			SymbolInfo* si = new SymbolInfo(yytext, "VOID");
 			yylval.s_info = si;
 			return VOID;
 		}
 
 "return"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "RETURN");
+			yylval.s_info = si;
 			return RETURN;
 		}
 
 "default"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "DEFAULT");
+			yylval.s_info = si;
 			return DEFAULT;
 		}
 
 "continue"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "CONTINUE");
+			yylval.s_info = si;
 			return  CONTINUE;
 		}
 
 "printf"	{
+			SymbolInfo* si = new SymbolInfo(yytext, "PRINTLN");
+			yylval.s_info = si;
 			return PRINTLN;
 		}
 
 
 {ADDOP}		{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("ADDOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "ADDOP");
 			yylval.s_info = si;
 			return ADDOP;
 		}
 
 {MULOP}		{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("MULOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "MULOP");
 			yylval.s_info = si;
 			return MULOP;
 		}
 
 {INCOP}		{
+			SymbolInfo* si = new SymbolInfo(yytext, "INCOP");
+			yylval.s_info = si;
 			return INCOP;
 		}
 
 {DECOP}		{
+			SymbolInfo* si = new SymbolInfo(yytext, "DECOP");
+			yylval.s_info = si;
 			return DECOP;
 		}
 
 {RELOP}		{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("RELOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "RELOP");
 			yylval.s_info = si;
 			return RELOP;
 		}
 
 {ASSIGNOP}		{
+			SymbolInfo* si = new SymbolInfo(yytext, "ASSIGNOP");
+			yylval.s_info = si;
 			return ASSIGNOP;
 		}
 
 {LOGICOP}		{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("LOGICOP");
+			SymbolInfo* si = new SymbolInfo(yytext, "LOGICOP");
 			yylval.s_info = si;
 			return LOGICOP;
 		}
 
 {NOT}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return NOT;
 		}
 
 {LPAREN}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LPAREN;
 		}
 
 {RPAREN}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RPAREN;
 		}
 		
 {LCURL}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LCURL;
 		}
 
 {RCURL}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RCURL;
 		}
 
 {LTHIRD}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return LTHIRD;
 		}
 
 {RTHIRD}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return RTHIRD;
 		}
 
 {COMMA}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return COMMA;
 		}
 
 {SEMICOLON}		{
+			SymbolInfo* si = new SymbolInfo(yytext);
+			yylval.s_info = si;
 			return SEMICOLON;
 		}
 
@@ -274,26 +298,20 @@ UNRECOGNIZED .
 		}
 
 {CONST_INT}	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_INT");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_INT");
 			yylval.s_info = si;
 			return CONST_INT;
 			
 		}	
 
 {CONST_FLOAT}	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_FLOAT");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_FLOAT");
 			yylval.s_info = si;
 			return CONST_FLOAT;
 		}	
 
 {CONST_CHAR}	{
-			SymbolInfo* si = new SymbolInfo();
-			si->setName(yytext);
-			si->setType("CONST_CHAR");
+			SymbolInfo* si = new SymbolInfo(yytext, "CONST_CHAR");
 			yylval.s_info = si;
 			return CONST_CHAR;
 		}

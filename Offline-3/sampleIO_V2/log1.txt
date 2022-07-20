@@ -978,7 +978,8 @@ var(1,2*3)
 
 Line 20: unary_expression : factor
 
-var(1,2*3)
+var(1,2*3)		fprintf(log_file, "Line: %d    :start : program\n\n",line_count);
+
 
 Line 20: term : unary_expression
 

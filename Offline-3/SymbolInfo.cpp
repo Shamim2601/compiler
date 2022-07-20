@@ -31,6 +31,11 @@ public:
     {
         Next = NULL;
     }
+    SymbolInfo(string name)
+    {
+        Name = name;
+        Next = NULL;
+    }
     SymbolInfo(string name, string type)
     {
         Name = name;
