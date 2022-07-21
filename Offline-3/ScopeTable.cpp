@@ -103,29 +103,29 @@ public:
     }
 
     //print the hash table in console
-    void print(FILE* logout)
+    void print(ofstream& log_file)
     {
         //lout<<"ScopeTable # "<<ID<<endl;
-        fprintf(logout,"Scopetable #%s\n", ID.c_str());
+        log_file<<"Scopetable #"<<ID.c_str()<<"\n";
         for(int i = 0; i<bucket_size; i++)
         {
             if(SI_Array[i])
             {
                 //lout<<i<<" --> ";
-                fprintf(logout,"%d -->> ", i);
+                log_file<<i<<" -->> ";
                 SymbolInfo* tmp = SI_Array[i];
                 while(tmp)
                 {
                     //lout<<"< "<<tmp->getName()<<" : "<<tmp->getType()<<" >";
-                    fprintf(logout,"< %s : %s >", tmp->getName().c_str(), tmp->getType().c_str());
+                    log_file<<"< "<<tmp->getName().c_str()<<" : "<<tmp->getType().c_str()<<" >";
                     tmp = tmp->getNext();
                 }
                 delete tmp;
                 //lout<<endl;
-                fprintf(logout,"\n");
+                log_file<<"\n";
             }
         }
-        fprintf(logout,"\n");
+        log_file<<"\n";
     }
 
     //if a symbol is present in the hash table, pointer to it is returned

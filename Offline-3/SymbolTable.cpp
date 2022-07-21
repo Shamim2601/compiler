@@ -59,7 +59,7 @@ public:
     //     else{/*cout<<"No Current Scope Table";*/}
     // }
 
-    void print_all(FILE* fp)
+    void print_all(ofstream& log_file)
     {
         ScopeTable* tmp = CurrentScopeTable;
         if(tmp)
@@ -67,7 +67,7 @@ public:
             while(tmp)
            {
                //cout<<tmp->getID()<<":"<<endl;
-               tmp->print(fp);
+               tmp->print(log_file);
                tmp = tmp->getParentScope();
            }
         }else{
@@ -75,23 +75,22 @@ public:
         }
     }
 
-    bool insert(string s1, string s2, FILE* fp)
+    bool insert(string s1, string s2)
     {
         if(CurrentScopeTable)
         {
             if(CurrentScopeTable->insert(s1,s2))
             {
-                print_all(fp);
+                //print_all(fp);
                 return true;
             }
             else{
                 //cout<<"<"<<s1<<":"<<s2<<"> already exists in current ScopeTable."<<endl;
-                fprintf(fp,"%s already exists in Current ScopeTable.\n\n", s1.c_str());
                 return false;
             }
         }else{
             enter_scope();
-            insert(s1,s2, fp);
+            insert(s1,s2);
             return true;
         }
     }
@@ -128,7 +127,7 @@ public:
             }
             temp = temp->getParentScope();
         }
-        cout<<"Not found"<<endl;
+        //cout<<"Not found"<<endl;
         return NULL;
     }
 };
