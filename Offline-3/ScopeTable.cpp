@@ -102,6 +102,34 @@ public:
         }
     }
 
+    bool insert(string s1, string s2, vector<string>* param_list)
+    {       
+        if(!look_up(s1))  //a symbol will be inserted only if it's not already exists
+        {
+            SymbolInfo* si = new SymbolInfo(s1,s2);
+            for(int i=0;i<param_list->size()-1; i=i+2)
+            {
+                si->addParam(param_list->at(i), param_list->at(i+1));
+            }
+            int k = hashFunc(s1, bucket_size);
+            int c = 0;
+            SymbolInfo* tmp = SI_Array[k];
+            if(!tmp){SI_Array[k] = si; }
+            else{    //chaining mechanism to deal with collision
+                while(tmp->getNext())
+                {
+                    tmp = tmp->getNext();
+                }
+                c++;
+                tmp->setNext(si);
+            }
+            //cout<<"Inserted in ScopeTable# "<<ID<<" at position "<<k<<", "<<c<<endl;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     //print the hash table in console
     void print(ofstream& log_file)
     {

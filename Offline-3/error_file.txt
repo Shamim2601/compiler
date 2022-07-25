@@ -1,0 +1,4 @@
+Error at line 12: Multiple declaration of foo
+
+Error at line 15: Multiple declaration of a
+

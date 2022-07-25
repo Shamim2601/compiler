@@ -95,6 +95,26 @@ public:
         }
     }
 
+    bool insert(string s1, string s2, vector<string>* param_list)
+    {
+        if(CurrentScopeTable)
+        {
+            if(CurrentScopeTable->insert(s1,s2, param_list))
+            {
+                //print_all(fp);
+                return true;
+            }
+            else{
+                //cout<<"<"<<s1<<":"<<s2<<"> already exists in current ScopeTable."<<endl;
+                return false;
+            }
+        }else{
+            enter_scope();
+            insert(s1,s2, param_list);
+            return true;
+        }
+    }
+
     bool remove(string symbolname)
     {
         if(CurrentScopeTable)

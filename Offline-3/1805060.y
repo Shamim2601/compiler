@@ -26,16 +26,16 @@ void add_log(int lc, string rule)
 	log_file<<"Line "<<lc<<": "<<rule<<endl<<endl;
 }
 
-void add_error(int lc, string msg)
+void add_error(int lc, string msg, string name)
 {
-	error_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
-	log_file<<"Error at line "<<lc<<": "<<msg<<endl<<endl;
+	error_file<<"Error at line "<<lc<<": "<<msg<<" "<<name<<endl<<endl;
+	log_file<<"Error at line "<<lc<<": "<<msg<<" "<<name<<endl<<endl;
 }
 
 void yyerror(char *s)
 {
 	//write your code
-	add_error(line_count, s);
+	add_error(line_count, s, "");
 	num_of_error++;
 }
 
@@ -69,6 +69,7 @@ start : program
 	{
 		//write your code in this block in all the similar blocks below
 		add_log(line_count, "start : program");
+		s_table.print_all(log_file);
 	}
 	;
 
@@ -178,8 +179,7 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 				string fName = $2->getName().c_str();
 				if(s_table.look_up(fName)!=NULL)
 				{
-					add_log(line_count, "Multiple declaration of "+fName);
-					add_error(line_count, "Multiple declaration of "+fName);
+					add_error(line_count, "Multiple declaration of",fName);
 					num_of_error++;
 				}
 
@@ -202,7 +202,12 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 				$$->push_back($5);
 				$$->push_back($6);
 
-				s_table.insert($2->getName().c_str(), $2->getType().c_str());
+				vector<string>* par_list = new vector<string>();
+				for(int i=0; i<$4->size();i++)
+				{
+					par_list->push_back($4->at(i)->getName());
+				}
+				s_table.insert($2->getName().c_str(), $2->getType().c_str(), par_list);
 			}
 
 		| type_specifier ID LPAREN RPAREN SEMICOLON
@@ -213,8 +218,7 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 				string fName = $2->getName().c_str();
 				if(s_table.look_up(fName)!=NULL)
 				{
-					add_log(line_count, "Multiple declaration of "+fName);
-					add_error(line_count, "Multiple declaration of "+fName);
+					add_error(line_count, "Multiple declaration of", fName);
 					num_of_error++;
 				}
 
@@ -235,6 +239,13 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 
 					$$ = new vector<SymbolInfo*>();
+					string fName = $2->getName().c_str();
+					if(s_table.look_up(fName)!=NULL)
+					{
+						add_error(line_count, "Multiple declaration of", fName);
+						num_of_error++;
+					}
+
 					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str();
 					$$->push_back($1);
 					$$->push_back($2);
@@ -259,6 +270,13 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
+
+					vector<string>* par_list = new vector<string>();
+					for(int i=0; i<$4->size();i++)
+					{
+						par_list->push_back($4->at(i)->getName());
+					}
+					s_table.insert($2->getName().c_str(), $2->getType().c_str(), par_list);
 				}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
@@ -266,6 +284,14 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 
 					$$ = new vector<SymbolInfo*>();
+
+					string fName = $2->getName().c_str();
+					if(s_table.look_up(fName)!=NULL)
+					{
+						add_error(line_count, "Multiple declaration of", fName);
+						num_of_error++;
+					}
+
 					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str();
 					$$->push_back($1);
 					$$->push_back($2);
@@ -282,6 +308,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 						{log_file << endl;}
 					}
 					log_file<<endl<<endl;
+
+					s_table.insert($2->getName().c_str(), $2->getType().c_str());
 				}
  		;				
 
@@ -349,6 +377,8 @@ compound_statement : LCURL statements RCURL
 					$$ = new vector<SymbolInfo*>();
 					log_file<<$1->getName().c_str();
 					$$->push_back($1);
+					s_table.enter_scope();
+
 					for(int i = 0; i< $2->size(); i++)
 					{
 						log_file<<$2->at(i)->getName().c_str();
@@ -361,6 +391,9 @@ compound_statement : LCURL statements RCURL
 					}
 					log_file<<$3->getName().c_str()<<endl<<endl;
 					$$->push_back($3);
+
+					s_table.print_all(log_file);
+					s_table.exit_scope();
 				}
 
  		    | LCURL RCURL
@@ -383,7 +416,7 @@ var_declaration : type_specifier declaration_list SEMICOLON
 				string tpsp = $1->getName().c_str();
 				if(tpsp== "void")
 				{
-					add_error(line_count, "Variable type cannot be void");
+					add_error(line_count, "Variable type cannot be void", "");
 					num_of_error++;
 				}
 
@@ -424,6 +457,14 @@ declaration_list : declaration_list COMMA ID
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 
 				$$ = new vector<SymbolInfo*>();
+
+				bool is_inserted = s_table.insert($3->getName().c_str(), $3->getType().c_str());
+				if(!is_inserted)
+				{
+					add_error(line_count, "Multiple declaration of", $3->getName().c_str());
+					num_of_error++;
+				}
+
 				for(int i=0; i<$1->size();i++)
 				{
 					$$->push_back($1->at(i));
@@ -440,6 +481,14 @@ declaration_list : declaration_list COMMA ID
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 
 				$$ = new vector<SymbolInfo*>();
+
+				bool is_inserted = s_table.insert($3->getName().c_str(), $3->getType().c_str());
+				if(!is_inserted)
+				{
+					add_error(line_count, "Multiple declaration of", $3->getName().c_str());
+					num_of_error++;
+				}
+
 				for(int i=0; i<$1->size();i++)
 				{
 					$$->push_back($1->at(i));
@@ -459,6 +508,13 @@ declaration_list : declaration_list COMMA ID
 			add_log(line_count, "declaration_list : ID");
 			log_file<<$1->getName().c_str()<<"\n\n";
 
+			bool is_inserted = s_table.insert($1->getName().c_str(), $1->getType().c_str());
+			if(!is_inserted)
+			{
+				add_error(line_count, "Multiple declaration of", $1->getName().c_str());
+				num_of_error++;
+			}
+
 			$$ = new vector<SymbolInfo*>();
 			$$->push_back($1);
 		  }
@@ -468,6 +524,13 @@ declaration_list : declaration_list COMMA ID
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
 
 					$$ = new vector<SymbolInfo*>();
+
+					bool is_inserted = s_table.insert($1->getName().c_str(), $1->getType().c_str());
+				if(!is_inserted)
+				{
+					add_error(line_count, "Multiple declaration of", $1->getName().c_str());
+					num_of_error++;
+				}
 				
 					log_file<<$1->getName().c_str()<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<endl<<endl;
 					$$->push_back($1);
@@ -632,7 +695,7 @@ statement : var_declaration
 				log_file<<endl<<endl;
 			}
 
-	  | IF LPAREN expression RPAREN statement
+	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 	  		{
 				add_log(line_count, "statement : IF LPAREN expression RPAREN statement");
 
@@ -1239,8 +1302,7 @@ argument_list : arguments
 			}
 			log_file<<endl<<endl;
 		}
-			  |
-			  ;
+		;
 	
 arguments : arguments COMMA logic_expression
 		{
