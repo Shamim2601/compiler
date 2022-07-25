@@ -4,4 +4,4 @@ flex 1805060.l
 g++ -w -c -o l.o lex.yy.c
 # if the above command doesn't work try g++ -fpermissive -w -c -o l.o lex.yy.c
 g++ -w y.o l.o -lfl 
-./a.out input.txt
+./a.out input.c
