@@ -95,11 +95,11 @@ public:
         }
     }
 
-    bool insert(string s1, string s2, vector<string>* param_list)
+    bool insert(SymbolInfo* si)
     {
         if(CurrentScopeTable)
         {
-            if(CurrentScopeTable->insert(s1,s2, param_list))
+            if(CurrentScopeTable->insert(si))
             {
                 //print_all(fp);
                 return true;
@@ -110,7 +110,7 @@ public:
             }
         }else{
             enter_scope();
-            insert(s1,s2, param_list);
+            insert(si);
             return true;
         }
     }

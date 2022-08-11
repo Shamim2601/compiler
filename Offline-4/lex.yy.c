@@ -1259,16 +1259,18 @@ case 44:
 YY_RULE_SETUP
 #line 333 "1805060.l"
 {
+		/*
 			error_file<<"Error at line "<<line_count<<" : Unrecognized token found."<<endl<<endl;
 			num_of_error++;
+		*/
 		}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 338 "1805060.l"
+#line 340 "1805060.l"
 ECHO;
 	YY_BREAK
-#line 1272 "lex.yy.c"
+#line 1274 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2273,5 +2275,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 338 "1805060.l"
+#line 340 "1805060.l"
 

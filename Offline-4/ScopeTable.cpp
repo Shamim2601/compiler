@@ -102,16 +102,11 @@ public:
         }
     }
 
-    bool insert(string s1, string s2, vector<string>* param_list)
+    bool insert(SymbolInfo* si)
     {       
-        if(!look_up(s1))  //a symbol will be inserted only if it's not already exists
+        if(!look_up(si->getName().c_str()))  //a symbol will be inserted only if it's not already exists
         {
-            SymbolInfo* si = new SymbolInfo(s1,s2);
-            for(int i=0;i<param_list->size()-1; i=i+2)
-            {
-                si->addParam(param_list->at(i), param_list->at(i+1));
-            }
-            int k = hashFunc(s1, bucket_size);
+            int k = hashFunc(si->getName().c_str(), bucket_size);
             int c = 0;
             SymbolInfo* tmp = SI_Array[k];
             if(!tmp){SI_Array[k] = si; }
@@ -146,6 +141,13 @@ public:
                 {
                     //lout<<"< "<<tmp->getName()<<" : "<<tmp->getType()<<" >";
                     log_file<<"< "<<tmp->getName().c_str()<<" : "<<tmp->getType().c_str()<<" >";
+                    /*if(tmp->isFunction())
+                    {
+                        for(int i = 0; i< tmp->getParamCount();i++)
+                        {
+                            log_file<<tmp->getParam(i).getName()<<" ";
+                        }
+                    }*/
                     tmp = tmp->getNext();
                 }
                 delete tmp;

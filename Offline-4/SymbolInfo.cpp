@@ -13,6 +13,9 @@ public:
         pType = type;
     }
 
+    string getName(){return pName;}
+    string getType(){return pType;}
+
 };
 
 //contain name and type info of symbol and a next pointer to resolve collision
@@ -59,12 +62,11 @@ public:
         Next = nullptr;
     }
 
-    void as_Function(string n, string t, vector<param> plist)
+    void as_Function(string n, string t)
     {
         Name = n;
         Type = t;
         size = -1;
-        param_list = plist;
         Next = nullptr;
     }
 
@@ -114,6 +116,11 @@ public:
     {
         param p(n, t);
         param_list.push_back(p);
+    }
+
+    param getParam(int i)
+    {
+        return param_list.at(i);
     }
 
     vector<param> getParamList(){return param_list;}

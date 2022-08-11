@@ -331,8 +331,10 @@ UNRECOGNIZED .
 		}
 
 {UNRECOGNIZED}	{
+		/*
 			error_file<<"Error at line "<<line_count<<" : Unrecognized token found."<<endl<<endl;
 			num_of_error++;
+		*/
 		}
 
 %%

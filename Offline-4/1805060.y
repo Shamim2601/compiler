@@ -12,6 +12,7 @@ SymbolTable s_table(7);
 FILE *inp_file;
 ofstream log_file;
 ofstream error_file;
+ofstream code_file;
 
 int line_count = 1;
 int num_of_error = 0;
@@ -193,16 +194,13 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 				for(int i=0; i<$4->size();i++)
 				{
 					$$->push_back($4->at(i));
+					$2->addParam($4->at(i)->getName().c_str(), $4->at(i)->getType().c_str());
 				}
 				$$->push_back($5);
 				$$->push_back($6);
 
-				vector<string>* par_list = new vector<string>();
-				for(int i=0; i<$4->size();i++)
-				{
-					par_list->push_back($4->at(i)->getName());
-				}
-				s_table.insert($2->getName().c_str(), $2->getType().c_str(), par_list);
+				$2->setSize(-1);
+				s_table.insert($2);
 			}
 
 		| type_specifier ID LPAREN RPAREN SEMICOLON
@@ -219,7 +217,8 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 				$$->push_back($4);
 				$$->push_back($5);
 
-				s_table.insert($2->getName().c_str(), $2->getType().c_str());
+				$2->setSize(-1);
+				s_table.insert($2);
 			}
 		;
 	 
@@ -237,6 +236,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					{
 						log_file<<$4->at(i)->getName().c_str();
 						$$->push_back($4->at(i));
+						$2->addParam($4->at(i)->getName().c_str(), $4->at(i)->getType().c_str());
 						if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float")
 						{log_file << " ";}
 					}
@@ -254,12 +254,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					}
 					log_file<<endl<<endl;
 
-					vector<string>* par_list = new vector<string>();
-					for(int i=0; i<$4->size();i++)
-					{
-						par_list->push_back($4->at(i)->getName());
-					}
-					s_table.insert($2->getName().c_str(), $2->getType().c_str(), par_list);
+					$2->setSize(-1);
+					s_table.insert($2);
 				}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
@@ -285,7 +281,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					}
 					log_file<<endl<<endl;
 
-					s_table.insert($2->getName().c_str(), $2->getType().c_str());
+					$2->setSize(-1);
+					s_table.insert($2);
 				}
  		;				
 
@@ -1304,6 +1301,9 @@ int main(int argc,char *argv[])
 	
 	log_file.open("log_file.txt");
 	error_file.open("error_file.txt");
+	code_file.open("code_file.asm");
+
+	code_file<<".model SMALL"<<endl<<".stack 400H"<<endl;
 
 	yyin= fin;
 	yyparse();
@@ -1312,6 +1312,8 @@ int main(int argc,char *argv[])
 	fclose(yyin);
 	log_file.close();
 	error_file.close();
+	code_file.close();
+
 	return 0;
 }
 
