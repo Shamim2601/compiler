@@ -72,9 +72,6 @@ start : program
 		//write your code in this block in all the similar blocks below
 		add_log(line_count, "start : program");
 		s_table.print_all(log_file);
-		
-
-		code_file<<"\nEND MAIN";
 	}
 	;
 
@@ -173,16 +170,7 @@ unit : var_declaration
 				{log_file << endl;}
 			}
 			log_file<<endl<<endl;
-		
-
-			if($1->at(1)->getName()=="main")
-			{
-				code_file<<"\nMOV AH, 4CH \nINT 21H";
-			}
-
-			code_file<<"\n"<<$1->at(1)->getName()<<" ENDP";
-
-		}			
+		}
      ;
     
 func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
@@ -268,13 +256,6 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 
 					$2->setSize(-1);
 					s_table.insert($2);
-
-
-					code_file<<"\n"<<$2->getName().c_str()<<" PROC";
-					if($2->getName()=="main")
-					{
-						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
-					}
 				}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
@@ -302,13 +283,6 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 
 					$2->setSize(-1);
 					s_table.insert($2);
-
-					code_file<<"\n"<<$2->getName().c_str()<<" PROC";
-					if($2->getName()=="main")
-					{
-						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
-					}
-					
 				}
  		;				
 
@@ -1329,7 +1303,7 @@ int main(int argc,char *argv[])
 	error_file.open("error_file.txt");
 	code_file.open("code_file.asm");
 
-	code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA"<<endl;
+	code_file<<".MODEL small"<<endl<<".STACK 400h"<<endl<<".DATA"<<endl;
 
 	yyin= fin;
 	yyparse();

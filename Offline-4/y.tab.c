@@ -715,13 +715,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    70,    70,    78,   108,   127,   142,   157,   176,   206,
-     225,   261,   290,   308,   325,   335,   346,   372,   385,   401,
-     407,   413,   421,   438,   458,   467,   481,   498,   526,   544,
-     562,   580,   636,   671,   720,   755,   768,   789,   798,   818,
-     827,   851,   868,   898,   915,   944,   961,   990,  1003,  1028,
-    1041,  1070,  1089,  1108,  1122,  1135,  1157,  1178,  1188,  1198,
-    1214,  1231,  1245,  1269
+       0,    70,    70,    81,   111,   130,   145,   160,   188,   218,
+     237,   280,   316,   334,   351,   361,   372,   398,   411,   427,
+     433,   439,   447,   464,   484,   493,   507,   524,   552,   570,
+     588,   606,   662,   697,   746,   781,   794,   815,   824,   844,
+     853,   877,   894,   924,   941,   970,   987,  1016,  1029,  1054,
+    1067,  1096,  1115,  1134,  1148,  1161,  1183,  1204,  1214,  1224,
+    1240,  1257,  1271,  1295
 };
 #endif
 
@@ -1374,12 +1374,15 @@ yyreduce:
 		//write your code in this block in all the similar blocks below
 		add_log(line_count, "start : program");
 		s_table.print_all(log_file);
+		
+
+		code_file<<"\nEND MAIN";
 	}
-#line 1379 "y.tab.c"
+#line 1382 "y.tab.c"
     break;
 
   case 3: /* program: program unit  */
-#line 79 "1805060.y"
+#line 82 "1805060.y"
                 {
 			add_log(line_count, "program : program unit");
 
@@ -1408,11 +1411,11 @@ yyreduce:
 
 			log_file<<endl<<endl;
 		}
-#line 1412 "y.tab.c"
+#line 1415 "y.tab.c"
     break;
 
   case 4: /* program: unit  */
-#line 109 "1805060.y"
+#line 112 "1805060.y"
                 {
 			add_log(line_count, "program : unit");
 
@@ -1429,11 +1432,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 1433 "y.tab.c"
+#line 1436 "y.tab.c"
     break;
 
   case 5: /* unit: var_declaration  */
-#line 128 "1805060.y"
+#line 131 "1805060.y"
                 {
 			add_log(line_count, "unit : var_declaration");
 
@@ -1447,11 +1450,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 1451 "y.tab.c"
+#line 1454 "y.tab.c"
     break;
 
   case 6: /* unit: func_declaration  */
-#line 143 "1805060.y"
+#line 146 "1805060.y"
                 {
 			add_log(line_count, "unit : func_declaration");
 
@@ -1465,11 +1468,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 1469 "y.tab.c"
+#line 1472 "y.tab.c"
     break;
 
   case 7: /* unit: func_definition  */
-#line 158 "1805060.y"
+#line 161 "1805060.y"
                 {
 			add_log(line_count, "unit : func_definition");
 
@@ -1485,12 +1488,21 @@ yyreduce:
 				{log_file << endl;}
 			}
 			log_file<<endl<<endl;
+		
+
+			if((yyvsp[0].siList)->at(1)->getName()=="main")
+			{
+				code_file<<"\nMOV AH, 4CH \nINT 21H";
+			}
+
+			code_file<<"\n"<<(yyvsp[0].siList)->at(1)->getName()<<" ENDP";
+
 		}
-#line 1490 "y.tab.c"
+#line 1502 "y.tab.c"
     break;
 
   case 8: /* func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON  */
-#line 177 "1805060.y"
+#line 189 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
 
@@ -1519,11 +1531,11 @@ yyreduce:
 				(yyvsp[-4].s_info)->setSize(-1);
 				s_table.insert((yyvsp[-4].s_info));
 			}
-#line 1523 "y.tab.c"
+#line 1535 "y.tab.c"
     break;
 
   case 9: /* func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON  */
-#line 207 "1805060.y"
+#line 219 "1805060.y"
                         {
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON");
 
@@ -1540,11 +1552,11 @@ yyreduce:
 				(yyvsp[-3].s_info)->setSize(-1);
 				s_table.insert((yyvsp[-3].s_info));
 			}
-#line 1544 "y.tab.c"
+#line 1556 "y.tab.c"
     break;
 
   case 10: /* func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement  */
-#line 226 "1805060.y"
+#line 238 "1805060.y"
                                 {
 					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
 
@@ -1578,12 +1590,19 @@ yyreduce:
 
 					(yyvsp[-4].s_info)->setSize(-1);
 					s_table.insert((yyvsp[-4].s_info));
+
+
+					code_file<<"\n"<<(yyvsp[-4].s_info)->getName().c_str()<<" PROC";
+					if((yyvsp[-4].s_info)->getName()=="main")
+					{
+						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
+					}
 				}
-#line 1583 "y.tab.c"
+#line 1602 "y.tab.c"
     break;
 
   case 11: /* func_definition: type_specifier ID LPAREN RPAREN compound_statement  */
-#line 262 "1805060.y"
+#line 281 "1805060.y"
                                 {
 					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
 
@@ -1608,12 +1627,19 @@ yyreduce:
 
 					(yyvsp[-3].s_info)->setSize(-1);
 					s_table.insert((yyvsp[-3].s_info));
+
+					code_file<<"\n"<<(yyvsp[-3].s_info)->getName().c_str()<<" PROC";
+					if((yyvsp[-3].s_info)->getName()=="main")
+					{
+						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
+					}
+					
 				}
-#line 1613 "y.tab.c"
+#line 1639 "y.tab.c"
     break;
 
   case 12: /* parameter_list: parameter_list COMMA type_specifier ID  */
-#line 291 "1805060.y"
+#line 317 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier ID");
 
@@ -1630,11 +1656,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1634 "y.tab.c"
+#line 1660 "y.tab.c"
     break;
 
   case 13: /* parameter_list: parameter_list COMMA type_specifier  */
-#line 309 "1805060.y"
+#line 335 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
 
@@ -1650,11 +1676,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1654 "y.tab.c"
+#line 1680 "y.tab.c"
     break;
 
   case 14: /* parameter_list: type_specifier ID  */
-#line 326 "1805060.y"
+#line 352 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : type_specifier ID");
 
@@ -1663,11 +1689,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1667 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 15: /* parameter_list: type_specifier  */
-#line 336 "1805060.y"
+#line 362 "1805060.y"
                         {
 				add_log(line_count, "parameter_list : type_specifier");
 
@@ -1675,11 +1701,11 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1679 "y.tab.c"
+#line 1705 "y.tab.c"
     break;
 
   case 16: /* compound_statement: LCURL statements RCURL  */
-#line 347 "1805060.y"
+#line 373 "1805060.y"
                                 {
 					add_log(line_count, "compound_statement : LCURL statements RCURL");
 
@@ -1704,11 +1730,11 @@ yyreduce:
 					s_table.print_all(log_file);
 					s_table.exit_scope();
 				}
-#line 1708 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 17: /* compound_statement: LCURL RCURL  */
-#line 373 "1805060.y"
+#line 399 "1805060.y"
                                 {
 					add_log(line_count, "compound_statement : LCURL RCURL");
 
@@ -1719,11 +1745,11 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 					log_file<<endl<<endl;
 				}
-#line 1723 "y.tab.c"
+#line 1749 "y.tab.c"
     break;
 
   case 18: /* var_declaration: type_specifier declaration_list SEMICOLON  */
-#line 386 "1805060.y"
+#line 412 "1805060.y"
                         {
 				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
 
@@ -1737,38 +1763,38 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1741 "y.tab.c"
+#line 1767 "y.tab.c"
     break;
 
   case 19: /* type_specifier: INT  */
-#line 402 "1805060.y"
+#line 428 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : INT");
 			log_file<<"int\n\n";
 		}
-#line 1750 "y.tab.c"
+#line 1776 "y.tab.c"
     break;
 
   case 20: /* type_specifier: FLOAT  */
-#line 408 "1805060.y"
+#line 434 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : FLOAT");
 			log_file<<"float\n\n";
 		}
-#line 1759 "y.tab.c"
+#line 1785 "y.tab.c"
     break;
 
   case 21: /* type_specifier: VOID  */
-#line 414 "1805060.y"
+#line 440 "1805060.y"
                 {
 			add_log(line_count, "type_specifier : VOID");
 			log_file<<"void\n\n";
 		}
-#line 1768 "y.tab.c"
+#line 1794 "y.tab.c"
     break;
 
   case 22: /* declaration_list: declaration_list COMMA ID  */
-#line 422 "1805060.y"
+#line 448 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 
@@ -1784,11 +1810,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1788 "y.tab.c"
+#line 1814 "y.tab.c"
     break;
 
   case 23: /* declaration_list: declaration_list COMMA ID LTHIRD CONST_INT RTHIRD  */
-#line 439 "1805060.y"
+#line 465 "1805060.y"
                         {
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 
@@ -1807,11 +1833,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 1811 "y.tab.c"
+#line 1837 "y.tab.c"
     break;
 
   case 24: /* declaration_list: ID  */
-#line 459 "1805060.y"
+#line 485 "1805060.y"
                   {
 			add_log(line_count, "declaration_list : ID");
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<"\n\n";
@@ -1819,11 +1845,11 @@ yyreduce:
 			(yyval.siList) = new vector<SymbolInfo*>();
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 		  }
-#line 1823 "y.tab.c"
+#line 1849 "y.tab.c"
     break;
 
   case 25: /* declaration_list: ID LTHIRD CONST_INT RTHIRD  */
-#line 468 "1805060.y"
+#line 494 "1805060.y"
                                 {
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
 
@@ -1835,11 +1861,11 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[-1].s_info));
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 				}
-#line 1839 "y.tab.c"
+#line 1865 "y.tab.c"
     break;
 
   case 26: /* statements: statement  */
-#line 482 "1805060.y"
+#line 508 "1805060.y"
                         {
 				add_log(line_count, "statements : statement");
 
@@ -1855,11 +1881,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 1859 "y.tab.c"
+#line 1885 "y.tab.c"
     break;
 
   case 27: /* statements: statements statement  */
-#line 499 "1805060.y"
+#line 525 "1805060.y"
                         {
 				add_log(line_count, "statements : statements statement");
 
@@ -1885,11 +1911,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 1889 "y.tab.c"
+#line 1915 "y.tab.c"
     break;
 
   case 28: /* statement: var_declaration  */
-#line 527 "1805060.y"
+#line 553 "1805060.y"
                         {
 				add_log(line_count, "statement : var_declaration");
 
@@ -1906,11 +1932,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 1910 "y.tab.c"
+#line 1936 "y.tab.c"
     break;
 
   case 29: /* statement: expression_statement  */
-#line 545 "1805060.y"
+#line 571 "1805060.y"
                         {
 				add_log(line_count, "statement : expression_statement");
 
@@ -1927,11 +1953,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 1931 "y.tab.c"
+#line 1957 "y.tab.c"
     break;
 
   case 30: /* statement: compound_statement  */
-#line 563 "1805060.y"
+#line 589 "1805060.y"
                         {
 				add_log(line_count, "statement : compound_statement");
 
@@ -1948,11 +1974,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 1952 "y.tab.c"
+#line 1978 "y.tab.c"
     break;
 
   case 31: /* statement: FOR LPAREN expression_statement expression_statement expression RPAREN statement  */
-#line 581 "1805060.y"
+#line 607 "1805060.y"
                         {
 				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
 
@@ -2007,11 +2033,11 @@ yyreduce:
 
 				log_file<<endl<<endl;
 			}
-#line 2011 "y.tab.c"
+#line 2037 "y.tab.c"
     break;
 
   case 32: /* statement: IF LPAREN expression RPAREN statement  */
-#line 637 "1805060.y"
+#line 663 "1805060.y"
                         {
 				add_log(line_count, "statement : IF LPAREN expression RPAREN statement");
 
@@ -2045,11 +2071,11 @@ yyreduce:
 
 				log_file<<endl<<endl;
 			}
-#line 2049 "y.tab.c"
+#line 2075 "y.tab.c"
     break;
 
   case 33: /* statement: IF LPAREN expression RPAREN statement ELSE statement  */
-#line 672 "1805060.y"
+#line 698 "1805060.y"
                         {
 				add_log(line_count, "statement : IF LPAREN expression RPAREN statement ELSE statement");
 
@@ -2097,11 +2123,11 @@ yyreduce:
 
 				log_file<<endl<<endl;
 			}
-#line 2101 "y.tab.c"
+#line 2127 "y.tab.c"
     break;
 
   case 34: /* statement: WHILE LPAREN expression RPAREN statement  */
-#line 721 "1805060.y"
+#line 747 "1805060.y"
                         {
 				add_log(line_count, "statement : WHILE LPAREN expression RPAREN statement");
 
@@ -2135,11 +2161,11 @@ yyreduce:
 
 				log_file<<endl<<endl;
 			}
-#line 2139 "y.tab.c"
+#line 2165 "y.tab.c"
     break;
 
   case 35: /* statement: PRINTLN LPAREN ID RPAREN SEMICOLON  */
-#line 756 "1805060.y"
+#line 782 "1805060.y"
                         {
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
 
@@ -2151,11 +2177,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[-1].s_info));
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 2155 "y.tab.c"
+#line 2181 "y.tab.c"
     break;
 
   case 36: /* statement: RETURN expression SEMICOLON  */
-#line 769 "1805060.y"
+#line 795 "1805060.y"
                         {
 				add_log(line_count, "statement : RETURN expression SEMICOLON");
 
@@ -2174,11 +2200,11 @@ yyreduce:
 				log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 			}
-#line 2178 "y.tab.c"
+#line 2204 "y.tab.c"
     break;
 
   case 37: /* expression_statement: SEMICOLON  */
-#line 790 "1805060.y"
+#line 816 "1805060.y"
                                 {
 					add_log(line_count, "expression_statement : SEMICOLON");
 
@@ -2186,11 +2212,11 @@ yyreduce:
 					log_file<<(yyvsp[0].s_info)->getName().c_str();
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 				}
-#line 2190 "y.tab.c"
+#line 2216 "y.tab.c"
     break;
 
   case 38: /* expression_statement: expression SEMICOLON  */
-#line 799 "1805060.y"
+#line 825 "1805060.y"
                                 {
 					add_log(line_count, "expression_statement : expression SEMICOLON");
 
@@ -2208,11 +2234,11 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 					log_file<<endl<<endl;
 				}
-#line 2212 "y.tab.c"
+#line 2238 "y.tab.c"
     break;
 
   case 39: /* variable: ID  */
-#line 819 "1805060.y"
+#line 845 "1805060.y"
                 {
 			add_log(line_count, "variable : ID");
 
@@ -2220,11 +2246,11 @@ yyreduce:
 			log_file<<(yyvsp[0].s_info)->getName().c_str()<<endl<<endl;
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 		}
-#line 2224 "y.tab.c"
+#line 2250 "y.tab.c"
     break;
 
   case 40: /* variable: ID LTHIRD expression RTHIRD  */
-#line 828 "1805060.y"
+#line 854 "1805060.y"
                 {
 			add_log(line_count, "variable : ID LTHIRD expression RTHIRD");
 
@@ -2246,11 +2272,11 @@ yyreduce:
 					(yyval.siList)->push_back((yyvsp[0].s_info));
 					log_file<<endl<<endl;
 		}
-#line 2250 "y.tab.c"
+#line 2276 "y.tab.c"
     break;
 
   case 41: /* expression: logic_expression  */
-#line 852 "1805060.y"
+#line 878 "1805060.y"
                         {
 				add_log(line_count, "expression : logic_expression");
 
@@ -2266,11 +2292,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2270 "y.tab.c"
+#line 2296 "y.tab.c"
     break;
 
   case 42: /* expression: variable ASSIGNOP logic_expression  */
-#line 869 "1805060.y"
+#line 895 "1805060.y"
                         {
 				add_log(line_count, "expression : variable ASSIGNOP logic_expression");
 
@@ -2298,11 +2324,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2302 "y.tab.c"
+#line 2328 "y.tab.c"
     break;
 
   case 43: /* logic_expression: rel_expression  */
-#line 899 "1805060.y"
+#line 925 "1805060.y"
                         {
 				add_log(line_count, "logic_expression : rel_expression");
 
@@ -2318,11 +2344,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2322 "y.tab.c"
+#line 2348 "y.tab.c"
     break;
 
   case 44: /* logic_expression: rel_expression LOGICOP rel_expression  */
-#line 916 "1805060.y"
+#line 942 "1805060.y"
                         {
 				add_log(line_count, "logic_expression : rel_expression LOGICOP rel_expression");
 
@@ -2349,11 +2375,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2353 "y.tab.c"
+#line 2379 "y.tab.c"
     break;
 
   case 45: /* rel_expression: simple_expression  */
-#line 945 "1805060.y"
+#line 971 "1805060.y"
                         {
 				add_log(line_count, "rel_expression	: simple_expression");
 
@@ -2369,11 +2395,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2373 "y.tab.c"
+#line 2399 "y.tab.c"
     break;
 
   case 46: /* rel_expression: simple_expression RELOP simple_expression  */
-#line 962 "1805060.y"
+#line 988 "1805060.y"
                         {
 				add_log(line_count, "rel_expression : simple_expression RELOP simple_expression");
 
@@ -2400,11 +2426,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2404 "y.tab.c"
+#line 2430 "y.tab.c"
     break;
 
   case 47: /* simple_expression: term  */
-#line 991 "1805060.y"
+#line 1017 "1805060.y"
                         {
 				add_log(line_count, "simple_expression : term");
 
@@ -2416,11 +2442,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2420 "y.tab.c"
+#line 2446 "y.tab.c"
     break;
 
   case 48: /* simple_expression: simple_expression ADDOP term  */
-#line 1004 "1805060.y"
+#line 1030 "1805060.y"
                         {
 				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 
@@ -2443,11 +2469,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2447 "y.tab.c"
+#line 2473 "y.tab.c"
     break;
 
   case 49: /* term: unary_expression  */
-#line 1029 "1805060.y"
+#line 1055 "1805060.y"
                 {
 			add_log(line_count, "term : unary_expression");
 
@@ -2459,11 +2485,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2463 "y.tab.c"
+#line 2489 "y.tab.c"
     break;
 
   case 50: /* term: term MULOP unary_expression  */
-#line 1042 "1805060.y"
+#line 1068 "1805060.y"
                 {
 				add_log(line_count, "term : term MULOP unary_expression");
 
@@ -2490,11 +2516,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2494 "y.tab.c"
+#line 2520 "y.tab.c"
     break;
 
   case 51: /* unary_expression: ADDOP unary_expression  */
-#line 1071 "1805060.y"
+#line 1097 "1805060.y"
                         {
 				add_log(line_count, "unary_expression : ADDOP unary_expression");
 
@@ -2512,11 +2538,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2516 "y.tab.c"
+#line 2542 "y.tab.c"
     break;
 
   case 52: /* unary_expression: NOT unary_expression  */
-#line 1090 "1805060.y"
+#line 1116 "1805060.y"
                         {
 				add_log(line_count, "unary_expression : NOT unary_expression");
 
@@ -2534,11 +2560,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2538 "y.tab.c"
+#line 2564 "y.tab.c"
     break;
 
   case 53: /* unary_expression: factor  */
-#line 1109 "1805060.y"
+#line 1135 "1805060.y"
                         {
 				add_log(line_count, "unary_expression	: factor");
 
@@ -2550,11 +2576,11 @@ yyreduce:
 				}
 				log_file<<endl<<endl;
 			}
-#line 2554 "y.tab.c"
+#line 2580 "y.tab.c"
     break;
 
   case 54: /* factor: variable  */
-#line 1123 "1805060.y"
+#line 1149 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable");
 
@@ -2566,11 +2592,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2570 "y.tab.c"
+#line 2596 "y.tab.c"
     break;
 
   case 55: /* factor: ID LPAREN argument_list RPAREN  */
-#line 1136 "1805060.y"
+#line 1162 "1805060.y"
                         {
 				add_log(line_count, "factor : ID LPAREN argument_list RPAREN");
 
@@ -2591,11 +2617,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 				log_file<<endl<<endl;
 			}
-#line 2595 "y.tab.c"
+#line 2621 "y.tab.c"
     break;
 
   case 56: /* factor: LPAREN expression RPAREN  */
-#line 1158 "1805060.y"
+#line 1184 "1805060.y"
                         {
 				add_log(line_count, "factor : LPAREN expression RPAREN");
 
@@ -2615,11 +2641,11 @@ yyreduce:
 				(yyval.siList)->push_back((yyvsp[0].s_info));
 				log_file<<endl<<endl;
 			}
-#line 2619 "y.tab.c"
+#line 2645 "y.tab.c"
     break;
 
   case 57: /* factor: CONST_INT  */
-#line 1179 "1805060.y"
+#line 1205 "1805060.y"
                 {
 			add_log(line_count, "factor	: CONST_INT");
 
@@ -2628,11 +2654,11 @@ yyreduce:
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 			log_file<<endl<<endl;
 		}
-#line 2632 "y.tab.c"
+#line 2658 "y.tab.c"
     break;
 
   case 58: /* factor: CONST_FLOAT  */
-#line 1189 "1805060.y"
+#line 1215 "1805060.y"
                 {
 			add_log(line_count, "factor	: CONST_FLOAT");
 
@@ -2641,11 +2667,11 @@ yyreduce:
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 			log_file<<endl<<endl;
 		}
-#line 2645 "y.tab.c"
+#line 2671 "y.tab.c"
     break;
 
   case 59: /* factor: variable INCOP  */
-#line 1199 "1805060.y"
+#line 1225 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable INCOP");
 
@@ -2660,11 +2686,11 @@ yyreduce:
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 			log_file<<endl<<endl;
 		}
-#line 2664 "y.tab.c"
+#line 2690 "y.tab.c"
     break;
 
   case 60: /* factor: variable DECOP  */
-#line 1215 "1805060.y"
+#line 1241 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable DECOP");
 
@@ -2679,11 +2705,11 @@ yyreduce:
 			(yyval.siList)->push_back((yyvsp[0].s_info));
 			log_file<<endl<<endl;
 		}
-#line 2683 "y.tab.c"
+#line 2709 "y.tab.c"
     break;
 
   case 61: /* argument_list: arguments  */
-#line 1232 "1805060.y"
+#line 1258 "1805060.y"
                 {
 			add_log(line_count, "argument_list : arguments");
 
@@ -2695,11 +2721,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2699 "y.tab.c"
+#line 2725 "y.tab.c"
     break;
 
   case 62: /* arguments: arguments COMMA logic_expression  */
-#line 1246 "1805060.y"
+#line 1272 "1805060.y"
                 {
 			add_log(line_count, "argument_list : arguments COMMA logic_expression");
 
@@ -2722,11 +2748,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2726 "y.tab.c"
+#line 2752 "y.tab.c"
     break;
 
   case 63: /* arguments: logic_expression  */
-#line 1270 "1805060.y"
+#line 1296 "1805060.y"
                 {
 			add_log(line_count, "argument_list : logic_expression");
 
@@ -2742,11 +2768,11 @@ yyreduce:
 			}
 			log_file<<endl<<endl;
 		}
-#line 2746 "y.tab.c"
+#line 2772 "y.tab.c"
     break;
 
 
-#line 2750 "y.tab.c"
+#line 2776 "y.tab.c"
 
       default: break;
     }
@@ -2939,7 +2965,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 1288 "1805060.y"
+#line 1314 "1805060.y"
 
 int main(int argc,char *argv[])
 {
@@ -2958,7 +2984,7 @@ int main(int argc,char *argv[])
 	error_file.open("error_file.txt");
 	code_file.open("code_file.asm");
 
-	code_file<<".model SMALL"<<endl<<".stack 400H"<<endl;
+	code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA"<<endl;
 
 	yyin= fin;
 	yyparse();

@@ -2,39 +2,32 @@ Line 1: type_specifier : INT
 
 int
 
-Line 1: type_specifier : INT
+Line 4: compound_statement : LCURL RCURL
 
-int
+{}
 
-Line 1: parameter_list : type_specifier ID
+Line 4: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
-int a
-
-Line 1: type_specifier : INT
-
-int
-
-Line 1: parameter_list : parameter_list COMMA type_specifier ID
-
-int a,int b
-
-Line 1: func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-
-int f(int a,int b);
-
-Line 1: unit : func_declaration
-
-int f(int a,int b);
-
-Line 1: program : unit
-
-int f(int a,int b);
+int main(){
+}
 
 
-Line 1: start : program
+Line 4: unit : func_definition
+
+int main(){
+}
+
+
+Line 4: program : unit
+
+int main(){
+}
+
+
+Line 4: start : program
 
 Scopetable #1
-4 -->> < f : ID >
+5 -->> < main : ID >
 
-Total lines: 1
+Total lines: 4
 Total errors: 0
