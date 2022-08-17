@@ -1,5 +1,7 @@
 Line 1: type_specifier : INT
 
+Line 2: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+
 Line 3: type_specifier : INT
 
 Line 3: declaration_list : ID
@@ -37,8 +39,6 @@ Line 5: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 Line 5: statements : statements statement
 
 Line 6: compound_statement : LCURL statements RCURL
-
-Line 6: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 Line 6: unit : func_definition
 
