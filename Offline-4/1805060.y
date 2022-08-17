@@ -30,9 +30,9 @@ void add_log(int lc, string rule)
 
 void add_error(int lc, string msg, string name)
 {
-	cout<<"Error at line "<<lc<<": "<<msg<<" "<<name<<endl<<endl;
-	error_file<<"Error at line "<<lc<<": "<<msg<<" "<<name<<endl<<endl;
-	log_file<<"Error at line "<<lc<<": "<<msg<<" "<<name<<endl<<endl;
+	cout<<"Error at line "<<lc-1<<": "<<msg<<" "<<name<<endl<<endl;
+	error_file<<"Error at line "<<lc-1<<": "<<msg<<" "<<name<<endl<<endl;
+	log_file<<"Error at line "<<lc-1<<": "<<msg<<" "<<name<<endl<<endl;
 	num_of_error++;
 }
 
@@ -554,17 +554,20 @@ int main(int argc,char *argv[])
 	yyin= fin;
 	yyparse();
 
-	code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA\nNUMBER_STRING DB '00000$'"<<endl;
-	code_file<<data_segment;
-	code_file<<code;
+	if(num_of_error==0)
+	{
+		code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA\nNUMBER_STRING DB '00000$'"<<endl;
+		code_file<<data_segment;
+		code_file<<code;
 
-	code_file<<"\n\nPRINT PROC";
-    code_file<<"\nLEA SI, NUMBER_STRING";
-    code_file<<"\nADD SI, 5";
-    code_file<<"\nPRINT_LOOP:\nDEC SI\nMOV DX, 0\nMOV CX, 10\nDIV CX";
-    code_file<<"\nADD DL, '0'\nMOV [SI], DL\nCMP AX, 0\nJNE PRINT_LOOP";
-    code_file<<"\nMOV DX, SI\nMOV AH, 9\nINT 21H\nRET\nPRINT ENDP";
-	code_file<<"\n\nEND MAIN";
+		code_file<<"\n\nPRINT PROC";
+    	code_file<<"\nLEA SI, NUMBER_STRING";
+    	code_file<<"\nADD SI, 5";
+    	code_file<<"\nPRINT_LOOP:\nDEC SI\nMOV DX, 0\nMOV CX, 10\nDIV CX";
+    	code_file<<"\nADD DL, '0'\nMOV [SI], DL\nCMP AX, 0\nJNE PRINT_LOOP";
+    	code_file<<"\nMOV DX, SI\nMOV AH, 9\nINT 21H\nRET\nPRINT ENDP";
+		code_file<<"\n\nEND MAIN";
+	}
 
 	log_file<<"Total lines: "<<line_count<<"\nTotal errors: "<<num_of_error<<"\n";
 	fclose(yyin);
