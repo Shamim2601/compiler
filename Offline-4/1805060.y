@@ -17,7 +17,7 @@ ofstream code_file;
 int line_count = 1;
 int num_of_error = 0;
 
-string type;
+string code = "";
 
 int yyparse(void);
 int yylex(void);
@@ -39,6 +39,32 @@ void yyerror(char *s)
 {
 	//write your code
 	add_error(line_count, s, "");
+}
+
+int labelCount = 0;
+int tempCount = 0;
+string data = "";
+
+char *newLabel()
+{
+	char *lb= new char[4];
+	strcpy(lb,"L");
+	char b[3];
+	sprintf(b,"%d", labelCount);
+	labelCount++;
+	strcat(lb,b);
+	return lb;
+}
+
+char *newTemp()
+{
+	char *t= new char[4];
+	strcpy(t,"t");
+	char b[3];
+	sprintf(b,"%d", tempCount);
+	tempCount++;
+	strcat(t,b);
+	return t;
 }
 
 %}
@@ -71,116 +97,49 @@ start : program
 	{
 		//write your code in this block in all the similar blocks below
 		add_log(line_count, "start : program");
-		s_table.print_all(log_file);
-		
+		$$ = new vector<SymbolInfo*>();
 
-		code_file<<"\nEND MAIN";
+		s_table.print_all(log_file);
 	}
 	;
 
 program : program unit 
 		{
 			add_log(line_count, "program : program unit");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i = 0; i< $1->size(); i++)
-			{
-				log_file<<$1->at(i)->getName().c_str();
-				$$->push_back($1->at(i));
-
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-				if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-			}
-
-			for(int i = 0; i< $2->size(); i++)
-			{
-				log_file<<$2->at(i)->getName().c_str();
-				$$->push_back($2->at(i));
-
-				if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-				if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-			}
-
-			log_file<<endl<<endl;
 		}
 
 	| unit
 		{
 			add_log(line_count, "program : unit");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i = 0; i< $1->size(); i++)
-			{
-				log_file<<$1->at(i)->getName().c_str();
-				$$->push_back($1->at(i));
-
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-				if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-			}
-			log_file<<endl<<endl;
 		}
 	;
 
 unit : var_declaration
 		{
 			add_log(line_count, "unit : var_declaration");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i = 0; i< $1->size(); i++)
-			{
-				log_file<<$1->at(i)->getName().c_str();
-				$$->push_back($1->at(i));
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" )
-				{log_file << " ";}
-			}
-			log_file<<endl<<endl;
 		}
 
      | func_declaration
 	 	{
 			add_log(line_count, "unit : func_declaration");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i = 0; i< $1->size(); i++)
-			{
-				log_file<<$1->at(i)->getName().c_str();
-				$$->push_back($1->at(i));
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" )
-				{log_file << " ";}
-			}
-			log_file<<endl<<endl;
 		}
 
      | func_definition
 	 	{
 			add_log(line_count, "unit : func_definition");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i = 0; i< $1->size(); i++)
-			{
-				log_file<<$1->at(i)->getName().c_str();
-				$$->push_back($1->at(i));
-
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-				{log_file << " ";}
-				if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-				{log_file << endl;}
-			}
-			log_file<<endl<<endl;
 		
 
-			if($1->at(1)->getName()=="main")
+			if($1->at(0)->getName()=="main")
 			{
-				code_file<<"\nMOV AH, 4CH \nINT 21H";
+				code+= "\nMOV AH, 4CH \nINT 21H";
 			}
 
-			code_file<<"\n"<<$1->at(1)->getName()<<" ENDP";
+			code+= "\n"+$1->at(0)->getName()+" ENDP";
 
 		}			
      ;
@@ -188,28 +147,7 @@ unit : var_declaration
 func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 			{
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON");
-
 				$$ = new vector<SymbolInfo*>();
-
-				log_file << $1->getName().c_str() << " " << $2->getName().c_str() << $3->getName().c_str();
-				for(int i=0; i<$4->size();i++)
-				{
-					log_file<<$4->at(i)->getName();
-					if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float")
-					{log_file << " ";}
-				}
-				log_file<<$5->getName().c_str()<< $6->getName().c_str() << "\n\n";
-
-				$$->push_back($1);
-				$$->push_back($2);
-				$$->push_back($3);
-				for(int i=0; i<$4->size();i++)
-				{
-					$$->push_back($4->at(i));
-					$2->addParam($4->at(i)->getName().c_str(), $4->at(i)->getType().c_str());
-				}
-				$$->push_back($5);
-				$$->push_back($6);
 
 				$2->setSize(-1);
 				s_table.insert($2);
@@ -218,16 +156,7 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 		| type_specifier ID LPAREN RPAREN SEMICOLON
 			{
 				add_log(line_count, "func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON");
-
 				$$ = new vector<SymbolInfo*>();
-
-				log_file << $1->getName().c_str() << " " << $2->getName().c_str() << $3->getName().c_str()<<$4->getName().c_str()<< $5->getName().c_str() << "\n\n";
-
-				$$->push_back($1);
-				$$->push_back($2);
-				$$->push_back($3);
-				$$->push_back($4);
-				$$->push_back($5);
 
 				$2->setSize(-1);
 				s_table.insert($2);
@@ -237,76 +166,26 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 				{
 					add_log(line_count, "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement");
-
 					$$ = new vector<SymbolInfo*>();
-
-					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str();
-					$$->push_back($1);
 					$$->push_back($2);
-					$$->push_back($3);
-					for(int i = 0; i< $4->size(); i++)
-					{
-						log_file<<$4->at(i)->getName().c_str();
-						$$->push_back($4->at(i));
-						$2->addParam($4->at(i)->getName().c_str(), $4->at(i)->getType().c_str());
-						if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float")
-						{log_file << " ";}
-					}
-					log_file<<$5->getName().c_str();
-					$$->push_back($5);
-					for(int i = 0; i< $6->size(); i++)
-					{
-						log_file<<$6->at(i)->getName().c_str();
-						$$->push_back($6->at(i));
-
-						if($6->at(i)->getName() == "int" || $6->at(i)->getName() == "float" || $6->at(i)->getName() == "void" || $6->at(i)->getName() == "return")
-						{log_file << " ";}
-						if($6->at(i)->getName() == ";" || $6->at(i)->getName() == "{" || $6->at(i)->getName() == "}")
-						{log_file << endl;}
-					}
-					log_file<<endl<<endl;
 
 					$2->setSize(-1);
 					s_table.insert($2);
-
-
-					code_file<<"\n"<<$2->getName().c_str()<<" PROC";
-					if($2->getName()=="main")
-					{
-						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
-					}
 				}
 
 		| type_specifier ID LPAREN RPAREN compound_statement
 				{
 					add_log(line_count, "func_definition : type_specifier ID LPAREN RPAREN compound_statement");
-
 					$$ = new vector<SymbolInfo*>();
-
-					log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str();
-					$$->push_back($1);
 					$$->push_back($2);
-					$$->push_back($3);
-					$$->push_back($4);
-					for(int i = 0; i< $5->size(); i++)
-					{
-						log_file<<$5->at(i)->getName().c_str();
-						$$->push_back($5->at(i));
-
-						if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
-						{log_file << " ";}
-						if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
-						{log_file << endl;}
-					}
-					log_file<<endl<<endl;
 
 					$2->setSize(-1);
 					s_table.insert($2);
 
-					code_file<<"\n"<<$2->getName().c_str()<<" PROC";
+					code+= "\n"+$2->getName()+" PROC";
 					if($2->getName()=="main")
 					{
-						code_file<<"\nMOV AX,@DATA \nMOV DS,AX";
+						code+= "\nMOV AX,@DATA \nMOV DS,AX";
 					}
 					
 				}
@@ -316,55 +195,25 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 parameter_list  : parameter_list COMMA type_specifier ID
 			{
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier ID");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					log_file<<$1->at(i)->getName();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float")
-					{log_file << " ";}
-					$$->push_back($1->at(i));
-				}
-				log_file<<$2->getName().c_str()<<$3->getName().c_str()<<" "<<$4->getName().c_str()<<endl<<endl;
-				$$->push_back($2);
-				$$->push_back($3);
-				$$->push_back($4);
 			}
 
 		| parameter_list COMMA type_specifier
 			{
 				add_log(line_count, "parameter_list : parameter_list COMMA type_specifier");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					log_file<<$1->at(i)->getName();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float")
-					{log_file << " ";}
-					$$->push_back($1->at(i));
-				}
-				log_file<<$2->getName().c_str()<<" "<<$3->getName().c_str()<<endl<<endl;
-				$$->push_back($2);
-				$$->push_back($3);
 			}
 
  		| type_specifier ID
 			{
 				add_log(line_count, "parameter_list : type_specifier ID");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<" "<<$2->getName().c_str()<<endl<<endl;
-				$$->push_back($1);
-				$$->push_back($2);
 			}
 
 		| type_specifier
 			{
 				add_log(line_count, "parameter_list : type_specifier");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<endl<<endl;
-				$$->push_back($1);
 			}
  		;
 
@@ -372,74 +221,37 @@ parameter_list  : parameter_list COMMA type_specifier ID
 compound_statement : LCURL statements RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL statements RCURL");
-
 					$$ = new vector<SymbolInfo*>();
-					log_file<<$1->getName().c_str();
-					$$->push_back($1);
-					s_table.enter_scope();
-
-					for(int i = 0; i< $2->size(); i++)
-					{
-						log_file<<$2->at(i)->getName().c_str();
-						$$->push_back($2->at(i));
-
-						if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-						{log_file << " ";}
-						if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-						{log_file << endl;}
-					}
-					log_file<<$3->getName().c_str()<<endl<<endl;
-					$$->push_back($3);
-
-					s_table.print_all(log_file);
-					s_table.exit_scope();
 				}
 
  		    | LCURL RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL RCURL");
-
 					$$ = new vector<SymbolInfo*>();
-					log_file<<$1->getName().c_str();
-					$$->push_back($1);
-					log_file<<$2->getName().c_str();
-					$$->push_back($2);
-					log_file<<endl<<endl;
 				}
  		    ;
 
 var_declaration : type_specifier declaration_list SEMICOLON
 			{
 				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<" ";
-				$$->push_back($1);
-		  	    for(int i = 0; i < $2->size(); i++){
-		  			log_file << $2->at(i)->getName().c_str();
-					$$->push_back($2->at(i));
-		  		}
-				log_file<<$3->getName().c_str()<<"\n\n";
-				$$->push_back($3);
+
 			}
  		 ;
 
 type_specifier	: INT
 		{
 			add_log(line_count, "type_specifier : INT");
-			log_file<<"int\n\n";
 		}
 
  		| FLOAT
 		{
 			add_log(line_count, "type_specifier : FLOAT");
-			log_file<<"float\n\n";
 		}
 
  		| VOID
 		{
 			add_log(line_count, "type_specifier : VOID");
-			log_file<<"void\n\n";
 		}
  		;
 
@@ -447,397 +259,107 @@ type_specifier	: INT
 declaration_list : declaration_list COMMA ID
 			{
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
-
 				$$ = new vector<SymbolInfo*>();
 
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-				}
-
-				log_file<<$2->getName().c_str()<<$3->getName().c_str()<<endl<<endl;
-				$$->push_back($2);
-				$$->push_back($3);
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
 		  	{
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
-
 				$$ = new vector<SymbolInfo*>();
 
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-				}
-
-				log_file<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<$5->getName().c_str()<<$6->getName().c_str()<<endl<<endl;
-				$$->push_back($2);
-				$$->push_back($3);
-				$$->push_back($4);
-				$$->push_back($5);
-				$$->push_back($6);
 			}
 
  		  | ID
 		  {
 			add_log(line_count, "declaration_list : ID");
-			log_file<<$1->getName().c_str()<<"\n\n";
-
-			$$ = new vector<SymbolInfo*>();
-			$$->push_back($1);
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD
 		  		{
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
-
 					$$ = new vector<SymbolInfo*>();
-				
-					log_file<<$1->getName().c_str()<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<endl<<endl;
-					$$->push_back($1);
-					$$->push_back($2);
-					$$->push_back($3);
-					$$->push_back($4);
+
 				}
  		  ;
 
 statements : statement
 			{
 				add_log(line_count, "statements : statement");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 	   | statements statement
 	   		{
 				add_log(line_count, "statements : statements statement");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				for(int i=0; i<$2->size();i++)
-				{
-					$$->push_back($2->at(i));
-					log_file<<$2->at(i)->getName().c_str();
-					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 	   ;
 	   
 statement : var_declaration
 			{
 				add_log(line_count, "statement : var_declaration");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i = 0; i< $1->size(); i++)
-				{
-					log_file<<$1->at(i)->getName().c_str();
-					$$->push_back($1->at(i));
-
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 	  | expression_statement
 	  		{
 				add_log(line_count, "statement : expression_statement");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i = 0; i< $1->size(); i++)
-				{
-					log_file<<$1->at(i)->getName().c_str();
-					$$->push_back($1->at(i));
-
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 	  | compound_statement
 	  		{
 				add_log(line_count, "statement : compound_statement");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i = 0; i< $1->size(); i++)
-				{
-					log_file<<$1->at(i)->getName().c_str();
-					$$->push_back($1->at(i));
-
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  		{
 				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str();
-				$$->push_back($1);
-				$$->push_back($2);
-				for(int i = 0; i< $3->size(); i++)
-				{
-					log_file<<$3->at(i)->getName().c_str();
-					$$->push_back($3->at(i));
-
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				for(int i = 0; i< $4->size(); i++)
-				{
-					log_file<<$4->at(i)->getName().c_str();
-					$$->push_back($3->at(i));
-
-					if($4->at(i)->getName() == "int" || $4->at(i)->getName() == "float" || $4->at(i)->getName() == "void" || $4->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($4->at(i)->getName() == ";" || $4->at(i)->getName() == "{" || $4->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				for(int i = 0; i< $5->size(); i++)
-				{
-					log_file<<$5->at(i)->getName().c_str();
-					$$->push_back($5->at(i));
-
-					if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<$6->getName().c_str();
-				$$->push_back($6);
-
-				for(int i = 0; i< $7->size(); i++)
-				{
-					log_file<<$7->at(i)->getName().c_str();
-					$$->push_back($7->at(i));
-
-					if($7->at(i)->getName() == "int" || $7->at(i)->getName() == "float" || $7->at(i)->getName() == "void" || $7->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($7->at(i)->getName() == ";" || $7->at(i)->getName() == "{" || $7->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<endl<<endl;
 			}
 
 	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 	  		{
 				add_log(line_count, "statement : IF LPAREN expression RPAREN statement");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str();
-				$$->push_back($1);
-				$$->push_back($2);
-				for(int i = 0; i< $3->size(); i++)
-				{
-					log_file<<$3->at(i)->getName().c_str();
-					$$->push_back($3->at(i));
-
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$4->getName().c_str();
-				$$->push_back($4);
-
-				for(int i = 0; i< $5->size(); i++)
-				{
-					log_file<<$5->at(i)->getName().c_str();
-					$$->push_back($5->at(i));
-
-					if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<endl<<endl;
 			}
 
 	  | IF LPAREN expression RPAREN statement ELSE statement
 	  		{
 				add_log(line_count, "statement : IF LPAREN expression RPAREN statement ELSE statement");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str();
-				$$->push_back($1);
-				$$->push_back($2);
-				for(int i = 0; i< $3->size(); i++)
-				{
-					log_file<<$3->at(i)->getName().c_str();
-					$$->push_back($3->at(i));
-
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$4->getName().c_str();
-				$$->push_back($4);
-
-				for(int i = 0; i< $5->size(); i++)
-				{
-					log_file<<$5->at(i)->getName().c_str();
-					$$->push_back($5->at(i));
-
-					if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<$6->getName().c_str();
-				$$->push_back($6);
-
-				for(int i = 0; i< $7->size(); i++)
-				{
-					log_file<<$7->at(i)->getName().c_str();
-					$$->push_back($7->at(i));
-
-					if($7->at(i)->getName() == "int" || $7->at(i)->getName() == "float" || $7->at(i)->getName() == "void" || $7->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($7->at(i)->getName() == ";" || $7->at(i)->getName() == "{" || $7->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<endl<<endl;
 			}
 
 	  | WHILE LPAREN expression RPAREN statement
 	  		{
 				add_log(line_count, "statement : WHILE LPAREN expression RPAREN statement");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str();
-				$$->push_back($1);
-				$$->push_back($2);
-				for(int i = 0; i< $3->size(); i++)
-				{
-					log_file<<$3->at(i)->getName().c_str();
-					$$->push_back($3->at(i));
-
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$4->getName().c_str();
-				$$->push_back($4);
-
-				for(int i = 0; i< $5->size(); i++)
-				{
-					log_file<<$5->at(i)->getName().c_str();
-					$$->push_back($5->at(i));
-
-					if($5->at(i)->getName() == "int" || $5->at(i)->getName() == "float" || $5->at(i)->getName() == "void" || $5->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($5->at(i)->getName() == ";" || $5->at(i)->getName() == "{" || $5->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<endl<<endl;
 			}
 
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
 	  		{
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str()<<$3->getName().c_str()<<$4->getName().c_str()<<$5->getName().c_str()<<endl<<endl;
-				$$->push_back($1);
-				$$->push_back($2);
-				$$->push_back($3);
-				$$->push_back($4);
-				$$->push_back($5);
 			}
 
 	  | RETURN expression SEMICOLON
 	  		{
 				add_log(line_count, "statement : RETURN expression SEMICOLON");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<" ";
-				$$->push_back($1);
-				for(int i=0; i<$2->size();i++)
-				{
-					$$->push_back($2->at(i));
-					log_file<<$2->at(i)->getName().c_str();
-					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$3->getName().c_str()<<endl<<endl;
-				$$->push_back($3);
 			}
 	  ;
 	  
 expression_statement : SEMICOLON	
 				{
 					add_log(line_count, "expression_statement : SEMICOLON");
-
-					$$ = new vector<SymbolInfo*>();
-					log_file<<$1->getName().c_str();
-					$$->push_back($1);
 				}
 
 			| expression SEMICOLON 
 				{
 					add_log(line_count, "expression_statement : expression SEMICOLON");
-
 					$$ = new vector<SymbolInfo*>();
-					for(int i=0; i<$1->size();i++)
-					{
-						$$->push_back($1->at(i));
-						log_file<<$1->at(i)->getName().c_str();
-						if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-						{log_file << " ";}
-						if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-						{log_file << endl;}
-					}
-					log_file<<$2->getName().c_str();
-					$$->push_back($2);
-					log_file<<endl<<endl;
 				}
 			;
 	  
@@ -845,470 +367,161 @@ variable : ID
 		{
 			add_log(line_count, "variable : ID");
 
-			$$ = new vector<SymbolInfo*>();
-			log_file<<$1->getName().c_str()<<endl<<endl;
-			$$->push_back($1);
+			s_table.insert($1);
 		}	
 
 	 | ID LTHIRD expression RTHIRD 
 	 	{
 			add_log(line_count, "variable : ID LTHIRD expression RTHIRD");
 
-			$$ = new vector<SymbolInfo*>();
-			log_file<<$1->getName().c_str()<<$2->getName().c_str();
-			$$->push_back($1);
-			$$->push_back($2);
-
-			for(int i=0; i<$3->size();i++)
-					{
-						$$->push_back($3->at(i));
-						log_file<<$3->at(i)->getName().c_str();
-						if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-						{log_file << " ";}
-						if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-						{log_file << endl;}
-					}
-					log_file<<$4->getName().c_str();
-					$$->push_back($4);
-					log_file<<endl<<endl;
+					s_table.insert($1);
 		}
 	 ;
 	 
 expression : logic_expression	
 			{
 				add_log(line_count, "expression : logic_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 	   | variable ASSIGNOP logic_expression 
 	   		{
 				add_log(line_count, "expression : variable ASSIGNOP logic_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-
-				log_file<<$2->getName().c_str();
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}	
 	   ;
 			
 logic_expression : rel_expression 
 			{
 				add_log(line_count, "logic_expression : rel_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}	
 
 		 | rel_expression LOGICOP rel_expression 	
 		 	{
 				add_log(line_count, "logic_expression : rel_expression LOGICOP rel_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$2->getName().c_str();
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 		 ;
 			
 rel_expression	: simple_expression 
 			{
 				add_log(line_count, "rel_expression	: simple_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 		| simple_expression RELOP simple_expression	
 			{
 				add_log(line_count, "rel_expression : simple_expression RELOP simple_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$2->getName().c_str();
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 		;
 				
 simple_expression : term 
 			{
 				add_log(line_count, "simple_expression : term");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-				}
-				log_file<<endl<<endl;
 			}
 
 		  | simple_expression ADDOP term 
 		  	{
 				add_log(line_count, "simple_expression : simple_expression ADDOP term");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$2->getName().c_str();
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-				}
-				log_file<<endl<<endl;
 			}
 		  ;
 					
 term :	unary_expression
 		{
 			add_log(line_count, "term : unary_expression");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-			log_file<<endl<<endl;
 		}
 
      |  term MULOP unary_expression
 	 	{
 				add_log(line_count, "term : term MULOP unary_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-					if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$2->getName().c_str();
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
-			}
+		}
      ;
 
 unary_expression : ADDOP unary_expression  
 			{
 				add_log(line_count, "unary_expression : ADDOP unary_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str();
-				$$->push_back($1);
-				for(int i=0; i<$2->size();i++)
-				{
-					$$->push_back($2->at(i));
-					log_file<<$2->at(i)->getName().c_str();
-					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 		 | NOT unary_expression 
 		 	{
 				add_log(line_count, "unary_expression : NOT unary_expression");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str();
-				$$->push_back($1);
-				for(int i=0; i<$2->size();i++)
-				{
-					$$->push_back($2->at(i));
-					log_file<<$2->at(i)->getName().c_str();
-					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<endl<<endl;
 			}
 
 		 | factor 
 		 	{
 				add_log(line_count, "unary_expression	: factor");
-
 				$$ = new vector<SymbolInfo*>();
-				for(int i=0; i<$1->size();i++)
-				{
-					$$->push_back($1->at(i));
-					log_file<<$1->at(i)->getName().c_str();
-				}
-				log_file<<endl<<endl;
 			}
 		 ;
 	
 factor	: variable
 		{
 			add_log(line_count, "factor	: variable");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-			log_file<<endl<<endl;
 		}
 
 	| ID LPAREN argument_list RPAREN
 			{
 				add_log(line_count, "factor : ID LPAREN argument_list RPAREN");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str()<<$2->getName().c_str();
-				$$->push_back($1);
-				$$->push_back($2);
-				for(int i=0; i<$3->size();i++)
-				{
-					$$->push_back($3->at(i));
-					log_file<<$3->at(i)->getName().c_str();
-					if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$4->getName().c_str();
-				$$->push_back($4);
-				log_file<<endl<<endl;
 			}
 
 	| LPAREN expression RPAREN
 			{
 				add_log(line_count, "factor : LPAREN expression RPAREN");
-
 				$$ = new vector<SymbolInfo*>();
-				log_file<<$1->getName().c_str();
-				$$->push_back($1);
-				for(int i=0; i<$2->size();i++)
-				{
-					$$->push_back($2->at(i));
-					log_file<<$2->at(i)->getName().c_str();
-					if($2->at(i)->getName() == "int" || $2->at(i)->getName() == "float" || $2->at(i)->getName() == "void" || $2->at(i)->getName() == "return")
-					{log_file << " ";}
-					if($2->at(i)->getName() == ";" || $2->at(i)->getName() == "{" || $2->at(i)->getName() == "}")
-					{log_file << endl;}
-				}
-				log_file<<$3->getName().c_str();
-				$$->push_back($3);
-				log_file<<endl<<endl;
 			}
 
 	| CONST_INT 
 		{
 			add_log(line_count, "factor	: CONST_INT");
-
-			$$ = new vector<SymbolInfo*>();
-			log_file<<$1->getName().c_str();
-			$$->push_back($1);
-			log_file<<endl<<endl;
 		}
 
 	| CONST_FLOAT
 		{
 			add_log(line_count, "factor	: CONST_FLOAT");
-
-			$$ = new vector<SymbolInfo*>();
-			log_file<<$1->getName().c_str();
-			$$->push_back($1);
-			log_file<<endl<<endl;
 		}
 
 	| variable INCOP 
 		{
 			add_log(line_count, "factor	: variable INCOP");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-
-			log_file<<$2->getName().c_str();
-			$$->push_back($2);
-			log_file<<endl<<endl;
 		}
 
 	| variable DECOP
 		{
 			add_log(line_count, "factor	: variable DECOP");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-
-			log_file<<$2->getName().c_str();
-			$$->push_back($2);
-			log_file<<endl<<endl;
 		}
 	;
 	
 argument_list : arguments
 		{
 			add_log(line_count, "argument_list : arguments");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-			log_file<<endl<<endl;
 		}
 		;
 	
 arguments : arguments COMMA logic_expression
 		{
 			add_log(line_count, "argument_list : arguments COMMA logic_expression");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-			}
-			log_file<<$2->getName().c_str();
-			$$->push_back($2);
-			for(int i=0; i<$3->size();i++)
-			{
-				$$->push_back($3->at(i));
-				log_file<<$3->at(i)->getName().c_str();
-				if($3->at(i)->getName() == "int" || $3->at(i)->getName() == "float" || $3->at(i)->getName() == "void" || $3->at(i)->getName() == "return")
-				{log_file << " ";}
-				if($3->at(i)->getName() == ";" || $3->at(i)->getName() == "{" || $3->at(i)->getName() == "}")
-				{log_file << endl;}
-			}
-			log_file<<endl<<endl;
 		}
 
 	      | logic_expression
 		{
 			add_log(line_count, "argument_list : logic_expression");
-
 			$$ = new vector<SymbolInfo*>();
-			for(int i=0; i<$1->size();i++)
-			{
-				$$->push_back($1->at(i));
-				log_file<<$1->at(i)->getName().c_str();
-				if($1->at(i)->getName() == "int" || $1->at(i)->getName() == "float" || $1->at(i)->getName() == "void" || $1->at(i)->getName() == "return")
-				{log_file << " ";}
-				if($1->at(i)->getName() == ";" || $1->at(i)->getName() == "{" || $1->at(i)->getName() == "}")
-				{log_file << endl;}
-			}
-			log_file<<endl<<endl;
 		}
-	      ;
+	    ;
 
 
 %%
@@ -1329,10 +542,14 @@ int main(int argc,char *argv[])
 	error_file.open("error_file.txt");
 	code_file.open("code_file.asm");
 
+
 	code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA"<<endl;
 
 	yyin= fin;
 	yyparse();
+
+	code_file<<code;
+	code_file<<"\n\nEND MAIN";
 
 	log_file<<"Total lines: "<<line_count<<"\nTotal errors: "<<num_of_error<<"\n";
 	fclose(yyin);

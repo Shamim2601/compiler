@@ -23,6 +23,7 @@ class SymbolInfo
 {
     string Name;
     string Type;
+    string asm_var;
     SymbolInfo* Next;
 
     //for array and function
@@ -90,6 +91,11 @@ public:
     void setType(string type)
     {
         Type = type;
+    }
+    string get_asm_var(){return asm_var;}
+    string set_asm_var(string var_name)
+    {
+        asm_var = var_name;
     }
     void setNext(SymbolInfo* next)
     {

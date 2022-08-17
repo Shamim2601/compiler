@@ -1,33 +1,54 @@
 Line 1: type_specifier : INT
 
-int
+Line 3: type_specifier : INT
 
-Line 4: compound_statement : LCURL RCURL
+Line 3: declaration_list : ID
 
-{}
+Line 3: var_declaration : type_specifier declaration_list SEMICOLON
 
-Line 4: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+Line 3: statement : var_declaration
 
-int main(){
-}
+Line 3: statements : statement
 
+Line 4: variable : ID
 
-Line 4: unit : func_definition
+Line 4: factor	: CONST_INT
 
-int main(){
-}
+Line 4: unary_expression	: factor
 
+Line 4: term : unary_expression
 
-Line 4: program : unit
+Line 4: simple_expression : term
 
-int main(){
-}
+Line 4: rel_expression	: simple_expression
 
+Line 4: logic_expression : rel_expression
 
-Line 4: start : program
+Line 4: expression : variable ASSIGNOP logic_expression
+
+Line 4: expression_statement : expression SEMICOLON
+
+Line 4: statement : expression_statement
+
+Line 4: statements : statements statement
+
+Line 5: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 5: statements : statements statement
+
+Line 6: compound_statement : LCURL statements RCURL
+
+Line 6: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+
+Line 6: unit : func_definition
+
+Line 6: program : unit
+
+Line 6: start : program
 
 Scopetable #1
+1 -->> < x : ID >
 5 -->> < main : ID >
 
-Total lines: 4
+Total lines: 6
 Total errors: 0
