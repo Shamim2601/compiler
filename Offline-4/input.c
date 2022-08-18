@@ -4,7 +4,8 @@ int main()
     int z;
     y = 589;
     x = 34;
-    printf(x);
-    printf(y);
-    printf(z);
+    println(y);
+    println(x);
+    println(x);
+    println(z);
 }

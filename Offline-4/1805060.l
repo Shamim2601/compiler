@@ -171,7 +171,7 @@ UNRECOGNIZED .
 			return  CONTINUE;
 		}
 
-"printf"	{
+"println"	{
 			SymbolInfo* si = new SymbolInfo(yytext, "PRINTLN");
 			yylval.s_info = si;
 			return PRINTLN;

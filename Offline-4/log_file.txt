@@ -80,13 +80,17 @@ Line 9: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 
 Line 9: statements : statements statement
 
-Line 10: compound_statement : LCURL statements RCURL
+Line 10: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 
-Line 10: unit : func_definition
+Line 10: statements : statements statement
 
-Line 10: program : unit
+Line 11: compound_statement : LCURL statements RCURL
 
-Line 10: start : program
+Line 11: unit : func_definition
+
+Line 11: program : unit
+
+Line 11: start : program
 
 Scopetable #1
 1 -->> < x : ID >
@@ -94,5 +98,5 @@ Scopetable #1
 3 -->> < z : ID >
 5 -->> < main : ID >
 
-Total lines: 10
+Total lines: 11
 Total errors: 0
