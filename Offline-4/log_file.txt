@@ -6,49 +6,93 @@ Line 3: type_specifier : INT
 
 Line 3: declaration_list : ID
 
+Line 3: declaration_list : declaration_list COMMA ID
+
 Line 3: var_declaration : type_specifier declaration_list SEMICOLON
 
 Line 3: statement : var_declaration
 
 Line 3: statements : statement
 
-Line 4: variable : ID
+Line 4: type_specifier : INT
 
-Line 4: factor	: CONST_INT
+Line 4: declaration_list : ID
 
-Line 4: unary_expression	: factor
+Line 4: var_declaration : type_specifier declaration_list SEMICOLON
 
-Line 4: term : unary_expression
-
-Line 4: simple_expression : term
-
-Line 4: rel_expression	: simple_expression
-
-Line 4: logic_expression : rel_expression
-
-Line 4: expression : variable ASSIGNOP logic_expression
-
-Line 4: expression_statement : expression SEMICOLON
-
-Line 4: statement : expression_statement
+Line 4: statement : var_declaration
 
 Line 4: statements : statements statement
 
-Line 5: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line 5: variable : ID
+
+Line 5: factor	: CONST_INT
+
+Line 5: unary_expression	: factor
+
+Line 5: term : unary_expression
+
+Line 5: simple_expression : term
+
+Line 5: rel_expression	: simple_expression
+
+Line 5: logic_expression : rel_expression
+
+Line 5: expression : variable ASSIGNOP logic_expression
+
+Line 5: expression_statement : expression SEMICOLON
+
+Line 5: statement : expression_statement
 
 Line 5: statements : statements statement
 
-Line 6: compound_statement : LCURL statements RCURL
+Line 6: variable : ID
 
-Line 6: unit : func_definition
+Line 6: factor	: CONST_INT
 
-Line 6: program : unit
+Line 6: unary_expression	: factor
 
-Line 6: start : program
+Line 6: term : unary_expression
+
+Line 6: simple_expression : term
+
+Line 6: rel_expression	: simple_expression
+
+Line 6: logic_expression : rel_expression
+
+Line 6: expression : variable ASSIGNOP logic_expression
+
+Line 6: expression_statement : expression SEMICOLON
+
+Line 6: statement : expression_statement
+
+Line 6: statements : statements statement
+
+Line 7: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 7: statements : statements statement
+
+Line 8: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 8: statements : statements statement
+
+Line 9: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 9: statements : statements statement
+
+Line 10: compound_statement : LCURL statements RCURL
+
+Line 10: unit : func_definition
+
+Line 10: program : unit
+
+Line 10: start : program
 
 Scopetable #1
 1 -->> < x : ID >
+2 -->> < y : ID >
+3 -->> < z : ID >
 5 -->> < main : ID >
 
-Total lines: 6
+Total lines: 10
 Total errors: 0

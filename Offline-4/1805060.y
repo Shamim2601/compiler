@@ -46,25 +46,19 @@ int labelCount = 0;
 int tempCount = 0;
 
 
-char *newLabel()
+string newLabel()
 {
-	char *lb= new char[4];
-	strcpy(lb,"L");
-	char b[3];
-	sprintf(b,"%d", labelCount);
+	string lb = "";
 	labelCount++;
-	strcat(lb,b);
+	lb+="L"+to_string(labelCount);
 	return lb;
 }
 
-char *newTemp()
+string newTemp()
 {
-	char *t= new char[4];
-	strcpy(t,"t");
-	char b[3];
-	sprintf(b,"%d", tempCount);
+	string t= "";
 	tempCount++;
-	strcat(t,b);
+	t+="t"+to_string(tempCount);
 	return t;
 }
 
@@ -83,10 +77,10 @@ char *newTemp()
 %token<s_info> ADDOP MULOP RELOP LOGICOP
 %type<s_info> type_specifier 
 
-%type<siList> start program unit var_declaration func_declaration func_definition
-%type<siList> parameter_list compound_statement statements declaration_list statement if_statement
-%type<siList> expression_statement expression logic_expression variable rel_expression
-%type<siList> simple_expression term unary_expression factor argument_list arguments
+%type<s_info> start program unit var_declaration func_declaration func_definition
+%type<s_info> parameter_list compound_statement statements declaration_list statement if_statement
+%type<s_info> expression_statement expression logic_expression variable rel_expression
+%type<s_info> simple_expression term unary_expression factor argument_list arguments
 
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
@@ -99,7 +93,6 @@ start : program
 		//write your code in this block in all the similar blocks below
 		add_log(line_count, "start : program");
 		
-
 		s_table.print_all(log_file);
 	}
 	;
@@ -257,25 +250,35 @@ declaration_list : declaration_list COMMA ID
 			{
 				add_log(line_count, "declaration_list : declaration_list COMMA ID");
 				
+				string tmp_name = newTemp();
+				$3->set_asm_var(tmp_name);
+				s_table.insert($3);
 
+				data_segment+= tmp_name+" DW ?\n";
+				code+= "\nMOV "+tmp_name+", 0";
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
 		  	{
 				add_log(line_count, "declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD");
 				
-
 			}
 
  		  | ID
 		  {
 			add_log(line_count, "declaration_list : ID");
+
+			string tmp_name = newTemp();
+			$1->set_asm_var(tmp_name);
+			s_table.insert($1);
+
+			data_segment+= tmp_name+" DW ?\n";
+			code+= "\nMOV "+tmp_name+", 0";
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD
 		  		{
 					add_log(line_count, "declaration_list : ID LTHIRD CONST_INT RTHIRD");
-					
 
 				}
  		  ;
@@ -345,7 +348,8 @@ statement : var_declaration
 	  		{
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
 
-				code+= "\nMOV AX, BX\nCALL PRINT";
+				code+= "\n\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
+				code+= "\nCALL PRINT";
 			}
 
 	  | RETURN expression SEMICOLON
@@ -371,17 +375,18 @@ variable : ID
 		{
 			add_log(line_count, "variable : ID");
 
-			string tmp_name = newTemp();
-			data_segment+= tmp_name+" DB ?\n";
-			$1->set_asm_var(tmp_name);
-			s_table.insert($1);
+			string var_name = s_table.look_up($1->getName())->get_asm_var();
+			$$->set_asm_var(var_name);
+
+			code+= "\nMOV BX, "+ var_name;
+			code+= "\nPUSH BX";
+
 		}	
 
 	 | ID LTHIRD expression RTHIRD 
 	 	{
 			add_log(line_count, "variable : ID LTHIRD expression RTHIRD");
 
-					s_table.insert($1);
 		}
 	 ;
 	 
@@ -395,6 +400,10 @@ expression : logic_expression
 	   		{
 				add_log(line_count, "expression : variable ASSIGNOP logic_expression");
 				
+				code+= "\nPOP BX";
+				code+= "\nPOP AX";
+				string var_name = s_table.look_up($1->getName())->get_asm_var();
+				code+= "\nMOV "+var_name+", BX";
 			}	
 	   ;
 			
@@ -491,7 +500,7 @@ factor	: variable
 		{
 			add_log(line_count, "factor	: CONST_INT");
 
-			code+= "\nMOV BX, "+$1->getName();
+			code+= "\nPUSH "+$1->getName();
 		}
 
 	| CONST_FLOAT
@@ -558,6 +567,7 @@ int main(int argc,char *argv[])
 	{
 		code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA\nNUMBER_STRING DB '00000$'"<<endl;
 		code_file<<data_segment;
+		code_file<<"\n.CODE";
 		code_file<<code;
 
 		code_file<<"\n\nPRINT PROC";
@@ -565,7 +575,9 @@ int main(int argc,char *argv[])
     	code_file<<"\nADD SI, 5";
     	code_file<<"\nPRINT_LOOP:\nDEC SI\nMOV DX, 0\nMOV CX, 10\nDIV CX";
     	code_file<<"\nADD DL, '0'\nMOV [SI], DL\nCMP AX, 0\nJNE PRINT_LOOP";
-    	code_file<<"\nMOV DX, SI\nMOV AH, 9\nINT 21H\nRET\nPRINT ENDP";
+    	code_file<<"\nMOV DX, SI\nMOV AH, 9\nINT 21H";
+		code_file<<"\nMOV AH, 2\t;printing newline\nMOV DL, 0DH\nINT 21H\nMOV DL, 0AH\nINT 21H";
+		code_file<<"\nRET\nPRINT ENDP";
 		code_file<<"\n\nEND MAIN";
 	}
 

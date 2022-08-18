@@ -50,6 +50,7 @@ public:
     {
         Name = ob->getName();
         Type = ob->getType();
+        asm_var = ob->get_asm_var();
         Next = ob->getNext();
         size = ob->size;
         param_list = ob->param_list;
@@ -93,7 +94,7 @@ public:
         Type = type;
     }
     string get_asm_var(){return asm_var;}
-    string set_asm_var(string var_name)
+    void set_asm_var(string var_name)
     {
         asm_var = var_name;
     }
