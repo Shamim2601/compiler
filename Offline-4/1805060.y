@@ -378,9 +378,7 @@ variable : ID
 			string var_name = s_table.look_up($1->getName())->get_asm_var();
 			$$->set_asm_var(var_name);
 
-			code+= "\nMOV BX, "+ var_name;
-			code+= "\nPUSH BX";
-
+			code+= "\nPUSH "+ var_name;
 		}	
 
 	 | ID LTHIRD expression RTHIRD 
