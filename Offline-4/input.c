@@ -1,11 +1,22 @@
+int a;
 int main()
 {
     int x,y;
     int z;
-    y = 589;
-    x = 34;
-    println(y);
-    println(x);
-    println(x);
+    z = 56;
+    a = 3;
+    println(a);
     println(z);
+    {
+        int p;
+        p = 23;
+        println(p);
+    }
+    {
+        int p;
+        p = 12;
+        println(a);
+        println(p);
+    }
+    
 }

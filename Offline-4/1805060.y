@@ -208,24 +208,35 @@ parameter_list  : parameter_list COMMA type_specifier ID
  		;
 
  		
-compound_statement : LCURL statements RCURL
+compound_statement : LCURL
 				{
 					add_log(line_count, "compound_statement : LCURL statements RCURL");
-					
+					s_table.enter_scope();
+				}
+				statements
+				{
+
+				}
+				RCURL
+				{
+					s_table.exit_scope();
 				}
 
- 		    | LCURL RCURL
+ 		    | LCURL 
 				{
 					add_log(line_count, "compound_statement : LCURL RCURL");
-					
+					s_table.enter_scope();
+				}
+				RCURL
+				{
+					s_table.exit_scope();
 				}
  		    ;
 
 var_declaration : type_specifier declaration_list SEMICOLON
 			{
-				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");
-				
-
+				add_log(line_count, "var_declaration : type_specifier declaration_list SEMICOLON");	
+				s_table.print_all(log_file);
 			}
  		 ;
 

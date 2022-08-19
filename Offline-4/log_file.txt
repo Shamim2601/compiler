@@ -1,48 +1,58 @@
 Line 1: type_specifier : INT
 
-Line 2: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+Line 1: declaration_list : ID
 
-Line 3: type_specifier : INT
+Line 1: var_declaration : type_specifier declaration_list SEMICOLON
 
-Line 3: declaration_list : ID
+Scopetable #1
+6 -->> < a : ID >
 
-Line 3: declaration_list : declaration_list COMMA ID
+Line 1: unit : var_declaration
 
-Line 3: var_declaration : type_specifier declaration_list SEMICOLON
+Line 1: program : unit
 
-Line 3: statement : var_declaration
+Line 2: type_specifier : INT
 
-Line 3: statements : statement
+Line 3: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+
+Line 4: compound_statement : LCURL statements RCURL
 
 Line 4: type_specifier : INT
 
 Line 4: declaration_list : ID
 
+Line 4: declaration_list : declaration_list COMMA ID
+
 Line 4: var_declaration : type_specifier declaration_list SEMICOLON
+
+Scopetable #1.1
+1 -->> < x : ID >
+2 -->> < y : ID >
+
+Scopetable #1
+5 -->> < main : ID >
+6 -->> < a : ID >
 
 Line 4: statement : var_declaration
 
-Line 4: statements : statements statement
+Line 4: statements : statement
 
-Line 5: variable : ID
+Line 5: type_specifier : INT
 
-Line 5: factor	: CONST_INT
+Line 5: declaration_list : ID
 
-Line 5: unary_expression	: factor
+Line 5: var_declaration : type_specifier declaration_list SEMICOLON
 
-Line 5: term : unary_expression
+Scopetable #1.1
+1 -->> < x : ID >
+2 -->> < y : ID >
+3 -->> < z : ID >
 
-Line 5: simple_expression : term
+Scopetable #1
+5 -->> < main : ID >
+6 -->> < a : ID >
 
-Line 5: rel_expression	: simple_expression
-
-Line 5: logic_expression : rel_expression
-
-Line 5: expression : variable ASSIGNOP logic_expression
-
-Line 5: expression_statement : expression SEMICOLON
-
-Line 5: statement : expression_statement
+Line 5: statement : var_declaration
 
 Line 5: statements : statements statement
 
@@ -68,35 +78,167 @@ Line 6: statement : expression_statement
 
 Line 6: statements : statements statement
 
-Line 7: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line no 7 : Comment found.
 
-Line 7: statements : statements statement
+Line no 8 : Comment found.
 
-Line 8: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line no 9 : Comment found.
 
-Line 8: statements : statements statement
+Line no 10 : Comment found.
 
-Line 9: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line 11: variable : ID
 
-Line 9: statements : statements statement
+Line 11: factor	: CONST_INT
 
-Line 10: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line 11: unary_expression	: factor
 
-Line 10: statements : statements statement
+Line 11: term : unary_expression
 
-Line 11: compound_statement : LCURL statements RCURL
+Line 11: simple_expression : term
 
-Line 11: unit : func_definition
+Line 11: rel_expression	: simple_expression
 
-Line 11: program : unit
+Line 11: logic_expression : rel_expression
 
-Line 11: start : program
+Line 11: expression : variable ASSIGNOP logic_expression
 
-Scopetable #1
+Line 11: expression_statement : expression SEMICOLON
+
+Line 11: statement : expression_statement
+
+Line 11: statements : statements statement
+
+Line 12: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 12: statements : statements statement
+
+Line no 13 : Comment found.
+
+Line 14: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 14: statements : statements statement
+
+Line 16: compound_statement : LCURL statements RCURL
+
+Line 16: type_specifier : INT
+
+Line 16: declaration_list : ID
+
+Line 16: var_declaration : type_specifier declaration_list SEMICOLON
+
+Scopetable #1.1.1
+0 -->> < p : ID >
+
+Scopetable #1.1
 1 -->> < x : ID >
 2 -->> < y : ID >
 3 -->> < z : ID >
-5 -->> < main : ID >
 
-Total lines: 11
+Scopetable #1
+5 -->> < main : ID >
+6 -->> < a : ID >
+
+Line 16: statement : var_declaration
+
+Line 16: statements : statement
+
+Line 17: variable : ID
+
+Line 17: factor	: CONST_INT
+
+Line 17: unary_expression	: factor
+
+Line 17: term : unary_expression
+
+Line 17: simple_expression : term
+
+Line 17: rel_expression	: simple_expression
+
+Line 17: logic_expression : rel_expression
+
+Line 17: expression : variable ASSIGNOP logic_expression
+
+Line 17: expression_statement : expression SEMICOLON
+
+Line 17: statement : expression_statement
+
+Line 17: statements : statements statement
+
+Line 18: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 18: statements : statements statement
+
+Line 19: statement : compound_statement
+
+Line 19: statements : statements statement
+
+Line 21: compound_statement : LCURL statements RCURL
+
+Line 21: type_specifier : INT
+
+Line 21: declaration_list : ID
+
+Line 21: var_declaration : type_specifier declaration_list SEMICOLON
+
+Scopetable #1.1.2
+0 -->> < p : ID >
+
+Scopetable #1.1
+1 -->> < x : ID >
+2 -->> < y : ID >
+3 -->> < z : ID >
+
+Scopetable #1
+5 -->> < main : ID >
+6 -->> < a : ID >
+
+Line 21: statement : var_declaration
+
+Line 21: statements : statement
+
+Line 22: variable : ID
+
+Line 22: factor	: CONST_INT
+
+Line 22: unary_expression	: factor
+
+Line 22: term : unary_expression
+
+Line 22: simple_expression : term
+
+Line 22: rel_expression	: simple_expression
+
+Line 22: logic_expression : rel_expression
+
+Line 22: expression : variable ASSIGNOP logic_expression
+
+Line 22: expression_statement : expression SEMICOLON
+
+Line 22: statement : expression_statement
+
+Line 22: statements : statements statement
+
+Line 23: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 23: statements : statements statement
+
+Line 24: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+
+Line 24: statements : statements statement
+
+Line 25: statement : compound_statement
+
+Line 25: statements : statements statement
+
+Line 27: unit : func_definition
+
+Line 27: program : program unit
+
+Line 27: start : program
+
+Scopetable #1
+5 -->> < main : ID >
+6 -->> < a : ID >
+
+Total lines: 27
 Total errors: 0
