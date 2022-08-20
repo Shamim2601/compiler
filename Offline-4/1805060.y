@@ -437,6 +437,32 @@ rel_expression	: simple_expression
 			{
 				add_log(line_count, "rel_expression : simple_expression RELOP simple_expression");
 				
+
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
+
+				string L1 = newLabel();
+				string L0 = newLabel();
+				string L = newLabel();
+
+				if($2->getName()=="<")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJGE "+L0;
+				}
+				else if($2->getName()=="<=")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJG "+L0;
+				}
+
+
+				asm_code+= "\n"+L1;
+				asm_code+= ":\nMOV BX, 1";
+				asm_code+= "\nJMP "+L;
+				asm_code+= "\n"+L0;
+				asm_code+= ":\nMOV BX, 0";
+				asm_code+= "\n"+L+":\nPUSH BX";
 			}
 		;
 				
@@ -468,6 +494,20 @@ term :	unary_expression
 	 	{
 				add_log(line_count, "term : term MULOP unary_expression");
 				
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
+				if($2->getName()=="*")
+				{
+					asm_code+= "\nMUL BX";
+					asm_code+= "\nMOV BX, AX";
+				}else
+				{
+					asm_code+= "\nXOR DX, DX";
+					asm_code+= "\nDIV BX";
+					if($2->getName()=="/") asm_code+= "\nMOV BX, AX";
+					else asm_code+= "\nMOV BX, DX";
+				}
+				asm_code+= "\nPUSH BX";
 		}
      ;
 
@@ -485,6 +525,7 @@ unary_expression : ADDOP unary_expression
 		 	{
 				add_log(line_count, "unary_expression : NOT unary_expression");
 				
+				asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
 			}
 
 		 | factor 
@@ -537,6 +578,9 @@ factor	: variable
 		{
 			add_log(line_count, "factor	: variable DECOP");
 			
+			string var_name = s_table.look_up($1->getName())->get_asm_var();
+			asm_code+= "\nDEC "+var_name;
+			asm_code+= "\nPUSH "+var_name;
 		}
 	;
 	

@@ -1,26 +1,38 @@
-int main()
-{
-    int a,b;
-    a = -3;
-    b = a+2;
-    println(a);
-    println(b);
-    //a = b-8;
-    //println(a);
+int main(){
+ 
+	int i,j,k,ll,m,n,o,p;
+ 
+	i = 1;
+	//println(i);
+	j = 5 + 8;
+	println(j);
+	k = i + 2*j;
+	println(k);
 
-    /*
-    {
-        int p;
-        p = 23;
-        println(p);
-    }
-    {
-        int p;
-        p = 12;
-        println(a);
-        println(p);
-    }
-    */
-    
-    return 0;
+	m = k%5;
+	println(m);
+ 
+	n = m <= ll;
+	println(n);
+ 
+	/*o = i != j;
+	println(o);
+ 
+	p = n || o;
+	println(p);
+ 
+	p = n && o;
+	println(p);
+	
+	p++;
+	println(p);
+ 
+	k = -p;
+	println(k);*/
+ 
+  
+ 
+ 
+	return 0;
 }
+
