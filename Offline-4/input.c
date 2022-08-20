@@ -3,13 +3,13 @@ int main(){
 	int i,j,k,ll,m,n,o,p;
  
 	i = 1;
-	//println(i);
+	println(i);
 	j = 5 + 8;
 	println(j);
 	k = i + 2*j;
 	println(k);
 
-	m = k%5;
+	m = k%9;
 	println(m);
  
 	n = m <= ll;
@@ -27,10 +27,11 @@ int main(){
 	p++;
 	println(p);
  
-	k = -p;
+	k = !p;
 	println(k);
  
-  
+    k--;
+    println(k);
  
  
 	return 0;

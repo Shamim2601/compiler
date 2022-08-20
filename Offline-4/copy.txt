@@ -1,3 +1,13 @@
 string var_name = s_table.look_up($1->getName())->get_asm_var();
 
 
+                string L1 = newLabel();
+				string L0 = newLabel();
+				string L = newLabel();
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nCMP BX, 0";
+				asm_code+= "\nJNE "+L0;
+				asm_code+= "\n"+L1+":\nMOV BX, 1";
+				asm_code+= "\nJMP "+L;
+				asm_code+= "\n"+L0+":\nMOV BX, 0";
+				asm_code+= "\n"+L+":\nPUSH BX";

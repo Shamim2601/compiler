@@ -573,7 +573,16 @@ unary_expression : ADDOP unary_expression
 		 	{
 				add_log(line_count, "unary_expression : NOT unary_expression");
 				
-				asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
+				string L1 = newLabel();
+				string L0 = newLabel();
+				string L = newLabel();
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nCMP BX, 0";
+				asm_code+= "\nJNE "+L0;
+				asm_code+= "\n"+L1+":\nMOV BX, 1";
+				asm_code+= "\nJMP "+L;
+				asm_code+= "\n"+L0+":\nMOV BX, 0";
+				asm_code+= "\n"+L+":\nPUSH BX";
 			}
 
 		 | factor 
@@ -682,6 +691,7 @@ int main(int argc,char *argv[])
 		code_file<<asm_code;
 
 		code_file<<"\n\nPRINT PROC";
+		code_file<<"\nCMP AX, 0\nJNL NORMAL \nPUSH AX\nMOV DL, 45\nMOV AH, 2\nINT 21H \nPOP AX\nNEG AX\nNORMAL:";
     	code_file<<"\nLEA SI, NUMBER_STRING";
     	code_file<<"\nADD SI, 5";
     	code_file<<"\nPRINT_LOOP:\nDEC SI\nXOR DX, DX\nMOV CX, 10\nDIV CX";
