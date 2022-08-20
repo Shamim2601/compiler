@@ -746,8 +746,8 @@ static const yytype_int16 yyrline[] =
      226,   225,   236,   243,   248,   253,   260,   272,   278,   290,
      297,   303,   310,   316,   322,   328,   334,   339,   345,   351,
      357,   365,   371,   376,   383,   393,   400,   406,   417,   423,
-     430,   436,   469,   475,   487,   493,   514,   524,   531,   538,
-     544,   550,   556,   563,   568,   577,   587,   594,   600
+     459,   465,   517,   523,   535,   541,   562,   572,   579,   586,
+     592,   598,   604,   611,   616,   625,   635,   642,   648
 };
 #endif
 
@@ -1855,21 +1855,50 @@ yyreduce:
                         {
 				add_log(line_count, "logic_expression : rel_expression LOGICOP rel_expression");
 				
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
+
+				string L1 = newLabel();
+				string L0 = newLabel();
+				string L = newLabel();
+
+				if((yyvsp[-1].s_info)->getName()=="&&")
+				{
+					asm_code+= "\nCMP AX, 0";
+					asm_code+= "\nJE "+L0;
+					asm_code+= "\nCMP BX, 0";
+					asm_code+= "\nJE "+L0;
+				}
+				else
+				{
+					asm_code+= "\nCMP AX, 1";
+					asm_code+= "\nJE "+L1;
+					asm_code+= "\nCMP BX, 1";
+					asm_code+= "\nJE "+L1;
+					asm_code+= "\nJMP "+L;
+				}
+
+				asm_code+= "\n"+L1;
+				asm_code+= ":\nMOV BX, 1";
+				asm_code+= "\nJMP "+L;
+				asm_code+= "\n"+L0;
+				asm_code+= ":\nMOV BX, 0";
+				asm_code+= "\n"+L+":\nPUSH BX";
 			}
-#line 1860 "y.tab.c"
+#line 1889 "y.tab.c"
     break;
 
   case 50: /* rel_expression: simple_expression  */
-#line 431 "1805060.y"
+#line 460 "1805060.y"
                         {
 				add_log(line_count, "rel_expression	: simple_expression");
 				
 			}
-#line 1869 "y.tab.c"
+#line 1898 "y.tab.c"
     break;
 
   case 51: /* rel_expression: simple_expression RELOP simple_expression  */
-#line 437 "1805060.y"
+#line 466 "1805060.y"
                         {
 				add_log(line_count, "rel_expression : simple_expression RELOP simple_expression");
 				
@@ -1891,7 +1920,26 @@ yyreduce:
 					asm_code+= "\nCMP AX, BX";
 					asm_code+= "\nJG "+L0;
 				}
-
+				else if((yyvsp[-1].s_info)->getName()==">")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJLE "+L0;
+				}
+				else if((yyvsp[-1].s_info)->getName()==">=")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJL "+L0;
+				}
+				else if((yyvsp[-1].s_info)->getName()=="==")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJNE "+L0;
+				}
+				else
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJE "+L0;
+				}
 
 				asm_code+= "\n"+L1;
 				asm_code+= ":\nMOV BX, 1";
@@ -1900,20 +1948,20 @@ yyreduce:
 				asm_code+= ":\nMOV BX, 0";
 				asm_code+= "\n"+L+":\nPUSH BX";
 			}
-#line 1904 "y.tab.c"
+#line 1952 "y.tab.c"
     break;
 
   case 52: /* simple_expression: term  */
-#line 470 "1805060.y"
+#line 518 "1805060.y"
                         {
 				add_log(line_count, "simple_expression : term");
 				
 			}
-#line 1913 "y.tab.c"
+#line 1961 "y.tab.c"
     break;
 
   case 53: /* simple_expression: simple_expression ADDOP term  */
-#line 476 "1805060.y"
+#line 524 "1805060.y"
                         {
 				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 				
@@ -1923,20 +1971,20 @@ yyreduce:
 				else asm_code+= "\nSUB BX, AX";
 				asm_code+= "\nPUSH BX";
 			}
-#line 1927 "y.tab.c"
+#line 1975 "y.tab.c"
     break;
 
   case 54: /* term: unary_expression  */
-#line 488 "1805060.y"
+#line 536 "1805060.y"
                 {
 			add_log(line_count, "term : unary_expression");
 			
 		}
-#line 1936 "y.tab.c"
+#line 1984 "y.tab.c"
     break;
 
   case 55: /* term: term MULOP unary_expression  */
-#line 494 "1805060.y"
+#line 542 "1805060.y"
                 {
 				add_log(line_count, "term : term MULOP unary_expression");
 				
@@ -1955,11 +2003,11 @@ yyreduce:
 				}
 				asm_code+= "\nPUSH BX";
 		}
-#line 1959 "y.tab.c"
+#line 2007 "y.tab.c"
     break;
 
   case 56: /* unary_expression: ADDOP unary_expression  */
-#line 515 "1805060.y"
+#line 563 "1805060.y"
                         {
 				add_log(line_count, "unary_expression : ADDOP unary_expression");
 				
@@ -1968,75 +2016,75 @@ yyreduce:
 					asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
 				}
 			}
-#line 1972 "y.tab.c"
+#line 2020 "y.tab.c"
     break;
 
   case 57: /* unary_expression: NOT unary_expression  */
-#line 525 "1805060.y"
+#line 573 "1805060.y"
                         {
 				add_log(line_count, "unary_expression : NOT unary_expression");
 				
 				asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
 			}
-#line 1982 "y.tab.c"
+#line 2030 "y.tab.c"
     break;
 
   case 58: /* unary_expression: factor  */
-#line 532 "1805060.y"
+#line 580 "1805060.y"
                         {
 				add_log(line_count, "unary_expression	: factor");
 				
 			}
-#line 1991 "y.tab.c"
+#line 2039 "y.tab.c"
     break;
 
   case 59: /* factor: variable  */
-#line 539 "1805060.y"
+#line 587 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable");
 			
 		}
-#line 2000 "y.tab.c"
+#line 2048 "y.tab.c"
     break;
 
   case 60: /* factor: ID LPAREN argument_list RPAREN  */
-#line 545 "1805060.y"
+#line 593 "1805060.y"
                         {
 				add_log(line_count, "factor : ID LPAREN argument_list RPAREN");
 				
 			}
-#line 2009 "y.tab.c"
+#line 2057 "y.tab.c"
     break;
 
   case 61: /* factor: LPAREN expression RPAREN  */
-#line 551 "1805060.y"
+#line 599 "1805060.y"
                         {
 				add_log(line_count, "factor : LPAREN expression RPAREN");
 				
 			}
-#line 2018 "y.tab.c"
+#line 2066 "y.tab.c"
     break;
 
   case 62: /* factor: CONST_INT  */
-#line 557 "1805060.y"
+#line 605 "1805060.y"
                 {
 			add_log(line_count, "factor	: CONST_INT");
 
 			asm_code+= "\nPUSH "+(yyvsp[0].s_info)->getName();
 		}
-#line 2028 "y.tab.c"
+#line 2076 "y.tab.c"
     break;
 
   case 63: /* factor: CONST_FLOAT  */
-#line 564 "1805060.y"
+#line 612 "1805060.y"
                 {
 			add_log(line_count, "factor	: CONST_FLOAT");
 		}
-#line 2036 "y.tab.c"
+#line 2084 "y.tab.c"
     break;
 
   case 64: /* factor: variable INCOP  */
-#line 569 "1805060.y"
+#line 617 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable INCOP");
 
@@ -2044,11 +2092,11 @@ yyreduce:
 			asm_code+= "\nINC "+var_name;
 			asm_code+= "\nPUSH "+var_name;
 		}
-#line 2048 "y.tab.c"
+#line 2096 "y.tab.c"
     break;
 
   case 65: /* factor: variable DECOP  */
-#line 578 "1805060.y"
+#line 626 "1805060.y"
                 {
 			add_log(line_count, "factor	: variable DECOP");
 			
@@ -2056,38 +2104,38 @@ yyreduce:
 			asm_code+= "\nDEC "+var_name;
 			asm_code+= "\nPUSH "+var_name;
 		}
-#line 2060 "y.tab.c"
+#line 2108 "y.tab.c"
     break;
 
   case 66: /* argument_list: arguments  */
-#line 588 "1805060.y"
+#line 636 "1805060.y"
                 {
 			add_log(line_count, "argument_list : arguments");
 			
 		}
-#line 2069 "y.tab.c"
+#line 2117 "y.tab.c"
     break;
 
   case 67: /* arguments: arguments COMMA logic_expression  */
-#line 595 "1805060.y"
+#line 643 "1805060.y"
                 {
 			add_log(line_count, "argument_list : arguments COMMA logic_expression");
 			
 		}
-#line 2078 "y.tab.c"
+#line 2126 "y.tab.c"
     break;
 
   case 68: /* arguments: logic_expression  */
-#line 601 "1805060.y"
+#line 649 "1805060.y"
                 {
 			add_log(line_count, "argument_list : logic_expression");
 			
 		}
-#line 2087 "y.tab.c"
+#line 2135 "y.tab.c"
     break;
 
 
-#line 2091 "y.tab.c"
+#line 2139 "y.tab.c"
 
       default: break;
     }
@@ -2280,7 +2328,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 608 "1805060.y"
+#line 656 "1805060.y"
 
 int main(int argc,char *argv[])
 {

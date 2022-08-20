@@ -15,7 +15,7 @@ int main(){
 	n = m <= ll;
 	println(n);
  
-	/*o = i != j;
+	o = i != j;
 	println(o);
  
 	p = n || o;
@@ -28,7 +28,7 @@ int main(){
 	println(p);
  
 	k = -p;
-	println(k);*/
+	println(k);
  
   
  

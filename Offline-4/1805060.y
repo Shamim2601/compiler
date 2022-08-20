@@ -424,6 +424,35 @@ logic_expression : rel_expression
 		 	{
 				add_log(line_count, "logic_expression : rel_expression LOGICOP rel_expression");
 				
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
+
+				string L1 = newLabel();
+				string L0 = newLabel();
+				string L = newLabel();
+
+				if($2->getName()=="&&")
+				{
+					asm_code+= "\nCMP AX, 0";
+					asm_code+= "\nJE "+L0;
+					asm_code+= "\nCMP BX, 0";
+					asm_code+= "\nJE "+L0;
+				}
+				else
+				{
+					asm_code+= "\nCMP AX, 1";
+					asm_code+= "\nJE "+L1;
+					asm_code+= "\nCMP BX, 1";
+					asm_code+= "\nJE "+L1;
+					asm_code+= "\nJMP "+L;
+				}
+
+				asm_code+= "\n"+L1;
+				asm_code+= ":\nMOV BX, 1";
+				asm_code+= "\nJMP "+L;
+				asm_code+= "\n"+L0;
+				asm_code+= ":\nMOV BX, 0";
+				asm_code+= "\n"+L+":\nPUSH BX";
 			}
 		 ;
 			
@@ -455,7 +484,26 @@ rel_expression	: simple_expression
 					asm_code+= "\nCMP AX, BX";
 					asm_code+= "\nJG "+L0;
 				}
-
+				else if($2->getName()==">")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJLE "+L0;
+				}
+				else if($2->getName()==">=")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJL "+L0;
+				}
+				else if($2->getName()=="==")
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJNE "+L0;
+				}
+				else
+				{
+					asm_code+= "\nCMP AX, BX";
+					asm_code+= "\nJE "+L0;
+				}
 
 				asm_code+= "\n"+L1;
 				asm_code+= ":\nMOV BX, 1";
