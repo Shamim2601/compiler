@@ -1,12 +1,14 @@
-int a;
 int main()
 {
-    int x,y;
-    int z;
-    z = 56;
-    a = 3;
+    int a,b;
+    a = -3;
+    b = a+2;
     println(a);
-    println(z);
+    println(b);
+    //a = b-8;
+    //println(a);
+
+    /*
     {
         int p;
         p = 23;
@@ -18,5 +20,7 @@ int main()
         println(a);
         println(p);
     }
+    */
     
+    return 0;
 }

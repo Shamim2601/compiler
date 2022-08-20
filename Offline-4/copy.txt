@@ -1,0 +1,3 @@
+string var_name = s_table.look_up($1->getName())->get_asm_var();
+
+

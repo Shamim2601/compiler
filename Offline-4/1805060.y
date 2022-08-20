@@ -17,7 +17,7 @@ ofstream code_file;
 int line_count = 1;
 int num_of_error = 0;
 
-string code = "";
+string asm_code = "";
 string data_segment = "";
 
 int yyparse(void);
@@ -163,10 +163,10 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					$2->setSize(-1);
 					s_table.insert($2);
 
-					code+= "\n"+$2->getName()+" PROC";
+					asm_code+= "\n"+$2->getName()+" PROC";
 					if($2->getName()=="main")
 					{
-						code+= "\nMOV AX,@DATA \nMOV DS,AX\n";
+						asm_code+= "\nMOV AX,@DATA \nMOV DS,AX\n";
 					}
 					
 				}
@@ -174,10 +174,10 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 				{
 					if($2->getName()=="main")
 					{
-						code+= "\n\nMOV AH, 4CH \nINT 21H";
+						asm_code+= "\n\nMOV AH, 4CH \nINT 21H";
 					}
 
-					code+= "\n"+$2->getName()+" ENDP";
+					asm_code+= "\n"+$2->getName()+" ENDP";
 				}
  		;				
 
@@ -266,7 +266,7 @@ declaration_list : declaration_list COMMA ID
 				s_table.insert($3);
 
 				data_segment+= tmp_name+" DW ?\n";
-				code+= "\nMOV "+tmp_name+", 0";
+				asm_code+= "\nMOV "+tmp_name+", 0";
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
@@ -284,7 +284,7 @@ declaration_list : declaration_list COMMA ID
 			s_table.insert($1);
 
 			data_segment+= tmp_name+" DW ?\n";
-			code+= "\nMOV "+tmp_name+", 0";
+			asm_code+= "\nMOV "+tmp_name+", 0";
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD
@@ -334,7 +334,6 @@ statement : var_declaration
 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	  		{
 				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
-				
 			}
 
 	  | if_statement %prec LOWER_THAN_ELSE
@@ -359,14 +358,13 @@ statement : var_declaration
 	  		{
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
 
-				code+= "\n\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
-				code+= "\nCALL PRINT";
+				asm_code+= "\n\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
+				asm_code+= "\nCALL PRINT";
 			}
 
 	  | RETURN expression SEMICOLON
 	  		{
 				add_log(line_count, "statement : RETURN expression SEMICOLON");
-				
 			}
 	  ;
 	  
@@ -389,7 +387,7 @@ variable : ID
 			string var_name = s_table.look_up($1->getName())->get_asm_var();
 			$$->set_asm_var(var_name);
 
-			code+= "\nPUSH "+ var_name;
+			asm_code+= "\nPUSH "+ var_name;
 		}	
 
 	 | ID LTHIRD expression RTHIRD 
@@ -409,10 +407,10 @@ expression : logic_expression
 	   		{
 				add_log(line_count, "expression : variable ASSIGNOP logic_expression");
 				
-				code+= "\nPOP BX";
-				code+= "\nPOP AX";
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
 				string var_name = s_table.look_up($1->getName())->get_asm_var();
-				code+= "\nMOV "+var_name+", BX";
+				asm_code+= "\nMOV "+var_name+", BX";
 			}	
 	   ;
 			
@@ -452,6 +450,11 @@ simple_expression : term
 		  	{
 				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 				
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP AX";
+				if($2->getName()=="+") asm_code+= "\nADD BX, AX";
+				else asm_code+= "\nSUB BX, AX";
+				asm_code+= "\nPUSH BX";
 			}
 		  ;
 					
@@ -472,6 +475,10 @@ unary_expression : ADDOP unary_expression
 			{
 				add_log(line_count, "unary_expression : ADDOP unary_expression");
 				
+				if($1->getName()=="-")
+				{
+					asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
+				}
 			}
 
 		 | NOT unary_expression 
@@ -509,7 +516,7 @@ factor	: variable
 		{
 			add_log(line_count, "factor	: CONST_INT");
 
-			code+= "\nPUSH "+$1->getName();
+			asm_code+= "\nPUSH "+$1->getName();
 		}
 
 	| CONST_FLOAT
@@ -520,7 +527,10 @@ factor	: variable
 	| variable INCOP 
 		{
 			add_log(line_count, "factor	: variable INCOP");
-			
+
+			string var_name = s_table.look_up($1->getName())->get_asm_var();
+			asm_code+= "\nINC "+var_name;
+			asm_code+= "\nPUSH "+var_name;
 		}
 
 	| variable DECOP
@@ -577,12 +587,12 @@ int main(int argc,char *argv[])
 		code_file<<".MODEL SMALL"<<endl<<".STACK 400H"<<endl<<".DATA\nNUMBER_STRING DB '00000$'"<<endl;
 		code_file<<data_segment;
 		code_file<<"\n.CODE";
-		code_file<<code;
+		code_file<<asm_code;
 
 		code_file<<"\n\nPRINT PROC";
     	code_file<<"\nLEA SI, NUMBER_STRING";
     	code_file<<"\nADD SI, 5";
-    	code_file<<"\nPRINT_LOOP:\nDEC SI\nMOV DX, 0\nMOV CX, 10\nDIV CX";
+    	code_file<<"\nPRINT_LOOP:\nDEC SI\nXOR DX, DX\nMOV CX, 10\nDIV CX";
     	code_file<<"\nADD DL, '0'\nMOV [SI], DL\nCMP AX, 0\nJNE PRINT_LOOP";
     	code_file<<"\nMOV DX, SI\nMOV AH, 9\nINT 21H";
 		code_file<<"\nMOV AH, 2\t;printing newline\nMOV DL, 0DH\nINT 21H\nMOV DL, 0AH\nINT 21H";
