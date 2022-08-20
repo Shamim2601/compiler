@@ -27,11 +27,10 @@ int main(){
 	p++;
 	println(p);
  
-	k = !p;
+	k = -p;
 	println(k);
  
-    k--;
-    println(k);
+  
  
  
 	return 0;

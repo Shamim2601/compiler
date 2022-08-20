@@ -25,7 +25,7 @@ class SymbolInfo
     string Type;
     string asm_var;
     SymbolInfo* Next;
-
+    int offSet;
     //for array and function
     int size;
     vector<param> param_list;
@@ -106,7 +106,13 @@ public:
     {
         return Next;
     }
+    void setoffSet(int s) {
+            offSet = s;
+        }
 
+    int getoffSet() {
+        return offSet;
+    }
     void setSize(int s) {
             size = s;
         }

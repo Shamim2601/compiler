@@ -16,6 +16,7 @@ ofstream code_file;
 
 int line_count = 1;
 int num_of_error = 0;
+int total_offset = 0;
 
 string asm_code = "";
 string data_segment = "";
@@ -60,6 +61,39 @@ string newTemp()
 	tempCount++;
 	t+="t"+to_string(tempCount);
 	return t;
+}
+
+ifstream reader;
+ofstream optimized_file;
+
+void optimize_1(string fName)
+{
+	reader.open(fName);
+	optimized_file.open("optimized_file.asm");
+	string first_line;
+	string second_line;
+
+	while(getline(reader,first_line)){
+		if(first_line.find("PUSH BX")!=string::npos){
+			getline(reader,second_line);
+			
+			if(second_line.find("POP BX")!=string::npos)
+			{
+				optimized_file <<";"<< first_line << "\n";
+				optimized_file <<";"<< second_line << "\n";
+			}
+			else
+			{
+				optimized_file << first_line << "\n";
+				optimized_file << second_line << "\n";
+			}
+		}
+		else
+		{
+			optimized_file << first_line << "\n";
+		}	
+	}
+	optimized_file.close();
 }
 
 %}
@@ -163,10 +197,10 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 					$2->setSize(-1);
 					s_table.insert($2);
 
-					asm_code+= "\n"+$2->getName()+" PROC";
+					asm_code+= "\n"+$2->getName()+" PROC\t;func_definition";
 					if($2->getName()=="main")
 					{
-						asm_code+= "\nMOV AX,@DATA \nMOV DS,AX\n";
+						asm_code+= "\nMOV AX,@DATA \nMOV DS,AX\t;initializing data segment\n";
 					}
 					
 				}
@@ -174,7 +208,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 				{
 					if($2->getName()=="main")
 					{
-						asm_code+= "\n\nMOV AH, 4CH \nINT 21H";
+						asm_code+= "\n\nMOV AH, 4CH \nINT 21H\t\t;return 0";
 					}
 
 					asm_code+= "\n"+$2->getName()+" ENDP";
@@ -266,7 +300,7 @@ declaration_list : declaration_list COMMA ID
 				s_table.insert($3);
 
 				data_segment+= tmp_name+" DW ?\n";
-				asm_code+= "\nMOV "+tmp_name+", 0";
+				asm_code+= "\nMOV "+tmp_name+", 0\t;initializing variable with 0";
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
@@ -284,7 +318,7 @@ declaration_list : declaration_list COMMA ID
 			s_table.insert($1);
 
 			data_segment+= tmp_name+" DW ?\n";
-			asm_code+= "\nMOV "+tmp_name+", 0";
+			asm_code+= "\nMOV "+tmp_name+", 0\t;initializing variable with 0";
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD
@@ -359,7 +393,7 @@ statement : var_declaration
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
 
 				asm_code+= "\n\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
-				asm_code+= "\nCALL PRINT";
+				asm_code+= "\nCALL PRINT\t;PRINTLN LPAREN ID RPAREN SEMICOLON";
 			}
 
 	  | RETURN expression SEMICOLON
@@ -407,7 +441,7 @@ expression : logic_expression
 	   		{
 				add_log(line_count, "expression : variable ASSIGNOP logic_expression");
 				
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;variable ASSIGNOP logic_expression";
 				asm_code+= "\nPOP AX";
 				string var_name = s_table.look_up($1->getName())->get_asm_var();
 				asm_code+= "\nMOV "+var_name+", BX";
@@ -424,7 +458,7 @@ logic_expression : rel_expression
 		 	{
 				add_log(line_count, "logic_expression : rel_expression LOGICOP rel_expression");
 				
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;rel_expression LOGICOP rel_expression";
 				asm_code+= "\nPOP AX";
 
 				string L1 = newLabel();
@@ -467,7 +501,7 @@ rel_expression	: simple_expression
 				add_log(line_count, "rel_expression : simple_expression RELOP simple_expression");
 				
 
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;simple_expression RELOP simple_expression";
 				asm_code+= "\nPOP AX";
 
 				string L1 = newLabel();
@@ -524,7 +558,7 @@ simple_expression : term
 		  	{
 				add_log(line_count, "simple_expression : simple_expression ADDOP term");
 				
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;simple_expression ADDOP term";
 				asm_code+= "\nPOP AX";
 				if($2->getName()=="+") asm_code+= "\nADD BX, AX";
 				else asm_code+= "\nSUB BX, AX";
@@ -542,7 +576,7 @@ term :	unary_expression
 	 	{
 				add_log(line_count, "term : term MULOP unary_expression");
 				
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;term MULOP unary_expression";
 				asm_code+= "\nPOP AX";
 				if($2->getName()=="*")
 				{
@@ -565,7 +599,8 @@ unary_expression : ADDOP unary_expression
 				
 				if($1->getName()=="-")
 				{
-					asm_code+= "\nPOP BX\nNEG BX\nPUSH BX";
+					asm_code+= "\nPOP BX\t;ADDOP unary_expression";
+					asm_code+= "\nNEG BX\nPUSH BX";
 				}
 			}
 
@@ -576,7 +611,7 @@ unary_expression : ADDOP unary_expression
 				string L1 = newLabel();
 				string L0 = newLabel();
 				string L = newLabel();
-				asm_code+= "\nPOP BX";
+				asm_code+= "\nPOP BX\t;NOT unary_expression";
 				asm_code+= "\nCMP BX, 0";
 				asm_code+= "\nJNE "+L0;
 				asm_code+= "\n"+L1+":\nMOV BX, 1";
@@ -627,7 +662,7 @@ factor	: variable
 			add_log(line_count, "factor	: variable INCOP");
 
 			string var_name = s_table.look_up($1->getName())->get_asm_var();
-			asm_code+= "\nINC "+var_name;
+			asm_code+= "\nINC "+var_name+"\t;variable INCOP";
 			asm_code+= "\nPUSH "+var_name;
 		}
 
@@ -636,7 +671,7 @@ factor	: variable
 			add_log(line_count, "factor	: variable DECOP");
 			
 			string var_name = s_table.look_up($1->getName())->get_asm_var();
-			asm_code+= "\nDEC "+var_name;
+			asm_code+= "\nDEC "+var_name+"\t;variable DECOP";
 			asm_code+= "\nPUSH "+var_name;
 		}
 	;
@@ -707,6 +742,8 @@ int main(int argc,char *argv[])
 	log_file.close();
 	error_file.close();
 	code_file.close();
+
+	optimize_1("code_file.asm");
 
 	return 0;
 }

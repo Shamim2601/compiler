@@ -6,7 +6,7 @@ int main(){
 	println(i);
 	j = 5 + 8;
 	println(j);
-	/*k = i + 2*j;
+	k = i + 2*j;
 	println(k);
 
 	m = k%9;
@@ -28,7 +28,7 @@ int main(){
 	println(p);
  
 	k = -p;
-	println(k);*/
+	println(k);
  
   
  

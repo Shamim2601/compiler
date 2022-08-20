@@ -38,8 +38,8 @@ PUSH 8
 POP BX	;simple_expression ADDOP term
 POP AX
 ADD BX, AX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t2, BX
 
@@ -53,12 +53,12 @@ POP BX	;term MULOP unary_expression
 POP AX
 MUL BX
 MOV BX, AX
-PUSH BX
-POP BX	;simple_expression ADDOP term
+;PUSH BX
+;POP BX	;simple_expression ADDOP term
 POP AX
 ADD BX, AX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t3, BX
 
@@ -72,8 +72,8 @@ POP AX
 XOR DX, DX
 DIV BX
 MOV BX, DX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t5, BX
 
@@ -92,8 +92,8 @@ JMP L3
 L2:
 MOV BX, 0
 L3:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t6, BX
 
@@ -112,8 +112,8 @@ JMP L6
 L5:
 MOV BX, 0
 L6:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t7, BX
 
@@ -135,8 +135,8 @@ JMP L9
 L8:
 MOV BX, 0
 L9:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t8, BX
 
@@ -157,8 +157,8 @@ JMP L12
 L11:
 MOV BX, 0
 L12:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t8, BX
 
@@ -174,8 +174,8 @@ PUSH t3
 PUSH t8
 POP BX	;ADDOP unary_expression
 NEG BX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
+;PUSH BX
+;POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t3, BX
 

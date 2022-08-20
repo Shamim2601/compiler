@@ -11,3 +11,6 @@ string var_name = s_table.look_up($1->getName())->get_asm_var();
 				asm_code+= "\nJMP "+L;
 				asm_code+= "\n"+L0+":\nMOV BX, 0";
 				asm_code+= "\n"+L+":\nPUSH BX";
+
+
+                
