@@ -4,15 +4,14 @@ int main(){
 	
 	i = 3;
 	j = 8;
-	//k = 6;
+	k = 6;
 	
 	
 	if(i==3){
-		j++;
 		println(j);
 	}
 	
-	/*if(j<8){
+	if(j<8){
 		println(i);
 	}
 	else{
@@ -31,7 +30,7 @@ int main(){
 	else{
 		k = 0;
 		println(k);
-	}*/
+	}
  
  
 	return 0;

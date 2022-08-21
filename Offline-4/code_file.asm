@@ -11,7 +11,6 @@ main PROC	;func_definition
 MOV AX,@DATA 
 MOV DS,AX	;initializing data segment
 
-L1:	;Scope 1.1 starts
 PUSH t1
 PUSH 3
 POP BX	;variable ASSIGNOP logic_expression
@@ -22,29 +21,126 @@ PUSH 8
 POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t2, BX
+PUSH t3
+PUSH 6
+POP BX	;variable ASSIGNOP logic_expression
+POP AX
+MOV t3, BX
 PUSH t1
 PUSH 3
 POP BX	;simple_expression RELOP simple_expression
 POP AX
 CMP AX, BX
-JNE L3
-L2:
+JNE L2
+L1:
 MOV BX, 1
-JMP L4
-L3:
+JMP L3
+L2:
 MOV BX, 0
-L4:
+L3:
 PUSH BX
-L5:	;Scope 1.1.1 starts
-PUSH t2
-INC t2	;variable INCOP
-PUSH t2
-
+POP BX	;if_statement : IF LPAREN expression RPAREN
+CMP BX, 0
+JE L4
 MOV AX, t2
 CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-L6:	;Scope 1.1.1 ends
+JMP L5
+L4:
+L5:
+PUSH t2
+PUSH 8
+POP BX	;simple_expression RELOP simple_expression
+POP AX
+CMP AX, BX
+JGE L7
+L6:
+MOV BX, 1
+JMP L8
+L7:
+MOV BX, 0
+L8:
+PUSH BX
+POP BX	;if_statement : IF LPAREN expression RPAREN
+CMP BX, 0
+JE L9
+MOV AX, t1
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+JMP L10
+L9:
+MOV AX, t3
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+L10:
+PUSH t3
+PUSH 6
+POP BX	;simple_expression RELOP simple_expression
+POP AX
+CMP AX, BX
+JE L12
+L11:
+MOV BX, 1
+JMP L13
+L12:
+MOV BX, 0
+L13:
+PUSH BX
+POP BX	;if_statement : IF LPAREN expression RPAREN
+CMP BX, 0
+JE L14
+MOV AX, t3
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+JMP L15
+L14:
+PUSH t2
+PUSH 8
+POP BX	;simple_expression RELOP simple_expression
+POP AX
+CMP AX, BX
+JLE L17
+L16:
+MOV BX, 1
+JMP L18
+L17:
+MOV BX, 0
+L18:
+PUSH BX
+POP BX	;if_statement : IF LPAREN expression RPAREN
+CMP BX, 0
+JE L19
+MOV AX, t2
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+JMP L20
+L19:
+PUSH t1
+PUSH 5
+POP BX	;simple_expression RELOP simple_expression
+POP AX
+CMP AX, BX
+JGE L22
+L21:
+MOV BX, 1
+JMP L23
+L22:
+MOV BX, 0
+L23:
+PUSH BX
+POP BX	;if_statement : IF LPAREN expression RPAREN
+CMP BX, 0
+JE L24
+MOV AX, t1
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+JMP L25
+L24:
+PUSH t3
 PUSH 0
-L7:	;Scope 1.1 ends
+POP BX	;variable ASSIGNOP logic_expression
+POP AX
+MOV t3, BX
+MOV AX, t3
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+L25:
+L20:
+L15:
+PUSH 0	;statement : RETURN expression SEMICOLON
 
 MOV AH, 4CH 
 INT 21H		;return 0

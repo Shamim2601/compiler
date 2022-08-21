@@ -45,7 +45,7 @@ void yyerror(char *s)
 
 int labelCount = 0;
 int tempCount = 0;
-vector<string> levels;
+stack<string> levels;
 
 string newLabel()
 {
@@ -269,10 +269,6 @@ compound_statement : LCURL
 				{
 					add_log(line_count, "compound_statement : LCURL");
 					s_table.enter_scope();
-
-					string start = newLabel();
-					asm_code+= "\n"+start+":\t;Scope "+s_table.get_currentID()+" starts";
-					levels.push_back(start);
 				}
 				statements
 				{
@@ -281,10 +277,6 @@ compound_statement : LCURL
 				RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL statements RCURL");
-
-					string end = newLabel();
-					asm_code+= "\n"+end+":\t;Scope "+s_table.get_currentID()+" ends";
-					levels.push_back(end);
 										
 					s_table.exit_scope();
 
@@ -294,18 +286,10 @@ compound_statement : LCURL
 				{
 					add_log(line_count, "compound_statement : LCURL");
 					s_table.enter_scope();
-
-					string start = newLabel();
-					asm_code+= "\n"+start+":\t;Scope "+s_table.get_currentID()+" starts";
-					levels.push_back(start);
 				}
 				RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL RCURL");
-
-					string end = newLabel();
-					asm_code+= "\n"+end+":\t;Scope "+s_table.get_currentID()+" ends";
-					levels.push_back(end);
 
 					s_table.exit_scope();
 				}
@@ -386,11 +370,26 @@ statements : statement
 if_statement : IF LPAREN expression RPAREN 
 			{
 				add_log(line_count, "if_statement : IF LPAREN expression RPAREN");
+
+				string if_next_level = newLabel();
+				levels.push(if_next_level);
+
+				asm_code+= "\nPOP BX\t;if_statement : IF LPAREN expression RPAREN";
+				asm_code+= "\nCMP BX, 0";
+				asm_code+= "\nJE "+ if_next_level;
 				
 			}  
 			statement
 			{
 				add_log(line_count, "if_statement : IF LPAREN expression RPAREN statement");
+
+				string if_next_level = levels.top();
+				levels.pop();
+				string else_next_level = newLabel();
+				levels.push(else_next_level);
+
+				asm_code+= "\nJMP "+else_next_level;
+				asm_code+= "\n"+if_next_level+":";
 			}
 	   
 statement : var_declaration
@@ -420,12 +419,25 @@ statement : var_declaration
 	  		{
 				add_log(line_count, "statement : if_statement");
 				
+				string just_if_next = levels.top();
+				levels.pop();
+
+				asm_code+= "\n"+just_if_next+":";
 			}
 
-	  | if_statement ELSE statement
+	  | if_statement ELSE
 	  		{
-				add_log(line_count, "statement : if_statement ELSE statement");
+				add_log(line_count, "statement : if_statement ELSE");
 				
+			}
+			statement
+			{
+				add_log(line_count, "statement : if_statement ELSE statement");
+
+				string else_next_level = levels.top();
+				levels.pop();
+
+				asm_code+= "\n"+else_next_level+":";
 			}
 
 	  | WHILE LPAREN expression RPAREN statement
@@ -438,13 +450,15 @@ statement : var_declaration
 	  		{
 				add_log(line_count, "statement : PRINTLN LPAREN ID RPAREN SEMICOLON");
 
-				asm_code+= "\n\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
+				asm_code+= "\nMOV AX, "+ s_table.look_up($3->getName())->get_asm_var();
 				asm_code+= "\nCALL PRINT\t;PRINTLN LPAREN ID RPAREN SEMICOLON";
 			}
 
 	  | RETURN expression SEMICOLON
 	  		{
 				add_log(line_count, "statement : RETURN expression SEMICOLON");
+
+				asm_code+= "\t;statement : RETURN expression SEMICOLON";
 			}
 	  ;
 	  
