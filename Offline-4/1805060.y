@@ -74,10 +74,17 @@ void optimize_1(string fName)
 	string second_line;
 
 	while(getline(reader,first_line)){
-		if(first_line.find("PUSH BX")!=string::npos){
+		if(first_line.find("PUSH")!=string::npos){
+			vector<string> tokens;
+			stringstream check1(first_line);
+			string token ;
+			while(getline(check1, token, ' '))
+			{
+				tokens.push_back(token);
+			}
 			getline(reader,second_line);
 			
-			if(second_line.find("POP BX")!=string::npos)
+			if((second_line.find("POP")!=string::npos)&&(second_line.find(tokens[1])!=string::npos))
 			{
 				optimized_file <<";"<< first_line << "\n";
 				optimized_file <<";"<< second_line << "\n";
@@ -88,7 +95,7 @@ void optimize_1(string fName)
 				optimized_file << second_line << "\n";
 			}
 		}
-		else if(first_line.find("J")!=string::npos)
+		else if(first_line.find("MOV")!=string::npos)
 		{
 			vector<string> tokens;
 			stringstream check1(first_line);
@@ -97,10 +104,18 @@ void optimize_1(string fName)
 			{
 				tokens.push_back(token);
 			}
+
+			vector<string> tokens1;
+			stringstream check2(tokens[1]);
+			string token1 ;
+			while(getline(check2, token1, ','))
+			{
+				tokens1.push_back(token1);
+			}
 			
 			getline(reader,second_line);
 			
-			if(second_line.find(tokens[1])!=string::npos)
+			if((second_line.find("MOV")!=string::npos)&&(second_line.find(tokens1[0])!=string::npos)&&(second_line.find(tokens1[1])!=string::npos))
 			{
 				optimized_file <<";"<< first_line << "\n";
 				optimized_file <<";"<< second_line << "\n";
@@ -440,10 +455,31 @@ statement : var_declaration
 				asm_code+= "\n"+else_next_level+":";
 			}
 
-	  | WHILE LPAREN expression RPAREN statement
+	  | WHILE LPAREN expression RPAREN 
 	  		{
 				add_log(line_count, "statement : WHILE LPAREN expression RPAREN statement");
 				
+				string while_begin_level = newLabel();
+				levels.push(while_begin_level);
+				string while_next_level = newLabel();
+				levels.push(while_next_level);
+
+				asm_code+= "\n"+while_begin_level+":";
+				asm_code+= "\nPOP BX\t;statement : WHILE LPAREN expression RPAREN";
+				asm_code+= "\nCMP BX, 0";
+				asm_code+= "\nJE "+ while_next_level;
+			}
+			statement
+			{
+				add_log(line_count, "statement : WHILE LPAREN expression RPAREN statement");
+
+				string while_next_level = levels.top();
+				levels.pop();
+				string while_begin_level = levels.top();
+				levels.pop();
+
+				asm_code+= "\nJMP "+while_begin_level;
+				asm_code+= "\n"+while_next_level+":";
 			}
 
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
