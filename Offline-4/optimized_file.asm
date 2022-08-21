@@ -16,14 +16,6 @@ main PROC	;func_definition
 MOV AX,@DATA 
 MOV DS,AX	;initializing data segment
 
-MOV t1, 0	;initializing variable with 0
-MOV t2, 0	;initializing variable with 0
-MOV t3, 0	;initializing variable with 0
-MOV t4, 0	;initializing variable with 0
-MOV t5, 0	;initializing variable with 0
-MOV t6, 0	;initializing variable with 0
-MOV t7, 0	;initializing variable with 0
-MOV t8, 0	;initializing variable with 0
 PUSH t1
 PUSH 1
 POP BX	;variable ASSIGNOP logic_expression
@@ -172,8 +164,15 @@ MOV AX, t8
 CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
 PUSH t3
 PUSH t8
-POP BX	;ADDOP unary_expression
-NEG BX
+POP BX	;NOT unary_expression
+CMP BX, 0
+JNE L14
+L13:
+MOV BX, 1
+JMP L15
+L14:
+MOV BX, 0
+L15:
 ;PUSH BX
 ;POP BX	;variable ASSIGNOP logic_expression
 POP AX

@@ -88,6 +88,29 @@ void optimize_1(string fName)
 				optimized_file << second_line << "\n";
 			}
 		}
+		else if(first_line.find("J")!=string::npos)
+		{
+			vector<string> tokens;
+			stringstream check1(first_line);
+			string token ;
+			while(getline(check1, token, ' '))
+			{
+				tokens.push_back(token);
+			}
+			
+			getline(reader,second_line);
+			
+			if(second_line.find(tokens[1])!=string::npos)
+			{
+				optimized_file <<";"<< first_line << "\n";
+				optimized_file <<";"<< second_line << "\n";
+			}
+			else
+			{
+				optimized_file << first_line << "\n";
+				optimized_file << second_line << "\n";
+			}
+		}
 		else
 		{
 			optimized_file << first_line << "\n";
@@ -300,7 +323,6 @@ declaration_list : declaration_list COMMA ID
 				s_table.insert($3);
 
 				data_segment+= tmp_name+" DW ?\n";
-				asm_code+= "\nMOV "+tmp_name+", 0\t;initializing variable with 0";
 			}
 
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
@@ -318,7 +340,6 @@ declaration_list : declaration_list COMMA ID
 			s_table.insert($1);
 
 			data_segment+= tmp_name+" DW ?\n";
-			asm_code+= "\nMOV "+tmp_name+", 0\t;initializing variable with 0";
 		  }
 
  		  | ID LTHIRD CONST_INT RTHIRD

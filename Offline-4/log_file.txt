@@ -367,7 +367,7 @@ Line 30: factor	: variable
 
 Line 30: unary_expression	: factor
 
-Line 30: unary_expression : ADDOP unary_expression
+Line 30: unary_expression : NOT unary_expression
 
 Line 30: term : unary_expression
 
