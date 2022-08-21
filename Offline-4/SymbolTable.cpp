@@ -53,11 +53,14 @@ public:
         }
     }
 
-    // void print_current()
-    // {
-    //     if(CurrentScopeTable){CurrentScopeTable->print();}
-    //     else{/*cout<<"No Current Scope Table";*/}
-    // }
+    string get_currentID()
+    {
+        if(CurrentScopeTable)
+        {
+            return CurrentScopeTable->getID();
+        }
+        else{return "No Current Scope Table";}
+    }
 
     void print_all(ofstream& log_file)
     {

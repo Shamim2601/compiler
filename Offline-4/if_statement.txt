@@ -45,7 +45,7 @@ void yyerror(char *s)
 
 int labelCount = 0;
 int tempCount = 0;
-vector<string> levels;
+
 
 string newLabel()
 {
@@ -269,10 +269,6 @@ compound_statement : LCURL
 				{
 					add_log(line_count, "compound_statement : LCURL");
 					s_table.enter_scope();
-
-					string start = newLabel();
-					asm_code+= "\n"+start+":\t;Scope "+s_table.get_currentID()+" starts";
-					levels.push_back(start);
 				}
 				statements
 				{
@@ -281,32 +277,17 @@ compound_statement : LCURL
 				RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL statements RCURL");
-
-					string end = newLabel();
-					asm_code+= "\n"+end+":\t;Scope "+s_table.get_currentID()+" ends";
-					levels.push_back(end);
-										
 					s_table.exit_scope();
-
 				}
 
  		    | LCURL 
 				{
 					add_log(line_count, "compound_statement : LCURL");
 					s_table.enter_scope();
-
-					string start = newLabel();
-					asm_code+= "\n"+start+":\t;Scope "+s_table.get_currentID()+" starts";
-					levels.push_back(start);
 				}
 				RCURL
 				{
 					add_log(line_count, "compound_statement : LCURL RCURL");
-
-					string end = newLabel();
-					asm_code+= "\n"+end+":\t;Scope "+s_table.get_currentID()+" ends";
-					levels.push_back(end);
-
 					s_table.exit_scope();
 				}
  		    ;

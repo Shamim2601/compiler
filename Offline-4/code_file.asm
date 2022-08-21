@@ -5,182 +5,46 @@ NUMBER_STRING DB '00000$'
 t1 DW ?
 t2 DW ?
 t3 DW ?
-t4 DW ?
-t5 DW ?
-t6 DW ?
-t7 DW ?
-t8 DW ?
 
 .CODE
 main PROC	;func_definition
 MOV AX,@DATA 
 MOV DS,AX	;initializing data segment
 
+L1:	;Scope 1.1 starts
 PUSH t1
-PUSH 1
+PUSH 3
 POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t1, BX
-
-MOV AX, t1
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
 PUSH t2
-PUSH 5
 PUSH 8
-POP BX	;simple_expression ADDOP term
-POP AX
-ADD BX, AX
-PUSH BX
 POP BX	;variable ASSIGNOP logic_expression
 POP AX
 MOV t2, BX
+PUSH t1
+PUSH 3
+POP BX	;simple_expression RELOP simple_expression
+POP AX
+CMP AX, BX
+JNE L3
+L2:
+MOV BX, 1
+JMP L4
+L3:
+MOV BX, 0
+L4:
+PUSH BX
+L5:	;Scope 1.1.1 starts
+PUSH t2
+INC t2	;variable INCOP
+PUSH t2
 
 MOV AX, t2
 CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t3
-PUSH t1
-PUSH 2
-PUSH t2
-POP BX	;term MULOP unary_expression
-POP AX
-MUL BX
-MOV BX, AX
-PUSH BX
-POP BX	;simple_expression ADDOP term
-POP AX
-ADD BX, AX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t3, BX
-
-MOV AX, t3
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t5
-PUSH t3
-PUSH 9
-POP BX	;term MULOP unary_expression
-POP AX
-XOR DX, DX
-DIV BX
-MOV BX, DX
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t5, BX
-
-MOV AX, t5
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t6
-PUSH t5
-PUSH t4
-POP BX	;simple_expression RELOP simple_expression
-POP AX
-CMP AX, BX
-JG L2
-L1:
-MOV BX, 1
-JMP L3
-L2:
-MOV BX, 0
-L3:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t6, BX
-
-MOV AX, t6
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t7
-PUSH t1
-PUSH t2
-POP BX	;simple_expression RELOP simple_expression
-POP AX
-CMP AX, BX
-JE L5
-L4:
-MOV BX, 1
-JMP L6
-L5:
-MOV BX, 0
-L6:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t7, BX
-
-MOV AX, t7
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t8
-PUSH t6
-PUSH t7
-POP BX	;rel_expression LOGICOP rel_expression
-POP AX
-CMP AX, 1
-JE L7
-CMP BX, 1
-JE L7
-JMP L9
-L7:
-MOV BX, 1
-JMP L9
-L8:
-MOV BX, 0
-L9:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t8, BX
-
-MOV AX, t8
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t8
-PUSH t6
-PUSH t7
-POP BX	;rel_expression LOGICOP rel_expression
-POP AX
-CMP AX, 0
-JE L11
-CMP BX, 0
-JE L11
-L10:
-MOV BX, 1
-JMP L12
-L11:
-MOV BX, 0
-L12:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t8, BX
-
-MOV AX, t8
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t8
-INC t8	;variable INCOP
-PUSH t8
-
-MOV AX, t8
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-PUSH t3
-PUSH t8
-POP BX	;NOT unary_expression
-CMP BX, 0
-JNE L14
-L13:
-MOV BX, 1
-JMP L15
-L14:
-MOV BX, 0
-L15:
-PUSH BX
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t3, BX
-
-MOV AX, t3
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
+L6:	;Scope 1.1.1 ends
 PUSH 0
+L7:	;Scope 1.1 ends
 
 MOV AH, 4CH 
 INT 21H		;return 0

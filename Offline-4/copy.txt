@@ -13,4 +13,8 @@ string var_name = s_table.look_up($1->getName())->get_asm_var();
 				asm_code+= "\n"+L+":\nPUSH BX";
 
 
-                
+                /*if_statement : IF LPAREN expression RPAREN statement
+			{
+				add_log(line_count, "if_statement : IF LPAREN expression RPAREN statement");
+				
+			}*/
