@@ -12,52 +12,39 @@ main PROC	;func_definition
 MOV AX,@DATA 
 MOV DS,AX	;initializing data segment
 
-PUSH t3
-PUSH 4
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t3, BX
-PUSH t4
-PUSH 6
-POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t4, BX
-PUSH t3
+PUSH t1
 PUSH 0
+POP BX	;variable ASSIGNOP logic_expression
+POP AX
+MOV t1, BX
+L1:	;statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement
+PUSH t1
+PUSH 6
 POP BX	;simple_expression RELOP simple_expression
 POP AX
 CMP AX, BX
-JLE L2
-L1:
+JGE L6
+L5:
 MOV BX, 1
+JMP L7
+L6:
+MOV BX, 0
+L7:
+;PUSH BX
+;POP BX
+CMP BX, 0
+JE L2
+JMP L4
+L3:
+PUSH t1
+INC t1	;variable INCOP
+PUSH t1
+JMP L1
+L4:
+MOV AX, t1
+CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
 JMP L3
 L2:
-MOV BX, 0
-L3:
-PUSH BX
-L4:
-POP BX	;statement : WHILE LPAREN expression RPAREN
-CMP BX, 0
-JE L5
-PUSH t4
-PUSH t4
-PUSH 3
-POP BX	;simple_expression ADDOP term
-POP AX
-ADD BX, AX
-;PUSH BX
-;POP BX	;variable ASSIGNOP logic_expression
-POP AX
-MOV t4, BX
-PUSH t3
-DEC t3	;variable DECOP
-PUSH t3
-JMP L4
-L5:
-MOV AX, t4
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
-MOV AX, t3
-CALL PRINT	;PRINTLN LPAREN ID RPAREN SEMICOLON
 PUSH 0	;statement : RETURN expression SEMICOLON
 
 MOV AH, 4CH 

@@ -47,6 +47,11 @@ int labelCount = 0;
 int tempCount = 0;
 stack<string> levels;
 
+string for_begin_level;
+string for_next_level;
+string for_int_level;
+string for_exp_level;
+
 string newLabel()
 {
 	string lb = "";
@@ -425,9 +430,52 @@ statement : var_declaration
 				
 			}
 
-	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+	  | FOR LPAREN  
 	  		{
+				add_log(line_count, "statement : FOR LPAREN");
+
+				for_begin_level = newLabel();
+				
+				for_next_level = newLabel();
+				
+				for_int_level = newLabel();
+				
+				for_exp_level = newLabel();
+
+			}
+			expression_statement
+			{
+				add_log(line_count, "statement : FOR LPAREN expression_statement");
+
+				asm_code+= "\n"+for_begin_level+":\t;statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement";
+			}
+			expression_statement 
+			{
+				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement");
+
+				
+
+				//asm_code+= "\n"+for_begin_level+":\t;statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement";
+				asm_code+= "\nPOP BX";
+				asm_code+= "\nCMP BX, 0";
+				asm_code+= "\nJE "+ for_next_level;
+				asm_code+= "\nJMP "+for_exp_level;
+				asm_code+= "\n"+for_int_level+":";
+
+			}
+			expression RPAREN
+			{
+				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement expression RPAREN");
+
+				asm_code+= "\nJMP "+for_begin_level;
+				asm_code+= "\n"+for_exp_level+":";
+			}
+			statement
+			{
 				add_log(line_count, "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement");
+
+				asm_code+= "\nJMP "+for_int_level;
+				asm_code+= "\n"+for_next_level+":";
 			}
 
 	  | if_statement %prec LOWER_THAN_ELSE

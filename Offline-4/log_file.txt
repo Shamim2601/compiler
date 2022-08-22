@@ -28,169 +28,91 @@ Line 3: statement : var_declaration
 
 Line 3: statements : statement
 
-Line no 5 : Comment found.
+Line 5: statement : FOR LPAREN
 
-Line no 6 : Comment found.
+Line 5: variable : ID
 
-Line no 7 : Comment found.
+Line 5: factor	: CONST_INT
 
-Line 9: variable : ID
+Line 5: unary_expression	: factor
 
-Line 9: factor	: CONST_INT
+Line 5: term : unary_expression
 
-Line 9: unary_expression	: factor
+Line 5: simple_expression : term
 
-Line 9: term : unary_expression
+Line 5: rel_expression	: simple_expression
 
-Line 9: simple_expression : term
+Line 5: logic_expression : rel_expression
 
-Line 9: rel_expression	: simple_expression
+Line 5: expression : variable ASSIGNOP logic_expression
 
-Line 9: logic_expression : rel_expression
+Line 5: expression_statement : expression SEMICOLON
 
-Line 9: expression : variable ASSIGNOP logic_expression
+Line 5: statement : FOR LPAREN expression_statement
 
-Line 9: expression_statement : expression SEMICOLON
+Line 5: variable : ID
 
-Line 9: statement : expression_statement
+Line 5: factor	: variable
 
-Line 9: statements : statements statement
+Line 5: unary_expression	: factor
 
-Line 10: variable : ID
+Line 5: term : unary_expression
 
-Line 10: factor	: CONST_INT
+Line 5: simple_expression : term
 
-Line 10: unary_expression	: factor
+Line 5: factor	: CONST_INT
 
-Line 10: term : unary_expression
+Line 5: unary_expression	: factor
 
-Line 10: simple_expression : term
+Line 5: term : unary_expression
 
-Line 10: rel_expression	: simple_expression
+Line 5: simple_expression : term
 
-Line 10: logic_expression : rel_expression
+Line 5: rel_expression : simple_expression RELOP simple_expression
 
-Line 10: expression : variable ASSIGNOP logic_expression
+Line 5: logic_expression : rel_expression
 
-Line 10: expression_statement : expression SEMICOLON
+Line 5: expression : logic_expression
 
-Line 10: statement : expression_statement
+Line 5: expression_statement : expression SEMICOLON
 
-Line 10: statements : statements statement
+Line 5: statement : FOR LPAREN expression_statement expression_statement
 
-Line 11: variable : ID
+Line 5: variable : ID
 
-Line 11: factor	: variable
+Line 5: factor	: variable INCOP
 
-Line 11: unary_expression	: factor
+Line 5: unary_expression	: factor
 
-Line 11: term : unary_expression
+Line 5: term : unary_expression
 
-Line 11: simple_expression : term
+Line 5: simple_expression : term
 
-Line 11: factor	: CONST_INT
+Line 5: rel_expression	: simple_expression
 
-Line 11: unary_expression	: factor
+Line 5: logic_expression : rel_expression
 
-Line 11: term : unary_expression
+Line 5: expression : logic_expression
 
-Line 11: simple_expression : term
+Line 5: statement : FOR LPAREN expression_statement expression_statement expression RPAREN
 
-Line 11: rel_expression : simple_expression RELOP simple_expression
+Line 6: compound_statement : LCURL
 
-Line 11: logic_expression : rel_expression
+Line 6: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 
-Line 11: expression : logic_expression
+Line 6: statements : statement
 
-Line 11: statement : WHILE LPAREN expression RPAREN statement
+Line 7: compound_statement : LCURL statements
 
-Line 12: compound_statement : LCURL
+Line 7: compound_statement : LCURL statements RCURL
 
-Line 12: variable : ID
+Line 7: statement : compound_statement
 
-Line 12: variable : ID
+Line 7: statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement
 
-Line 12: factor	: variable
+Line 7: statements : statements statement
 
-Line 12: unary_expression	: factor
-
-Line 12: term : unary_expression
-
-Line 12: simple_expression : term
-
-Line 12: factor	: CONST_INT
-
-Line 12: unary_expression	: factor
-
-Line 12: term : unary_expression
-
-Line 12: simple_expression : simple_expression ADDOP term
-
-Line 12: rel_expression	: simple_expression
-
-Line 12: logic_expression : rel_expression
-
-Line 12: expression : variable ASSIGNOP logic_expression
-
-Line 12: expression_statement : expression SEMICOLON
-
-Line 12: statement : expression_statement
-
-Line 12: statements : statement
-
-Line 13: variable : ID
-
-Line 13: factor	: variable DECOP
-
-Line 13: unary_expression	: factor
-
-Line 13: term : unary_expression
-
-Line 13: simple_expression : term
-
-Line 13: rel_expression	: simple_expression
-
-Line 13: logic_expression : rel_expression
-
-Line 13: expression : logic_expression
-
-Line 13: expression_statement : expression SEMICOLON
-
-Line 13: statement : expression_statement
-
-Line 13: statements : statements statement
-
-Line 14: compound_statement : LCURL statements
-
-Line 14: compound_statement : LCURL statements RCURL
-
-Line 14: statement : compound_statement
-
-Line 14: statement : WHILE LPAREN expression RPAREN statement
-
-Line 14: statements : statements statement
-
-Line 16: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
-
-Line 16: statements : statements statement
-
-Line 17: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
-
-Line 17: statements : statements statement
-
-Line no 19 : Comment found.
-
-Line no 20 : Comment found.
-
-Line no 22 : Comment found.
-
-Line no 23 : Comment found.
-
-Line no 24 : Comment found.
-
-Line no 26 : Comment found.
-
-Line no 27 : Comment found.
+Line no 9 : Comment found.
 
 Line 30: factor	: CONST_INT
 
